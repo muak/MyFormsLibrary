@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFormsLibrary.iOS", "MyFormsLibrary.iOS\MyFormsLibrary.iOS.csproj", "{A09426DB-8380-492B-BDB1-2D5A217484B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFormsLibrary.Droid", "MyFormsLibrary.Droid\MyFormsLibrary.Droid.csproj", "{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFormsLibrary", "MyFormsLibrary\MyFormsLibrary.csproj", "{1B0BE68B-FCF7-46F0-BEAC-66249D650094}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B0BE68B-FCF7-46F0-BEAC-66249D650094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B0BE68B-FCF7-46F0-BEAC-66249D650094}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B0BE68B-FCF7-46F0-BEAC-66249D650094}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B0BE68B-FCF7-46F0-BEAC-66249D650094}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A09426DB-8380-492B-BDB1-2D5A217484B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A09426DB-8380-492B-BDB1-2D5A217484B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A09426DB-8380-492B-BDB1-2D5A217484B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A09426DB-8380-492B-BDB1-2D5A217484B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
