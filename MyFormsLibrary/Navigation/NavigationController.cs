@@ -12,25 +12,31 @@ namespace MyFormsLibrary.Navigation
 	{
 
 		IUnityContainer UnityContainer;
-		IApplicationProvider ApplicationProvider;
+		IApplicationProviderForNavi ApplicationProvider;
 		NavigationPage PreviousTabPage;
 		Dictionary<NavigationPage, Page> LastNavigationCurrent;
 		Dictionary<NavigationPage, Type> NavigationRoot;
 		
 
 
-		public NavigationController(IUnityContainer container, IApplicationProvider applicationProvider)
+		public NavigationController(IUnityContainer container, IApplicationProviderForNavi applicationProvider)
 		{
 			UnityContainer = container;
 			ApplicationProvider = applicationProvider;
 			LastNavigationCurrent = new Dictionary<NavigationPage, Page>();
 			NavigationRoot = new Dictionary<NavigationPage, Type>();
 			
-            Application.Current.ModalPopped += (sender, e) => {
+            ApplicationProvider.ModalPopped = (sender, e) => {
                 var curPage = GetCurrentPage();
                 (curPage.BindingContext as INavigationAction)?.OnNavigatedBack();
                 (e.Modal.BindingContext as IDisposable)?.Dispose();
             };
+
+            //Application.Current.ModalPopped += (sender, e) => {
+            //    var curPage = GetCurrentPage();
+            //    (curPage.BindingContext as INavigationAction)?.OnNavigatedBack();
+            //    (e.Modal.BindingContext as IDisposable)?.Dispose();
+            //};
 
 		}
 
@@ -45,6 +51,14 @@ namespace MyFormsLibrary.Navigation
 			where TContentPage : ContentPage
 		{
 			var nav = CreatePage<TNavigationPage>() as NavigationPage;
+            var page = CreatePage<TContentPage>();
+
+            await nav.PushAsync(page, false);
+
+            //素のNavigationPageなどで初期状態からルートページが存在する場合は削除する
+            if (nav.Navigation.NavigationStack.Count == 2) {
+                nav.Navigation.RemovePage(nav.Navigation.NavigationStack[0]);
+            }
 
 			NavigationRoot[nav] = typeof(TContentPage);
 
@@ -55,12 +69,6 @@ namespace MyFormsLibrary.Navigation
 				(e.Page.BindingContext as IDisposable)?.Dispose();
 			};
 
-			
-
-			var page = CreatePage<TContentPage>();
-
-			await nav.PushAsync(page, false);
-
 			return nav;
 		}
 
@@ -70,7 +78,7 @@ namespace MyFormsLibrary.Navigation
 		/// <returns>TabbedPage</returns>
 		/// <param name="Children">NavigationPage List</param>
 		/// <typeparam name="TTabbedPage">TabbedPageの派生クラス</typeparam>
-		public Page CreateTabbedPage<TTabbedPage>(IEnumerable<NavigationPage> Children)
+		public TabbedPage CreateTabbedPage<TTabbedPage>(IEnumerable<NavigationPage> Children)
 			where TTabbedPage : TabbedPage
 		{
 			var parent = CreatePage<TTabbedPage>() as TabbedPage;
@@ -134,12 +142,9 @@ namespace MyFormsLibrary.Navigation
 			(object param = null, bool? useModalNavigation = default(bool?), bool animated = true)
 			where TContentPage : ContentPage
 		{
-			if (param != null)
-			{
-				var navigationParam = UnityContainer.Resolve<INavigationParameter>();
-				navigationParam.Value = param;
-			}
-
+			var navigationParam = UnityContainer.Resolve<INavigationParameter>();
+			navigationParam.Value = param;
+			
 			var curPage = GetCurrentNavigationPage();
 
 			var newPage = CreatePage<TContentPage>();
