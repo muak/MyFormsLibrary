@@ -1,6 +1,7 @@
 ﻿using System;
 using Prism.Mvvm;
 using Xamarin.Forms;
+using MyFormsLibrary.Navigation;
 namespace MyFormsLibrary.Tests.Mocks.Views
 {
     public class ContentPageNonViewNonAction:ContentPage
@@ -16,5 +17,18 @@ namespace MyFormsLibrary.Tests.Mocks.Views
             ViewModelLocator.SetAutowireViewModel(this, true);
         }
     }
+
+    public class AllActionPage : ContentPage
+    {
+        
+
+        public AllActionPage() {
+            ViewModelLocator.SetAutowireViewModel(this, true);
+        }
+
+
+    }
+
+
 }
 

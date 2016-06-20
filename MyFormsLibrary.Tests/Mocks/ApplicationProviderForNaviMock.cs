@@ -6,8 +6,10 @@ namespace MyFormsLibrary.Tests.Mocks
 {
     public class ApplicationProviderForNaviMock:IApplicationProviderForNavi
     {
+
+
         public ApplicationProviderForNaviMock() {
-            
+          
         }
 
         public Page MainPage { get; set; }

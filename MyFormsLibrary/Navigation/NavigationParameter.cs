@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace MyFormsLibrary.Navigation
 {
 	public class NavigationParameter:INavigationParameter

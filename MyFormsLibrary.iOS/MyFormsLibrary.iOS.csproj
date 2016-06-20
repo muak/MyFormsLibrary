@@ -66,11 +66,8 @@
     <Folder Include="CustomRenderers\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="CustomRenderers\CameraPreviewRenderer.cs" />
-    <Compile Include="CustomRenderers\OutputRecorder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\Pixie\packages\Xamarin.Forms.2.3.0.46-pre3\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\Pixie\packages\Xamarin.Forms.2.3.0.46-pre3\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

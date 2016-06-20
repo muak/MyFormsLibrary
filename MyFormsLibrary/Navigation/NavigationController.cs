@@ -3,40 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
-using Prism.Common;
 using Xamarin.Forms;
 
 namespace MyFormsLibrary.Navigation
 {
-	public class NavigationController : INavigationController
+    public class NavigationController : INavigationController
 	{
 
 		IUnityContainer UnityContainer;
 		IApplicationProviderForNavi ApplicationProvider;
 		NavigationPage PreviousTabPage;
 		Dictionary<NavigationPage, Page> LastNavigationCurrent;
-		Dictionary<NavigationPage, Type> NavigationRoot;
 		
-
-
 		public NavigationController(IUnityContainer container, IApplicationProviderForNavi applicationProvider)
 		{
 			UnityContainer = container;
 			ApplicationProvider = applicationProvider;
 			LastNavigationCurrent = new Dictionary<NavigationPage, Page>();
-			NavigationRoot = new Dictionary<NavigationPage, Type>();
-			
+						
             ApplicationProvider.ModalPopped = (sender, e) => {
                 var curPage = GetCurrentPage();
                 (curPage.BindingContext as INavigationAction)?.OnNavigatedBack();
                 (e.Modal.BindingContext as IDisposable)?.Dispose();
             };
-
-            //Application.Current.ModalPopped += (sender, e) => {
-            //    var curPage = GetCurrentPage();
-            //    (curPage.BindingContext as INavigationAction)?.OnNavigatedBack();
-            //    (e.Modal.BindingContext as IDisposable)?.Dispose();
-            //};
 
 		}
 
@@ -59,8 +48,6 @@ namespace MyFormsLibrary.Navigation
             if (nav.Navigation.NavigationStack.Count == 2) {
                 nav.Navigation.RemovePage(nav.Navigation.NavigationStack[0]);
             }
-
-			NavigationRoot[nav] = typeof(TContentPage);
 
 			nav.Popped += (sender, e) =>
 			{
@@ -114,32 +101,14 @@ namespace MyFormsLibrary.Navigation
 		}
 
 		/// <summary>
-		/// Tabの切り替え
-		/// </summary>
-		/// <returns></returns>
-		/// <typeparam name="TNavigationPage">移動先のNavigationPage</typeparam>
-		public void ChangeTab<TNavigationPage>()
-		{
-			var mainPage = GetMainPage() as TabbedPage;
-
-			var target = mainPage?.Children.Where((x) => x is TNavigationPage).FirstOrDefault() as NavigationPage;
-			if (target != null)
-			{
-				mainPage.CurrentPage = target;
-			}
-		}
-
-
-		/// <summary>
 		/// ページ遷移
 		/// </summary>
 		/// <returns></returns>
 		/// <param name="param">次のページに渡すパラメータ</param>
-		/// <param name="useModalNavigation">モーダルかどうか</param>
 		/// <param name="animated">アニメーション</param>
 		/// <typeparam name="TContentPage">遷移先ページ</typeparam>
-		public async Task NavigateAsync<TContentPage>
-			(object param = null, bool? useModalNavigation = default(bool?), bool animated = true)
+		public async Task PushAsync<TContentPage>
+			(object param = null,bool animated = true)
 			where TContentPage : ContentPage
 		{
 			var navigationParam = UnityContainer.Resolve<INavigationParameter>();
@@ -147,41 +116,80 @@ namespace MyFormsLibrary.Navigation
 			
 			var curPage = GetCurrentNavigationPage();
 
+            //モーダル中は何もしない
+            if (curPage.Navigation.ModalStack.Count > 0) {
+                return;
+            }
+
 			var newPage = CreatePage<TContentPage>();
 			(GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedFoward();
-			if (UseModalNavigation(useModalNavigation))
-			{
-				await curPage.Navigation.PushModalAsync(newPage, animated);
-			}
-			else
-			{
-				await curPage.Navigation.PushAsync(newPage, animated);
-			}
-
-
+			
+            await curPage.Navigation.PushAsync(newPage, animated);
+			
 		}
+
+        /// <summary>
+        /// ページ遷移（モーダル）
+        /// </summary>
+        /// <returns>The modal async.</returns>
+        /// <param name="param">Parameter.</param>
+        /// <param name="animated">Animated.</param>
+        /// <typeparam name="TContentPage">The 1st type parameter.</typeparam>
+        public async Task PushModalAsync<TContentPage>
+            (object param = null, bool animated = true)
+            where TContentPage : ContentPage {
+            var navigationParam = UnityContainer.Resolve<INavigationParameter>();
+            navigationParam.Value = param;
+
+            var curPage = GetCurrentNavigationPage();
+
+            var newPage = CreatePage<TContentPage>();
+            (GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedFoward();
+
+            await curPage.Navigation.PushModalAsync(newPage, animated);
+           
+        }
 
 		/// <summary>
 		/// ページ遷移
 		/// </summary>
 		/// <returns></returns>
 		/// <param name="param"></param>
-		/// <param name="useModalNavigation"></param>
 		/// <param name="animated"></param>
 		/// <typeparam name="TNavigationPage">移動先タブのNavigationPage</typeparam>
 		/// <typeparam name="TContentPage">移動先ページ</typeparam>
-		public async Task NavigateAsync<TNavigationPage, TContentPage>
-			(object param = null, bool? useModalNavigation = default(bool?), bool animated = true)
+		public async Task PushAsync<TNavigationPage, TContentPage>
+			(object param = null, bool animated = true)
 			where TNavigationPage : NavigationPage where TContentPage : ContentPage
 		{
-			ChangeTab<TNavigationPage>();
 
-			var curPage = GetCurrentPage();
-			if (!(curPage is TContentPage))
-			{
-				await NavigateAsync<TContentPage>(param, useModalNavigation, animated);
-			}
+            if (!ChangeTab<TNavigationPage>()) {
+                return;
+            }
+
+			await PushAsync<TContentPage>(param, animated);
 		}
+
+        /// <summary>
+        /// Tabの切り替え
+        /// </summary>
+        /// <returns></returns>
+        /// <typeparam name="TNavigationPage">移動先のNavigationPage</typeparam>
+        public bool ChangeTab<TNavigationPage>() {
+            var mainPage = GetMainPage() as TabbedPage;
+
+            if (mainPage.CurrentPage.GetType() == typeof(TNavigationPage)) {
+                return false;
+            }
+
+            var target = mainPage?.Children.FirstOrDefault((x) => x.GetType() == typeof(TNavigationPage)) as NavigationPage;
+            if (target != null) {
+                mainPage.CurrentPage = target;
+                return true;
+            }
+
+            return false;
+        }
 
 
 		/// <summary>
@@ -203,32 +211,7 @@ namespace MyFormsLibrary.Navigation
 			}
 		}
 
-		public async Task GoBackRootAsync(bool animated = true)
-		{
-			var mainPage = GetMainPage();
-
-			var stack = mainPage.Navigation.NavigationStack;
-			if (stack.Count > 2)
-			{
-				var removePages = stack.Skip(1).Take(stack.Count - 1);
-				foreach (var p in removePages)
-				{
-					(p as IDisposable)?.Dispose();
-					mainPage.Navigation.RemovePage(p);
-				}
-			}
-			await mainPage.Navigation.PopToRootAsync(animated);
-		}
-
-
-		bool UseModalNavigation(bool? useModalNavigationDefault)
-		{
-			if (useModalNavigationDefault.HasValue)
-				return useModalNavigationDefault.Value;
-			else
-				return false;
-		}
-
+		
 
 		Page GetMainPage()
 		{

@@ -77,6 +77,7 @@
     <Compile Include="Mocks\ApplicationProviderForNaviMock.cs" />
     <Compile Include="ChainingAssertion.NUnit.cs" />
     <Compile Include="Mocks\ViewModels\GetParamPageViewModel.cs" />
+    <Compile Include="Mocks\ViewModels\AllActionPageViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

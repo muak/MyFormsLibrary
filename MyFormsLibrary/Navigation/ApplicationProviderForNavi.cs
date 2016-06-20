@@ -1,5 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
+
 namespace MyFormsLibrary.Navigation
 {
     public class ApplicationProviderForNavi:IApplicationProviderForNavi
