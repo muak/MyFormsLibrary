@@ -2,9 +2,9 @@
 
 namespace MyFormsLibrary.Navigation
 {
-	public class NavigationParameter:INavigationParameter
-	{
-		public object Value { get; set; }
-	}
+    public class NavigationParameter : INavigationParameter
+    {
+        public object Value { get; set; }
+    }
 }
 

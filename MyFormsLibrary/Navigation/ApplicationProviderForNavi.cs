@@ -3,7 +3,7 @@ using Xamarin.Forms;
 
 namespace MyFormsLibrary.Navigation
 {
-    public class ApplicationProviderForNavi:IApplicationProviderForNavi
+    public class ApplicationProviderForNavi : IApplicationProviderForNavi
     {
         public ApplicationProviderForNavi() {
             Application.Current.ModalPopped += (sender, e) => {

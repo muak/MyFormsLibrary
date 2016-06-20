@@ -4,7 +4,7 @@ using Xamarin.Forms;
 using MyFormsLibrary.Navigation;
 namespace MyFormsLibrary.Tests.Mocks.ViewModels
 {
-    public class AllActionPageViewModel:BindableBase,INavigationParameter,INavigationAction,ITabAction,IDisposable
+    public class AllActionPageViewModel : BindableBase, INavigationParameter, INavigationAction, ITabAction, IDisposable
     {
         public bool DoneDispose { get; set; } = false;
         public bool DoneBack { get; set; } = false;

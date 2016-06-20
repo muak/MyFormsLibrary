@@ -20,35 +20,35 @@ namespace MyFormsLibrary.Tests.Navigations
         IApplicationProviderForNavi IApplicationProvider;
 
         public NavigationControllerFixture() {
-            
-            Container = new UnityContainer();
-           
 
-            Container.RegisterType<IApplicationProviderForNavi, ApplicationProviderForNaviMock>(null,new ContainerControlledLifetimeManager());
+            Container = new UnityContainer();
+
+
+            Container.RegisterType<IApplicationProviderForNavi, ApplicationProviderForNaviMock>(null, new ContainerControlledLifetimeManager());
             Container.RegisterType<INavigationController, NavigationController>(null, new ContainerControlledLifetimeManager());
             Container.RegisterType<INavigationParameter, NavigationParameter>(null, new ContainerControlledLifetimeManager());
-           
+
             IApplicationProvider = Container.Resolve<IApplicationProviderForNavi>();
             ViewModelLocationProvider.SetDefaultViewModelFactory((type) => Container.Resolve(type));    //超重要
         }
 
-        static TestCaseData[] Src_CreateNavigationPage_Exec = new[]{ new TestCaseData(new NavigationAlpha(),new ContentPageNonViewNonAction())};
+        static TestCaseData[] Src_CreateNavigationPage_Exec = new[] { new TestCaseData(new NavigationAlpha(), new ContentPageNonViewNonAction()) };
 
         [TestCaseSource("Src_CreateNavigationPage_Exec")]
-        public async Task CreateNavigationPage_Exec<T1,T2>(T1 value1,T2 value2) where T1:NavigationPage where T2:ContentPage{
+        public async Task CreateNavigationPage_Exec<T1, T2>(T1 value1, T2 value2) where T1 : NavigationPage where T2 : ContentPage {
             var nav = new NavigationController(Container, IApplicationProvider);
 
-            var page = await nav.CreateNavigationPage<T1,T2>();
+            var page = await nav.CreateNavigationPage<T1, T2>();
 
             page.GetType().Is(typeof(T1));
             page.CurrentPage.GetType().Is(typeof(T2));
             page.Navigation.NavigationStack.Count.Is(1);
         }
 
-        static TestCaseData[] Src_CreateTabbedPage_Exec = new[] { new TestCaseData(new MainTabbedPage()),new TestCaseData(new TabbedPage()) };
+        static TestCaseData[] Src_CreateTabbedPage_Exec = new[] { new TestCaseData(new MainTabbedPage()), new TestCaseData(new TabbedPage()) };
 
         [TestCaseSource("Src_CreateTabbedPage_Exec")]
-        public async Task CreateTabbedPage_Exec<T1>(T1 value) where T1:TabbedPage{
+        public async Task CreateTabbedPage_Exec<T1>(T1 value) where T1 : TabbedPage {
             var nav = new NavigationController(Container, IApplicationProvider);
             var list = new List<NavigationPage> {
                 await nav.CreateNavigationPage<NavigationPage,ContentPage>(),
@@ -76,12 +76,12 @@ namespace MyFormsLibrary.Tests.Navigations
         }
 
 
-        static TestCaseData[] Src_Navigate_Base_SendParam = new[] { new TestCaseData(1),new TestCaseData("abc"),new TestCaseData(new ContentPage { Title = "xyz" }),new TestCaseData(null) };
+        static TestCaseData[] Src_Navigate_Base_SendParam = new[] { new TestCaseData(1), new TestCaseData("abc"), new TestCaseData(new ContentPage { Title = "xyz" }), new TestCaseData(null) };
 
         [TestCaseSource("Src_Navigate_Base_SendParam")]
-        public async Task Navigate_Base_SendParam(object param){
+        public async Task Navigate_Base_SendParam(object param) {
             var nav = new NavigationController(Container, IApplicationProvider);
-            var page = await nav.CreateNavigationPage<NavigationPage,ContentPage>();
+            var page = await nav.CreateNavigationPage<NavigationPage, ContentPage>();
             IApplicationProvider.MainPage = page;
             var prePage = page.CurrentPage;
             page.Navigation.NavigationStack.Count.Is(1);
@@ -112,7 +112,7 @@ namespace MyFormsLibrary.Tests.Navigations
             await nav.PushAsync<AllActionPage>(param);
 
             (prePage.BindingContext as AllActionPageViewModel).DoneFoward.IsTrue();
-                       
+
             page.Navigation.NavigationStack[0].IsSameReferenceAs(prePage);
             page.Navigation.ModalStack.Count.Is(0);
 
@@ -121,7 +121,7 @@ namespace MyFormsLibrary.Tests.Navigations
             var poppedPage = page.CurrentPage;
             (poppedPage.BindingContext as AllActionPageViewModel).DoneDispose.IsFalse();
             (prePage.BindingContext as AllActionPageViewModel).DoneBack.IsFalse();
-          
+
             await nav.GoBackAsync();
 
             (poppedPage.BindingContext as AllActionPageViewModel).DoneDispose.IsTrue();
@@ -168,7 +168,7 @@ namespace MyFormsLibrary.Tests.Navigations
             var tab1 = list[0].CurrentPage.BindingContext as AllActionPageViewModel;
             var tab2 = list[1].CurrentPage.BindingContext as AllActionPageViewModel;
 
-            await nav.PushAsync<NavigationBeta,AllActionPage>();
+            await nav.PushAsync<NavigationBeta, AllActionPage>();
 
             tab1.DoneTabFrom.IsTrue();
             tab2.DoneTabTo.IsTrue();
@@ -208,9 +208,9 @@ namespace MyFormsLibrary.Tests.Navigations
 
             (curPage.BindingContext as INavigationParameter).Value.Is(param);
 
-         
+
             await nav.GoBackAsync();
-            IApplicationProvider.ModalPopped.Invoke(page,new ModalPoppedEventArgs(curPage)); // raise ModalPopped Manual
+            IApplicationProvider.ModalPopped.Invoke(page, new ModalPoppedEventArgs(curPage)); // raise ModalPopped Manual
 
             page.CurrentPage.GetType().Is(typeof(ContentPage));
             page.Navigation.NavigationStack.Count.Is(1);
@@ -259,7 +259,7 @@ namespace MyFormsLibrary.Tests.Navigations
             var page = await nav.CreateNavigationPage<NavigationPage, AllActionPage>();
             IApplicationProvider.MainPage = page;
             var curPage = page.CurrentPage.BindingContext as AllActionPageViewModel;
-           
+
             await nav.PushModalAsync<AllActionPage>();
 
             curPage.DoneFoward.Is(true);
@@ -279,7 +279,7 @@ namespace MyFormsLibrary.Tests.Navigations
         }
 
         [Test]
-        public async Task TabChange(){
+        public async Task TabChange() {
             var nav = new NavigationController(Container, IApplicationProvider);
             var list = new List<NavigationPage> {
                 await nav.CreateNavigationPage<NavigationAlpha,AllActionPage>(),
