@@ -74,11 +74,11 @@
     <Reference Include="Prism.Unity.Forms">
       <HintPath>..\..\Pixie\packages\Prism.Unity.Forms.6.2.0-pre6\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Prism.Unity.Forms.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetCross.Memory.Unsafe">
-      <HintPath>..\..\Pixie\packages\DotNetCross.Memory.Unsafe.0.2.2\lib\portable-net40+win8+sl4+wp7\DotNetCross.Memory.Unsafe.dll</HintPath>
-    </Reference>
     <Reference Include="Realm">
       <HintPath>..\..\Pixie\packages\Realm.0.76.1\lib\portable-net45+sl5+wp8+wpa81+win8+monoandroid+Xamarin.iOS10+monotouch+Xamarin.Mac\Realm.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetCross.Memory.Unsafe">
+      <HintPath>..\..\Pixie\packages\DotNetCross.Memory.Unsafe.0.2.2\lib\portable-net40+win8+sl4+wp7\DotNetCross.Memory.Unsafe.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

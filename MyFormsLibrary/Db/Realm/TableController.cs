@@ -4,9 +4,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Realms;
+using System.Collections.Specialized;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Dynamic;
 
 namespace MyFormsLibrary.Db.Realm
 {
+	
 	public class TableController<T> 
 		where T : RealmObject, IAutoIncrement, new()
 	{
@@ -27,7 +33,6 @@ namespace MyFormsLibrary.Db.Realm
 		static ActionCache<T> SetProperty;
 		class ActionCache<TDummy>:Dictionary<string, Action<TDummy, TDummy>>{}
 
-
 		private Realms.Realm Db;
 
 		public TableController(Realms.Realm db = null) {
@@ -42,23 +47,18 @@ namespace MyFormsLibrary.Db.Realm
 			}
 		}
 
-
-
-		public RealmResults<T> All() {
+		public RealmResults<T> Get() {
 			return Db.All<T>();
 		}
 
 		public int Insert(T record) {
-
 			Db.Write(() => {
 				var newRec = Db.CreateObject<T>();
 
 				CopyAll(newRec,record);
 				newRec.Id = Id.Next();
 			});
-
 			return Id.Current;
-
 		}
 
 		public int Insert(IEnumerable<T> records) {
@@ -73,7 +73,6 @@ namespace MyFormsLibrary.Db.Realm
 			});
 
 			return Id.Current;
-
 		}
 
         public int DeleteAt(int id) {
@@ -88,7 +87,6 @@ namespace MyFormsLibrary.Db.Realm
             });
 
             return delcnt;
-
         }
 
 		public int Delete(Expression<Func<T, bool>> where) {
@@ -99,22 +97,20 @@ namespace MyFormsLibrary.Db.Realm
 			Db.Write(() => {
 				delcnt = recs.Count();
 				Db.RemoveRange<T>(recs as RealmResults<T>);
-
 			});
 
 			return delcnt;
-
 		}
 
 		public int DeleteAll() {
 
 			int delcnt = Db.All<T>().Count();
+
 			Db.Write(() => {
 				Db.RemoveAll<T>();
 			});
 
 			return delcnt;
-
 		}
 
 		public int UpdateAt(int id, T newValue) {
@@ -129,7 +125,6 @@ namespace MyFormsLibrary.Db.Realm
 			});
 
 			return updcnt;
-
 		}
 
 		public int UpdateAt(int id, T newValue,Expression<Func<T,object>> select) {
@@ -146,6 +141,7 @@ namespace MyFormsLibrary.Db.Realm
 			Db.Write(() => {
 				CopyRenge(rec,newValue,names);
 				updcnt++;
+
 			});
 
 			return updcnt;
@@ -174,13 +170,14 @@ namespace MyFormsLibrary.Db.Realm
 			if (names == null)
 				return updcnt;
 
-			var recs = Db.All<T>().Where(where);
+			var recs = Db.All<T>().Where(where).ToList();
 
 			Db.Write(() => {
 				foreach (var r in recs) {
 					CopyRenge(r,newValue,names);
 					updcnt++;
 				}
+
 			});
 
 			return updcnt;
@@ -249,6 +246,63 @@ namespace MyFormsLibrary.Db.Realm
 			return list;
 		}
 
+	}
+
+	public static class RealmExtensions
+	{
+
+		public static ObservableTable<T> ToObservableTable<T>(this IOrderedQueryable<T> realm)
+			where T : RealmObject 
+		{
+			return Create<T>(realm);
+		}
+		public static ObservableTable<T> ToObservableTable<T>(this IQueryable<T> realm)
+			where T : RealmObject 
+		{
+			return Create<T>(realm);
+		}
+		public static ObservableTable<T> ToObservableTable<T>(this RealmResults<T> realm)
+			where T : RealmObject 
+		{
+			return Create<T>(realm);
+		}
+
+		private static ObservableTable<T> Create<T>(object realm) where T : RealmObject 
+		{
+			return new ObservableTable<T>(realm as RealmResults<T>);
+		}
+	}
+
+	public class ObservableTable<T> : ObservableCollection<T>, IDisposable
+		where T : RealmObject
+	{
+		IDisposable sub;
+
+		public ObservableTable(RealmResults<T> realm) : base(realm) {
+            
+			sub = realm.SubscribeForNotifications((sender, changes, error) => {
+
+				if (changes != null) {
+					var ret = sender.ToList();
+					foreach (var ins in changes.InsertedIndices) {
+						InsertItem(ins, ret[ins]);
+					}
+                    foreach (var del in changes.DeletedIndices.Reverse()) {
+                        if (this.Count <= del){
+                            continue;
+                        }
+						RemoveAt(del);
+					}
+					foreach (var mod in changes.ModifiedIndices) {
+						SetItem(mod, ret[mod]);
+					}
+				}
+			});
+		}
+
+		public void Dispose() {
+			sub.Dispose();
+		}
 	}
 }
 

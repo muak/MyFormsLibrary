@@ -12,13 +12,6 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
     [TestFixture]
     public class RealmTest
     {
-        public RealmTest() {
-            //Realms.Realm.DeleteRealm(new RealmConfiguration());
-            db = Realms.Realm.GetInstance();
-            tbl = new TableController<Person>(db);
-            init();
-        }
-
         private void init() {
             var p = new List<Person>{
                 new Person{Name = "Delete", Age = 20, Blood = "A" },
@@ -32,104 +25,125 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
             };
             tbl.Insert(p);
             tbl.Delete(zz => zz.Name == "UpdatedMulti");
-            tbl.Delete(zz=>zz.Name == "UpdateMulti");
+            tbl.Delete(zz => zz.Name == "UpdateMulti");
+
+            //ObservableCollectionの同期確認はここでは行わない
+            obsv = tbl.Get().Where(x => !x.Name.Contains("Exclusion")).OrderByDescending(x => x.Id).ToObservableTable();
+
+        }
+
+        [SetUp]
+        public void SetUp() {
+
+            db = Realms.Realm.GetInstance();
+            tbl = new TableController<Person>(db);
+            init();
+
+        }
+        [TearDown]
+        public void TearDown() {
+
         }
 
         private Realms.Realm db;
         private TableController<Person> tbl;
+        public ObservableTable<Person> obsv { get; set; }
 
-        [Test]
-        public void InsertOne() {
-            var precnt = tbl.All().Count();
-            var p = new Person { Name = "tarou", Age = 20, Blood = "A" };
+
+        [TestCase("tarou")]
+        [TestCase("Exclusion")]
+        public void InsertOne(string name) {
+            var precnt = tbl.Get().Count();
+            var p = new Person { Name = name, Age = 20, Blood = "A" };
 
             var nextid = tbl.Insert(p);
-            var cnt = tbl.All().Count();
+            var cnt = tbl.Get().Count();
 
-            var newP = tbl.All().First(x => x.Id == nextid);
-
+            var newP = tbl.Get().First(x => x.Id == nextid);
 
             (cnt - precnt).Is(1);
-            IsPropertyOK(newP,p,nextid);
+            IsPropertyOK(newP, p, nextid);
+
         }
 
-        [Test]
-        public void InsertMulti() {
-            var precnt = tbl.All().Count();
-            var p = new List<Person>{ 
-                new Person{Name = "Test1", Age = 20, Blood = "A" },
-                new Person{Name = "Test2", Age = 21, Blood = "B" },
-                new Person{Name = "Test3", Age = 22, Blood = "AB" },
-                new Person{Name = "Test4", Age = 20, Blood = "O"}
+
+        [TestCase("test")]
+        [TestCase("Exclusion")]
+        public void InsertMulti(string name) {
+            var precnt = tbl.Get().Count();
+            var p = new List<Person>{
+                new Person{Name = name+"1", Age = 20, Blood = "A" },
+                new Person{Name = name+"2", Age = 21, Blood = "B" },
+                new Person{Name = name+"3", Age = 22, Blood = "AB" },
+                new Person{Name = name+"4", Age = 20, Blood = "O"}
             };
 
-            var id = tbl.Insert(p)-(p.Count-1);
-            var cnt = tbl.All().Count();
+            var id = tbl.Insert(p) - (p.Count - 1);
+            var cnt = tbl.Get().Count();
 
 
-            var newP = tbl.All().Where(x => x.Id >= id);
+            var newP = tbl.Get().Where(x => x.Id >= id);
 
             (cnt - precnt).Is(p.Count);
-            IsPropertyOKAll(newP.ToArray(),p.ToArray(),id);
+            IsPropertyOKAll(newP.ToArray(), p.ToArray(), id);
         }
 
         [Test]
         public void Z_DeleteOne() {
-            var precnt = tbl.All().Count();
+            var precnt = tbl.Get().Count();
             var targetId = PickRandom().Id;
             var delcnt = tbl.Delete(x => x.Id == targetId);
-            var cnt = tbl.All().Count();
+            var cnt = tbl.Get().Count();
 
             (cnt - precnt).Is(-1);
             delcnt.Is(1);
 
-            tbl.All().Any(x => x.Id == targetId).IsFalse();
+            tbl.Get().Any(x => x.Id == targetId).IsFalse();
 
             init();
         }
 
         [Test]
         public void Z_DeleteMulti() {
-            var precnt = tbl.All().Count(zz=>zz.Name=="Delete");
+            var precnt = tbl.Get().Count(zz => zz.Name == "Delete");
 
             var delcnt = tbl.Delete(x => x.Name == "Delete");
-            var cnt = tbl.All().Count(zz => zz.Name == "Delete");
+            var cnt = tbl.Get().Count(zz => zz.Name == "Delete");
 
             (precnt - cnt).Is(delcnt);
             delcnt.Is(precnt);
 
-            tbl.All().Any(zz => zz.Name == "Delete").IsFalse();
+            tbl.Get().Any(zz => zz.Name == "Delete").IsFalse();
 
             init();
         }
 
         [Test]
         public void Z_DeleteAt() {
-            var precnt = tbl.All().Count();
+            var precnt = tbl.Get().Count();
             var targetId = PickRandom().Id;
             var delcnt = tbl.DeleteAt(targetId);
-            var cnt = tbl.All().Count();
+            var cnt = tbl.Get().Count();
 
             (cnt - precnt).Is(-1);
             delcnt.Is(1);
 
-            tbl.All().Any(x => x.Id == targetId).IsFalse();
+            tbl.Get().Any(x => x.Id == targetId).IsFalse();
 
             init();
         }
 
         [Test]
-        public void Z_DeleteAll() {
-            var precnt = tbl.All().Count();
+        public void ZZ_DeleteAll() {
+            var precnt = tbl.Get().Count();
             var delcnt = tbl.DeleteAll();
-            var cnt = tbl.All().Count();
+            var cnt = tbl.Get().Count();
 
             precnt.Is(delcnt);
             cnt.Is(0);
 
             init();
         }
-
 
         [Test]
         public void UpdateAt() {
@@ -141,12 +155,12 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
                 Id = 999
             };
 
-            var cnt = tbl.UpdateAt(targetId,newP);
+            var cnt = tbl.UpdateAt(targetId, newP);
 
-            var p = tbl.All().First(x => x.Id == targetId);
+            var p = tbl.Get().First(x => x.Id == targetId);
 
             cnt.Is(1);
-            UpdateOK(p,newP);
+            UpdateOK(p, newP);
 
             tbl.DeleteAt(targetId);
         }
@@ -161,9 +175,9 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
                 Id = 999
             };
 
-            var cnt = tbl.UpdateAt(targetId, newP, xx => new { xx.Name,xx.Age});
+            var cnt = tbl.UpdateAt(targetId, newP, xx => new { xx.Name, xx.Age });
 
-            var p = tbl.All().First(x => x.Id == targetId);
+            var p = tbl.Get().First(x => x.Id == targetId);
 
             cnt.Is(1);
             p.Id.IsNot(newP.Id);
@@ -186,7 +200,7 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
 
             var cnt = tbl.UpdateAt(targetId, newP, xx => xx.Name);
 
-            var p = tbl.All().First(x => x.Id == targetId);
+            var p = tbl.Get().First(x => x.Id == targetId);
 
             cnt.Is(1);
             p.Id.IsNot(newP.Id);
@@ -200,15 +214,15 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
 
         static IEnumerable<TestCaseData> SrcSelect {
             get {
-                yield return new TestCaseData(MakeSelect(xx=>xx.Age ==99));
-                yield return new TestCaseData(MakeSelect(xx =>xx.Id+1));
-                yield return new TestCaseData(MakeSelect(xx =>xx.Name.Select(x=>true)));
+                yield return new TestCaseData(MakeSelect(xx => xx.Age == 99));
+                yield return new TestCaseData(MakeSelect(xx => xx.Id + 1));
+                yield return new TestCaseData(MakeSelect(xx => xx.Name.Select(x => true)));
                 yield return new TestCaseData(MakeSelect(xx => new { Hoge = 1, Fuga = "ABC" }));
             }
         }
 
         [TestCaseSource("SrcSelect")]
-        public void UpdateAtFilterInvalid(Expression<Func<Person,object>> select) {
+        public void UpdateAtFilterInvalid(Expression<Func<Person, object>> select) {
             var targetId = PickRandom().Id;
             var newP = new Person {
                 Name = "Updated",
@@ -219,7 +233,7 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
 
             var cnt = tbl.UpdateAt(targetId, newP, select);
 
-            var p = tbl.All().First(x => x.Id == targetId);
+            var p = tbl.Get().First(x => x.Id == targetId);
 
             cnt.Is(0);
             p.Id.IsNot(newP.Id);
@@ -240,9 +254,9 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
                 Id = 999
             };
 
-            var cnt = tbl.Update(newP,zz=>zz.Id==targetId);
+            var cnt = tbl.Update(newP, zz => zz.Id == targetId);
 
-            var p = tbl.All().First(x => x.Id == targetId);
+            var p = tbl.Get().First(x => x.Id == targetId);
 
             cnt.Is(1);
             UpdateOK(p, newP);
@@ -269,7 +283,7 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
 
             var cnt = tbl.Update(newP, zz => zz.Name == "UpdateMulti");
 
-            var p = tbl.All().Where(x => x.Name == "UpdatedMulti");
+            var p = tbl.Get().Where(x => x.Name == "UpdatedMulti");
 
             cnt.Is(3);
             UpdateOKAll(p.ToArray(), newP);
@@ -281,11 +295,11 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
         static IEnumerable<TestCaseData> SrcUpdateFilter {
             get {
                 yield return new TestCaseData(MakeSelect(xx => xx.Name));
-                yield return new TestCaseData(MakeSelect(xx => new { xx.Name}));
+                yield return new TestCaseData(MakeSelect(xx => new { xx.Name }));
             }
         }
         [TestCaseSource("SrcUpdateFilter")]
-        public void UpdateFilter(Expression<Func<Person,object>> select) {
+        public void UpdateFilter(Expression<Func<Person, object>> select) {
             var targetId = PickRandom().Id;
             var newP = new Person {
                 Name = "Updated",
@@ -294,9 +308,9 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
                 Id = 999
             };
 
-            var cnt = tbl.Update(newP,xx=>xx.Id==targetId,select);
+            var cnt = tbl.Update(newP, xx => xx.Id == targetId, select);
 
-            var p = tbl.All().First(x => x.Id == targetId);
+            var p = tbl.Get().First(x => x.Id == targetId);
 
             cnt.Is(1);
             p.Id.IsNot(newP.Id);
@@ -326,9 +340,9 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
                 Id = 999
             };
 
-            var cnt = tbl.Update(newP,zz=>zz.Id==targetId,  select);
+            var cnt = tbl.Update(newP, zz => zz.Id == targetId, select);
 
-            var p = tbl.All().First(x => x.Id == targetId);
+            var p = tbl.Get().First(x => x.Id == targetId);
 
             cnt.Is(0);
             p.Id.IsNot(newP.Id);
@@ -338,6 +352,7 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
 
             tbl.DeleteAt(targetId);
         }
+
 
         static Expression<Func<Person, object>> MakeSelect(Expression<Func<Person, object>> select) {
             return select;
@@ -359,7 +374,7 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
             }
         }
 
-        private void IsPropertyOK(Person a, Person b,int id) {
+        private void IsPropertyOK(Person a, Person b, int id) {
             a.Id.Is(id);
             a.Name.Is(b.Name);
             a.Age.Is(b.Age);
@@ -376,9 +391,9 @@ namespace MyFormsLibrary.Droid.Tests.Db.Realm
         }
 
         private Person PickRandom() {
-            var recs = tbl.All().ToArray();
+            var recs = tbl.Get().ToArray();
             Random r = new Random();
-            var idx = r.Next(0, recs.Count()-1);
+            var idx = r.Next(0, recs.Count() - 1);
             return recs[idx];
 
         }
