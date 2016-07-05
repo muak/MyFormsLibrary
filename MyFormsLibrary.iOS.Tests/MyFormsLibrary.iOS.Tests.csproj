@@ -113,6 +113,7 @@
     <Compile Include="ChainingAssertion.NUnit.cs" />
     <Compile Include="Db\Realm\RealmTest.cs" />
     <Compile Include="Db\Realm\Tables.cs" />
+    <Compile Include="Db\Realm\Work.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Db\" />

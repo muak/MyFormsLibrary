@@ -14,6 +14,14 @@ namespace MyFormsLibrary.iOS.Tests.Db.Realm
         public event PropertyChangedEventHandler PropertyChanged;
     }
 
+    public class Cat : RealmObject, IAutoIncrement, INotifyPropertyChanged
+    {
+        [ObjectId]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public Person Owner { get; set; }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
 }
 
