@@ -21,17 +21,19 @@ namespace MyFormsLibrary.iOS.DependencyServices
 		/// <summary>ローディングを開始する</summary>
 		/// <param name="message"></param>
 		public void Show(string message) {
-			window = UIApplication.SharedApplication.KeyWindow;
-			var vc = window.RootViewController;
-			window.SetNeedsDisplay();
-			while (vc.PresentedViewController != null) {
-				vc = vc.PresentedViewController;
-			}
+			Device.BeginInvokeOnMainThread(() => {
+				window = UIApplication.SharedApplication.KeyWindow;
+				var vc = window.RootViewController;
+				window.SetNeedsDisplay();
+				while (vc.PresentedViewController != null) {
+					vc = vc.PresentedViewController;
+				}
 
-			var bounds = UIScreen.MainScreen.Bounds;
-			loadpop = new LoadingOverlay(bounds, message);
-			vc.Add(loadpop);
-			ishow = true;
+				var bounds = UIScreen.MainScreen.Bounds;
+				loadpop = new LoadingOverlay(bounds, message);
+				vc.Add(loadpop);
+				ishow = true;
+			});
 		}
 
 		/// <summary>ローディングを終了する</summary>
