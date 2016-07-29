@@ -17,26 +17,32 @@ namespace MyFormsLibrary.Droid.DependencyServices
 		/// <summary>ローディングを開始する</summary>
 		/// <param name="message"></param>
 		public void Show(string message) {
-			progress = new ProgressDialog(Forms.Context);
-			progress.Indeterminate = true;
-			progress.SetProgressStyle(ProgressDialogStyle.Spinner);
-			progress.SetCancelable(false);
-			progress.SetMessage(message);
-			progress.Show();
-			ishow = true;
+			Device.BeginInvokeOnMainThread(() => {
+				progress = new ProgressDialog(Forms.Context);
+				progress.Indeterminate = true;
+				progress.SetProgressStyle(ProgressDialogStyle.Spinner);
+				progress.SetCancelable(false);
+				progress.SetMessage(message);
+				progress.Show();
+				ishow = true;
+			});
 		}
 
 		/// <summary>ローディングを終了する</summary>
 		public void Hide() {
-			progress?.Dismiss();
-			ishow = false;
+			Device.BeginInvokeOnMainThread(() => {
+				progress?.Dismiss();
+				ishow = false;
+			});
 		}
 
 		/// <summary>状態</summary>
 		public bool IsShow => ishow;
 
 		public void SetMessage(string message) {
-			progress.SetMessage(message);
+			Device.BeginInvokeOnMainThread(() => {
+				progress.SetMessage(message);
+			});
 		}
 
 		private bool ishow = false;

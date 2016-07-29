@@ -3,13 +3,13 @@ using System.Windows.Input;
 using Xamarin.Forms;
 namespace MyFormsLibrary.CustomViews
 {
-	public class CommandView:StackLayout
+	public class CommandStack:StackLayout
 	{
 		public static readonly BindableProperty CommandParameterProperty =
 			BindableProperty.Create(
 				propertyName: nameof(CommandParameter),
 				returnType:typeof(object),
-				declaringType:typeof(CommandView),
+				declaringType:typeof(CommandStack),
 				defaultValue: default(object),
 				defaultBindingMode: BindingMode.OneWay
 			);
@@ -27,7 +27,7 @@ namespace MyFormsLibrary.CustomViews
 			BindableProperty.Create(
 				propertyName:nameof(Command),
 				returnType:typeof(ICommand),
-				declaringType:typeof(CommandView),
+				declaringType:typeof(CommandStack),
 				defaultValue:default(Command),
 				defaultBindingMode:BindingMode.OneWay
 			);
@@ -41,7 +41,7 @@ namespace MyFormsLibrary.CustomViews
 			}
 		}
 
-		public CommandView() {
+		public CommandStack() {
 			var tgr = new TapGestureRecognizer();
 			tgr.Tapped += (s, e) => OnTapped();
 			this.GestureRecognizers.Add(tgr);

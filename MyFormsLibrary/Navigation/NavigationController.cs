@@ -95,33 +95,32 @@ namespace MyFormsLibrary.Navigation
             return parent;
         }
 
-        /// <summary>
-        /// ページ遷移
-        /// </summary>
-        /// <returns></returns>
-        /// <param name="param">次のページに渡すパラメータ</param>
-        /// <param name="animated">アニメーション</param>
-        /// <typeparam name="TContentPage">遷移先ページ</typeparam>
-        public async Task PushAsync<TContentPage>
-            (object param = null, bool animated = true)
-            where TContentPage : ContentPage {
-            var navigationParam = UnityContainer.Resolve<INavigationParameter>();
-            navigationParam.Value = param;
+		/// <summary>
+		/// ページ遷移
+		/// </summary>
+		/// <returns></returns>
+		/// <param name="param">次のページに渡すパラメータ</param>
+		/// <param name="animated">アニメーション</param>
+		/// <typeparam name="TContentPage">遷移先ページ</typeparam>
+		public async Task PushAsync<TContentPage>
+			(object param = null, bool animated = true)
+			where TContentPage : ContentPage {
+			var navigationParam = UnityContainer.Resolve<INavigationParameter>();
+			navigationParam.Value = param;
 
-            var curPage = GetCurrentNavigationPage();
+			var curPage = GetCurrentNavigationPage();
 
-            //モーダル中は何もしない
-            if (curPage.Navigation.ModalStack.Count > 0) {
-                return;
-            }
+			//モーダル中は何もしない
+			if (curPage.Navigation.ModalStack.Count > 0) {
+				return;
+			}
 
-            var newPage = CreatePage<TContentPage>();
-            (GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedFoward();
+			var newPage = CreatePage<TContentPage>();
+			(GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedFoward();
 
-            await curPage.Navigation.PushAsync(newPage, animated);
-
-        }
-
+			await curPage.Navigation.PushAsync(newPage, animated);
+			(newPage.BindingContext as INavigationWork)?.OnNavigatedTo(navigationParam);
+		}
         /// <summary>
         /// ページ遷移（モーダル）
         /// </summary>
@@ -140,7 +139,9 @@ namespace MyFormsLibrary.Navigation
             var newPage = CreatePage<TContentPage>();
             (GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedFoward();
 
+
             await curPage.Navigation.PushModalAsync(newPage, animated);
+			(newPage.BindingContext as INavigationWork)?.OnNavigatedTo(navigationParam);
 
         }
 

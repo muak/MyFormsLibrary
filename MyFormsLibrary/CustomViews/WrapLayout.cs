@@ -133,13 +133,15 @@ namespace MyFormsLibrary.CustomViews
 
 			foreach (var item in Children) {
 				var size = item.Measure(widthConstraint, heightConstraint);
-				height = Math.Max(height, size.Request.Height);
+				var tmpHeight = IsSquare && UniformColumns > 0 ? item.Height : size.Request.Height;
+				var tmpWidth = UniformColumns > 0 ? item.Width : size.Request.Width;
+				height = Math.Max(height, tmpHeight);
 
-				var newWidth = width + size.Request.Width + Spacing;
+				var newWidth = width + tmpWidth + Spacing;
 				if (newWidth > widthConstraint) {
 					rowCount++;
 					widthUsed = Math.Max(width, widthUsed);
-					width = size.Request.Width;
+					width = tmpWidth;
 				}
 				else
 					width = newWidth;
@@ -201,9 +203,12 @@ namespace MyFormsLibrary.CustomViews
 					double childHeight = request.Request.Height;
 
 					var divOver = 0;
+					var divOverAlt = 0;
 					if (UniformColumns != default(int)) {
 						var exceptWidth = (int)width - (UniformColumns - 1) * Spacing;
 						divOver = (int)exceptWidth  % UniformColumns;
+						divOverAlt = divOver / 2;
+						divOver = divOver % 2 + divOverAlt;
 						var columsSize = (int)exceptWidth / UniformColumns;
 						if (columsSize < 1) {
 							columsSize = 1;
@@ -218,6 +223,9 @@ namespace MyFormsLibrary.CustomViews
 
 						if (Math.Abs(xPos - x) <= double.Epsilon) {
 							childWidth += divOver;
+						}
+						if (xPos + childWidth + Spacing > width) {
+							childWidth += divOverAlt;
 						}
 						child.WidthRequest = childWidth;
 					}
