@@ -281,7 +281,7 @@ namespace MyFormsLibrary.Db.Realm
 		public ObservableTable(RealmResults<T> realm) : base(realm) {
             
 			sub = realm.SubscribeForNotifications((sender, changes, error) => {
-
+				
 				if (changes != null) {
 					var ret = sender.ToList();
 					foreach (var ins in changes.InsertedIndices) {
