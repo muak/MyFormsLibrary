@@ -42,20 +42,15 @@ namespace MyFormsLibrary.CustomViews
 		}
 
 		public CommandAbsolute() {
-			//var tgr = new TapGestureRecognizer();
-			//tgr.Tapped += (s, e) => OnTapped();
-			//this.GestureRecognizers.Add(tgr);
+			var tgr = new TapGestureRecognizer();
+			tgr.Tapped += (s, e) => OnTapped();
+			this.GestureRecognizers.Add(tgr);
 		}
 
 		protected void OnTapped() {
 			if (this.Command != null) {
 				this.Command.Execute(this.CommandParameter ?? this);
 			}
-			if (this.Parent is ViewCell) {
-				var cell = this.Parent as IListViewController;
-				//cell.NotifyRowTapped();
-			}
-
 		}
 	}
 }

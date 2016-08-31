@@ -52,6 +52,7 @@ namespace MyFormsLibrary.CustomViews
 				this.Command.Execute(this.CommandParameter ?? this);
 			}
 		}
+
 	}
 }
 
