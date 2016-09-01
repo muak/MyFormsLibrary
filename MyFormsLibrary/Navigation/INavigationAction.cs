@@ -6,6 +6,7 @@ namespace MyFormsLibrary.Navigation
     {
         void OnNavigatedBack();
         void OnNavigatedFoward();
+		void OnNavigatedTo(INavigationParameter param);
     }
 }
 

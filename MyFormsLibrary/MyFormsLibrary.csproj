@@ -46,7 +46,6 @@
     <Compile Include="CustomViews\WrapLayout.cs" />
     <Compile Include="CustomViews\RepeaterWrapLayout.cs" />
     <Compile Include="CustomViews\CommandStack.cs" />
-    <Compile Include="Navigation\INavigationWork.cs" />
     <Compile Include="CustomViews\CommandGrid.cs" />
     <Compile Include="CustomViews\CommandAbsolute.cs" />
     <Compile Include="Db\SQLite\ISQLiteService.cs" />
