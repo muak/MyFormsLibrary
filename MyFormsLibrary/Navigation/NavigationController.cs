@@ -120,7 +120,7 @@ namespace MyFormsLibrary.Navigation
 
 			await curPage.Navigation.PushAsync(newPage, animated);
 			(newPage.BindingContext as INavigationAction)?.OnNavigatedTo(navigationParam);
-			navigationParam.Value = null;
+
 		}
         /// <summary>
         /// ページ遷移（モーダル）
@@ -143,7 +143,7 @@ namespace MyFormsLibrary.Navigation
 
             await curPage.Navigation.PushModalAsync(newPage, animated);
 			(newPage.BindingContext as INavigationAction)?.OnNavigatedTo(navigationParam);
-			navigationParam.Value = null;
+
         }
 
         /// <summary>

@@ -138,7 +138,7 @@ namespace MyFormsLibrary.CustomViews
 				height = Math.Max(height, tmpHeight);
 
 				var newWidth = width + tmpWidth + Spacing;
-				if (newWidth > widthConstraint) {
+				if (newWidth > widthConstraint+Spacing) {
 					rowCount++;
 					widthUsed = Math.Max(width, widthUsed);
 					width = tmpWidth;
@@ -149,6 +149,8 @@ namespace MyFormsLibrary.CustomViews
 				minHeight = Math.Max(minHeight, size.Minimum.Height);
 				minWidth = Math.Max(minWidth, size.Minimum.Width);
 			}
+
+
 
 			if (rowCount > 1) {
 				width = Math.Max(width, widthUsed);
