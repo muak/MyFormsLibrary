@@ -46,7 +46,11 @@ namespace MyFormsLibrary.Navigation
             var nav = CreatePage<TNavigationPage>() as NavigationPage;
             var page = CreatePage<TContentPage>();
 
+			var navigationParam = UnityContainer.Resolve<INavigationParameter>();
+
             await nav.PushAsync(page, false);
+
+			(page.BindingContext as INavigationAction)?.OnNavigatedTo(navigationParam);
 
             //素のNavigationPageなどで初期状態からルートページが存在する場合は削除する
             if (nav.Navigation.NavigationStack.Count == 2) {
@@ -122,9 +126,11 @@ namespace MyFormsLibrary.Navigation
 			where TTabbedPage : TabbedPage {
 			var parent = CreatePage<TTabbedPage>() as TabbedPage;
 
+			var navigationParam = UnityContainer.Resolve<INavigationParameter>();
+
 			foreach (var c in Children) {
 				parent.Children.Add(c);
-				(c as INavigationAction)?.OnNavigatedTo(null);
+				(c.BindingContext as INavigationAction)?.OnNavigatedTo(navigationParam);
 			}
 
 			PreviousTabPage = parent.Children.First();
@@ -167,7 +173,7 @@ namespace MyFormsLibrary.Navigation
 			}
 
 			var newPage = CreatePage<TContentPage>();
-			(GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedFoward();
+			(GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedForward();
 
 			await curPage.Navigation.PushAsync(newPage, animated);
 			(newPage.BindingContext as INavigationAction)?.OnNavigatedTo(navigationParam);
@@ -189,7 +195,7 @@ namespace MyFormsLibrary.Navigation
             var curPage = GetCurrentNavigationPage();
 
             var newPage = CreatePage<TContentPage>();
-            (GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedFoward();
+            (GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedForward();
 
 
             await curPage.Navigation.PushModalAsync(newPage, animated);
