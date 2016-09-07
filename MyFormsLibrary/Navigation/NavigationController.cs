@@ -13,12 +13,11 @@ namespace MyFormsLibrary.Navigation
         IUnityContainer UnityContainer;
         IApplicationProviderForNavi ApplicationProvider;
         Page PreviousTabPage;
-        Dictionary<NavigationPage, Page> LastNavigationCurrent;
+  
 
         public NavigationController(IUnityContainer container, IApplicationProviderForNavi applicationProvider) {
             UnityContainer = container;
             ApplicationProvider = applicationProvider;
-            LastNavigationCurrent = new Dictionary<NavigationPage, Page>();
 
             ApplicationProvider.ModalPopped = (sender, e) => {
                 var curPage = GetCurrentPage();

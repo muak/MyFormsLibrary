@@ -39,10 +39,8 @@ namespace MyFormsLibrary.CustomViews
         }
 
         private static void ItemsChanged(BindableObject bindable, object oldValue, object newValue) {
-            IEnumerable oldValueAsEnumerable;
             IEnumerable newValueAsEnumerable;
             try {
-                oldValueAsEnumerable = oldValue as IEnumerable;
                 newValueAsEnumerable = newValue as IEnumerable;
             }
             catch (Exception e) {
