@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml.Internals;
 
 namespace MyFormsLibrary.Navigation
 {
@@ -16,7 +17,7 @@ namespace MyFormsLibrary.Navigation
   
 
         public NavigationController(IUnityContainer container, IApplicationProviderForNavi applicationProvider) {
-            UnityContainer = container;
+			UnityContainer = container;
             ApplicationProvider = applicationProvider;
 
             ApplicationProvider.ModalPopped = (sender, e) => {
