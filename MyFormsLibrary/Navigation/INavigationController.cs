@@ -5,7 +5,7 @@ namespace MyFormsLibrary.Navigation
 {
     public interface INavigationController
     {
-        bool ChangeTab<TNavigationPage>();
+        bool ChangeTab<TPage>() where TPage:Page;
 
         Task PushAsync<TContentPage>(object param = null, bool animated = true)
             where TContentPage : ContentPage;

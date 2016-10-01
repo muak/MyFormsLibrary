@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml.Internals;
 
 namespace MyFormsLibrary.Navigation
 {
@@ -12,13 +13,12 @@ namespace MyFormsLibrary.Navigation
 
         IUnityContainer UnityContainer;
         IApplicationProviderForNavi ApplicationProvider;
-        NavigationPage PreviousTabPage;
-        Dictionary<NavigationPage, Page> LastNavigationCurrent;
+        Page PreviousTabPage;
+  
 
         public NavigationController(IUnityContainer container, IApplicationProviderForNavi applicationProvider) {
-            UnityContainer = container;
+			UnityContainer = container;
             ApplicationProvider = applicationProvider;
-            LastNavigationCurrent = new Dictionary<NavigationPage, Page>();
 
             ApplicationProvider.ModalPopped = (sender, e) => {
                 var curPage = GetCurrentPage();
@@ -27,6 +27,12 @@ namespace MyFormsLibrary.Navigation
             };
 
         }
+
+		public ContentPage CreateContentPage<TContentPage>()
+			where TContentPage : ContentPage {
+
+			return CreatePage<TContentPage>() as ContentPage;
+		}
 
         /// <summary>
         /// NavigationPageの生成
@@ -40,7 +46,11 @@ namespace MyFormsLibrary.Navigation
             var nav = CreatePage<TNavigationPage>() as NavigationPage;
             var page = CreatePage<TContentPage>();
 
+			var navigationParam = UnityContainer.Resolve<INavigationParameter>();
+
             await nav.PushAsync(page, false);
+
+			(page.BindingContext as INavigationAction)?.OnNavigatedTo(navigationParam);
 
             //素のNavigationPageなどで初期状態からルートページが存在する場合は削除する
             if (nav.Navigation.NavigationStack.Count == 2) {
@@ -56,6 +66,28 @@ namespace MyFormsLibrary.Navigation
             return nav;
         }
 
+		public async Task<NavigationPage> CreateNavigationPage<TNavigationPage>(TabbedPage tabbedPage) 
+			where TNavigationPage : NavigationPage {
+
+			var nav = CreatePage<TNavigationPage>() as NavigationPage;
+
+			await nav.PushAsync(tabbedPage, false);
+
+			//素のNavigationPageなどで初期状態からルートページが存在する場合は削除する
+			if (nav.Navigation.NavigationStack.Count == 2) {
+				nav.Navigation.RemovePage(nav.Navigation.NavigationStack[0]);
+			}
+
+			nav.Popped += (sender, e) => {
+				//var curPage = sender as NavigationPage;
+
+				(GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedBack();
+				(e.Page.BindingContext as IDisposable)?.Dispose();
+			};
+
+			return nav;
+		}
+
         /// <summary>
         /// TabbedPageの生成
         /// </summary>
@@ -70,58 +102,83 @@ namespace MyFormsLibrary.Navigation
                 parent.Children.Add(c);
             }
 
-            PreviousTabPage = parent.Children.First() as NavigationPage;
-            LastNavigationCurrent[PreviousTabPage] = PreviousTabPage.CurrentPage;
+            PreviousTabPage = parent.Children.First();
+			var preNav = PreviousTabPage as NavigationPage;
 
-            (PreviousTabPage.CurrentPage.BindingContext as ITabAction)?.OnTabChangedTo(true);
+            (preNav.CurrentPage.BindingContext as ITabAction)?.OnTabChangedTo();
 
             parent.CurrentPageChanged += (sender, e) => {
                 var nextTabPage = (sender as TabbedPage).CurrentPage as NavigationPage;
+				var preTab = PreviousTabPage as NavigationPage;
+                
+				// Raise TabChangedFrom 
+				(preTab.CurrentPage.BindingContext as ITabAction)?.OnTabChangedFrom();
 
-                var isFirst = true;
-                if (LastNavigationCurrent.ContainsKey(nextTabPage)) {
-                    isFirst = !object.ReferenceEquals(LastNavigationCurrent[nextTabPage], nextTabPage.CurrentPage);
-                }
-
-               // Raise TabChangedFrom 
-               (PreviousTabPage.CurrentPage.BindingContext as ITabAction)?.OnTabChangedFrom();
-                LastNavigationCurrent[PreviousTabPage] = PreviousTabPage.CurrentPage;
-
-                // Raise TabChangedTo
-                (nextTabPage.CurrentPage.BindingContext as ITabAction)?.OnTabChangedTo(isFirst);
-                PreviousTabPage = nextTabPage;
+				// Raise TabChangedTo
+				(nextTabPage.CurrentPage.BindingContext as ITabAction)?.OnTabChangedTo();
+				PreviousTabPage = nextTabPage;
             };
 
             return parent;
         }
 
-        /// <summary>
-        /// ページ遷移
-        /// </summary>
-        /// <returns></returns>
-        /// <param name="param">次のページに渡すパラメータ</param>
-        /// <param name="animated">アニメーション</param>
-        /// <typeparam name="TContentPage">遷移先ページ</typeparam>
-        public async Task PushAsync<TContentPage>
-            (object param = null, bool animated = true)
-            where TContentPage : ContentPage {
-            var navigationParam = UnityContainer.Resolve<INavigationParameter>();
-            navigationParam.Value = param;
+		public TabbedPage CreateTabbedPage<TTabbedPage>(IEnumerable<ContentPage> Children)
+			where TTabbedPage : TabbedPage {
+			var parent = CreatePage<TTabbedPage>() as TabbedPage;
 
-            var curPage = GetCurrentNavigationPage();
+			var navigationParam = UnityContainer.Resolve<INavigationParameter>();
 
-            //モーダル中は何もしない
-            if (curPage.Navigation.ModalStack.Count > 0) {
-                return;
-            }
+			foreach (var c in Children) {
+				parent.Children.Add(c);
+				(c.BindingContext as INavigationAction)?.OnNavigatedTo(navigationParam);
+			}
 
-            var newPage = CreatePage<TContentPage>();
-            (GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedFoward();
+			PreviousTabPage = parent.Children.First();
 
-            await curPage.Navigation.PushAsync(newPage, animated);
+			(PreviousTabPage.BindingContext as ITabAction)?.OnTabChangedTo();
 
-        }
+			parent.CurrentPageChanged += (sender, e) => {
+				var nextTabPage = (sender as TabbedPage).CurrentPage as ContentPage;
 
+
+			   // Raise TabChangedFrom 
+			   (PreviousTabPage.BindingContext as ITabAction)?.OnTabChangedFrom();
+
+				// Raise TabChangedTo
+				(nextTabPage.BindingContext as ITabAction)?.OnTabChangedTo();
+				PreviousTabPage = nextTabPage;
+			};
+
+			return parent;
+		}
+
+		/// <summary>
+		/// ページ遷移
+		/// </summary>
+		/// <returns></returns>
+		/// <param name="param">次のページに渡すパラメータ</param>
+		/// <param name="animated">アニメーション</param>
+		/// <typeparam name="TContentPage">遷移先ページ</typeparam>
+		public async Task PushAsync<TContentPage>
+			(object param = null, bool animated = true)
+			where TContentPage : ContentPage {
+			var navigationParam = UnityContainer.Resolve<INavigationParameter>();
+			navigationParam.Value = param;
+
+			var curPage = GetCurrentNavigationPage();
+
+			//モーダル中は何もしない
+			if (curPage.Navigation.ModalStack.Count > 0) {
+				return;
+			}
+
+			var newPage = CreatePage<TContentPage>();
+			(GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedForward();
+
+			await curPage.Navigation.PushAsync(newPage, animated);
+			(newPage.BindingContext as INavigationAction)?.OnNavigatedTo(navigationParam);
+
+		}
         /// <summary>
         /// ページ遷移（モーダル）
         /// </summary>
@@ -138,9 +195,11 @@ namespace MyFormsLibrary.Navigation
             var curPage = GetCurrentNavigationPage();
 
             var newPage = CreatePage<TContentPage>();
-            (GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedFoward();
+            (GetCurrentPage()?.BindingContext as INavigationAction)?.OnNavigatedForward();
+
 
             await curPage.Navigation.PushModalAsync(newPage, animated);
+			(newPage.BindingContext as INavigationAction)?.OnNavigatedTo(navigationParam);
 
         }
 
@@ -168,21 +227,33 @@ namespace MyFormsLibrary.Navigation
         /// </summary>
         /// <returns></returns>
         /// <typeparam name="TNavigationPage">移動先のNavigationPage</typeparam>
-        public bool ChangeTab<TNavigationPage>() {
-            var mainPage = GetMainPage() as TabbedPage;
+        public bool ChangeTab<TPage>() where TPage:Page {
+            var mainPage = GetMainPage();
+			TabbedPage tabbed = null;
+			if (mainPage is TabbedPage) {
+				tabbed = mainPage as TabbedPage;
+			}
+			else if (mainPage is NavigationPage && (mainPage as NavigationPage)?.CurrentPage is TabbedPage) {
+				tabbed = (mainPage as NavigationPage).CurrentPage as TabbedPage;
+			}
+			else {
+				return false;
+			}
 
-            if (mainPage.CurrentPage.GetType() == typeof(TNavigationPage)) {
-                return false;
-            }
+			if (tabbed.CurrentPage.GetType() == typeof(TPage)) {
+				return false;
+			}
 
-            var target = mainPage?.Children.FirstOrDefault((x) => x.GetType() == typeof(TNavigationPage)) as NavigationPage;
-            if (target != null) {
-                mainPage.CurrentPage = target;
-                return true;
-            }
+			var target = tabbed?.Children.FirstOrDefault((x) => x.GetType() == typeof(TPage));
+			if (target != null) {
+				tabbed.CurrentPage = target;
+				return true;
+			}
 
-            return false;
+			return false;            
         }
+
+
 
 
         /// <summary>
@@ -228,6 +299,10 @@ namespace MyFormsLibrary.Navigation
             if (NaviPage.Navigation.ModalStack.Count > 0) {
                 return NaviPage.Navigation.ModalStack.Last();
             }
+
+			if (NaviPage.CurrentPage is TabbedPage) {
+				return (NaviPage.CurrentPage as TabbedPage).CurrentPage;
+			}
 
             return NaviPage.CurrentPage;
         }
