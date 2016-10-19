@@ -63,7 +63,34 @@ namespace MyFormsLibrary.CustomRenderers
 			set { SetValue(UnSelectedTextColorProperty, value); }
 		}
 
+		public static BindableProperty OffScreenPageLimitProperty =
+			BindableProperty.Create(
+				nameof(OffScreenPageLimit),
+				typeof(int),
+				typeof(TabbedPageEx),
+				1,
+				defaultBindingMode: BindingMode.OneWay
+			);
 
+		public int OffScreenPageLimit {
+			get { return (int)GetValue(OffScreenPageLimitProperty); }
+			set { SetValue(OffScreenPageLimitProperty, value); }
+		}
+
+
+		public static BindableProperty StatusBarBackColorProperty =
+			BindableProperty.Create(
+				nameof(StatusBarBackColor),
+				typeof(Color),
+				typeof(TabbedPageEx),
+				default(Color),
+				defaultBindingMode: BindingMode.OneWay
+			);
+
+		public Color StatusBarBackColor {
+			get { return (Color)GetValue(StatusBarBackColorProperty); }
+			set { SetValue(StatusBarBackColorProperty, value); }
+		}
 
 		public bool IsDefaultColor { 
 			get {

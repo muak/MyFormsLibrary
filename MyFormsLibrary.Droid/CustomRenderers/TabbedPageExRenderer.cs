@@ -32,8 +32,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 			fieldInfo = typeof(TabbedPageRenderer).GetField("_viewPager", BindingFlags.Instance | BindingFlags.NonPublic);
 			var viewPager = (ViewPager)fieldInfo.GetValue(this);
 
-			viewPager.OffscreenPageLimit = 2; //非表示タブをキャッシュしておく数 タブ数3で2にすれば全ページキャッシュとなる
-
+			
 			window = (Context as FormsAppCompatActivity).Window;
 
 			if (e.OldElement != null) {
@@ -47,7 +46,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 				if (!tabbedEx.IsDefaultColor) {
 					tabs.SetOnTabSelectedListener(this);
 				}
-
+                //非表示タブをキャッシュしておく数 タブ数3で2にすれば全ページキャッシュとなる
+                viewPager.OffscreenPageLimit = tabbedEx.OffScreenPageLimit;
 
 
 				for (var i = 0; i < tabbedEx.TabAttributes.Count; i++) {
@@ -55,9 +55,14 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 					if (i==0 && tabbedEx.Parent is NavigationPageEx) {
 						var navi = tabbedEx.Parent as NavigationPageEx;
-						//tabbedEx.Title = attr.Title;
-						navi.BarTextColor = attr.BarTextColor;
-						navi.StatusBarBackColor = attr.StatusBarBackColor;
+                        navi.BarTextColor = tabbedEx.BarTextColor;
+                        if (attr.BarTextColor != Xamarin.Forms.Color.Default) {
+                            navi.BarTextColor = attr.BarTextColor;
+                        }
+                        navi.StatusBarBackColor = tabbedEx.StatusBarBackColor;
+                        if (attr.StatusBarBackColor != Xamarin.Forms.Color.Default) {
+                            navi.StatusBarBackColor = attr.StatusBarBackColor;
+                        }
 						tabbedEx.Title = (tabbedEx.CurrentPage as Page).Title;
 						tabbedEx.CurrentPage.PropertyChanged += CurrentPage_PropertyChanged;
 					}
@@ -77,7 +82,10 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 								color = attr.SelectedColor.ToAndroid();
 							}
 							tabs.SetSelectedTabIndicatorColor(color);
-							if (attr.StatusBarBackColor != Xamarin.Forms.Color.Default) {
+                            if (tabbedEx.StatusBarBackColor != Xamarin.Forms.Color.Default) {
+                                window.SetStatusBarColor(tabbedEx.StatusBarBackColor.ToAndroid());
+                            }
+							else if (attr.StatusBarBackColor != Xamarin.Forms.Color.Default) {
 								window.SetStatusBarColor(attr.StatusBarBackColor.ToAndroid());
 							}
 						}
@@ -96,52 +104,6 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 					}
 				}
 
-
-
-
-				//for (var i = 0; i < Element.Children.Count; i++) {
-				//	Page child = Element.Children[i];
-
-
-				//	if (child is NavigationPageEx) {
-				//		var naviex = child as NavigationPageEx;
-
-				//		if (string.IsNullOrEmpty(naviex.Resource)) continue;
-
-				//		var image = naviex.Image as NGraphics.BitmapImage;
-				//		var icon = new BitmapDrawable(Context.Resources, image.Bitmap);
-				//		var tab = tabs.GetTabAt(i);
-				//		tab.SetIcon(icon);
-
-				//		if (!tabbedEx.IsDefaultColor || !naviex.IsDefaultColor) {
-				//			var color = tabbedEx.SelectedColor.ToAndroid();
-
-				//			if (i == 0) {
-				//				if (naviex.SelectedColor != Xamarin.Forms.Color.Default) {
-				//					color = naviex.SelectedColor.ToAndroid();
-				//				}
-				//				tabs.SetSelectedTabIndicatorColor(color);
-				//				if (naviex.StatusBarBackColor != Xamarin.Forms.Color.Default) {
-				//					window.SetStatusBarColor(naviex.StatusBarBackColor.ToAndroid());
-				//				}
-				//			}
-				//			else {
-				//				color = tabbedEx.UnSelectedColor.ToAndroid();
-				//				if (naviex.UnSelectedColor != Xamarin.Forms.Color.Default) {
-				//					color = naviex.UnSelectedColor.ToAndroid();
-				//				}
-				//			}
-				//			tab.Icon.SetColorFilter(color, PorterDuff.Mode.SrcIn);
-				//			tabs.SetTabTextColors(tabbedEx.UnSelectedTextColor.ToAndroid(),tabbedEx.SelectedTextColor.ToAndroid());
-				//		}
-
-				//		if (tabbedEx.IsTextHidden) {
-				//			tab.SetText("");
-				//		}
-
-				//	}
-
-				//}
 
 			}
 
@@ -167,14 +129,25 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 			tab.Icon.SetColorFilter(color, PorterDuff.Mode.SrcIn);
 			tabs.SetSelectedTabIndicatorColor(color);
-			if (attr.StatusBarBackColor != Xamarin.Forms.Color.Default) {
+
+            if (tabbedEx.StatusBarBackColor != Xamarin.Forms.Color.Default) {
+                window.SetStatusBarColor(tabbedEx.StatusBarBackColor.ToAndroid());
+            }
+			else if (attr.StatusBarBackColor != Xamarin.Forms.Color.Default) {
 				window.SetStatusBarColor(attr.StatusBarBackColor.ToAndroid());
 			}
 
 			if (tabbedEx.Parent is NavigationPageEx) {
 				var navi = tabbedEx.Parent as NavigationPageEx;
-				navi.BarTextColor = attr.BarTextColor;
-				navi.StatusBarBackColor = attr.StatusBarBackColor;
+                navi.BarTextColor = tabbedEx.BarTextColor;
+                if (tabbedEx.BarTextColor != Xamarin.Forms.Color.Default) {
+                    navi.BarTextColor = attr.BarTextColor;
+                }
+                navi.StatusBarBackColor = tabbedEx.StatusBarBackColor;
+                if (tabbedEx.StatusBarBackColor != Xamarin.Forms.Color.Default) {
+                    navi.StatusBarBackColor = attr.StatusBarBackColor;
+                }
+				
 			}
 			tabbedEx.Title = tabbedEx.Children[selectedIndex].Title;
 			tabbedEx.Children[selectedIndex].PropertyChanged += CurrentPage_PropertyChanged;
