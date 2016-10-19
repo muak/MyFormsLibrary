@@ -10,7 +10,7 @@
     <AssemblyName>MyFormsLibrary</AssemblyName>
     <TargetFrameworkProfile>Profile78</TargetFrameworkProfile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ReleaseVersion>1.01</ReleaseVersion>
+    <ReleaseVersion>1.5</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,16 +41,12 @@
     <Compile Include="Navigation\ITabAction.cs" />
     <Compile Include="Navigation\ApplicationProviderForNavi.cs" />
     <Compile Include="Navigation\IApplicationProviderForNavi.cs" />
-    <Compile Include="Db\Realm\TableController.cs" />
-    <Compile Include="Db\Realm\IAutoIncrement.cs" />
     <Compile Include="DependencyServices\ILoadingMessage.cs" />
     <Compile Include="CustomViews\WrapLayout.cs" />
     <Compile Include="CustomViews\RepeaterWrapLayout.cs" />
     <Compile Include="CustomViews\CommandStack.cs" />
     <Compile Include="CustomViews\CommandGrid.cs" />
     <Compile Include="CustomViews\CommandAbsolute.cs" />
-    <Compile Include="Db\SQLite\ISQLiteService.cs" />
-    <Compile Include="Db\SQLite\SQLiteExtensions.cs" />
     <Compile Include="CustomViews\CommandView.cs" />
     <Compile Include="Services\IMessagingService.cs" />
     <Compile Include="Services\MessagingService.cs" />
@@ -100,11 +96,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Navigation\" />
-    <Folder Include="Db\" />
-    <Folder Include="Db\Realm\" />
     <Folder Include="DependencyServices\" />
     <Folder Include="CustomViews\" />
-    <Folder Include="Db\SQLite\" />
     <Folder Include="Services\" />
   </ItemGroup>
 </Project>

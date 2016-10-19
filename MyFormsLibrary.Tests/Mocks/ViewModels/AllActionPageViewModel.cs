@@ -27,7 +27,7 @@ namespace MyFormsLibrary.Tests.Mocks.ViewModels
             DoneBack = true;
         }
 
-        public void OnNavigatedFoward() {
+        public void OnNavigatedForward() {
             DoneFoward = true;
         }
 
@@ -35,10 +35,16 @@ namespace MyFormsLibrary.Tests.Mocks.ViewModels
             DoneTabFrom = true;
         }
 
-        public void OnTabChangedTo(bool IsFirst) {
+        public void OnTabChangedTo() {
             DoneTabTo = true;
-            TabChangeToParam = IsFirst;
+            //TabChangeToParam = IsFirst;
         }
+
+
+        public void OnNavigatedTo(INavigationParameter param) {
+            throw new NotImplementedException();
+        }
+
     }
 }
 
