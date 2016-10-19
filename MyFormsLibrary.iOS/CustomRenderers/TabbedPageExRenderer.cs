@@ -37,7 +37,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 					var naviEx = child as NavigationPageEx;
 
                     naviEx.BarTextColor = tabbedEx.BarTextColor;
-                    if (tabbedEx.BarTextColor != Xamarin.Forms.Color.Default) {
+                    if (attr.BarTextColor != Xamarin.Forms.Color.Default) {
                         naviEx.BarTextColor = attr.BarTextColor;
                     }
 					
