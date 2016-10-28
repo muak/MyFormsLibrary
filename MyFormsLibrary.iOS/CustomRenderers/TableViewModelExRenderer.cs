@@ -38,6 +38,16 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             return 30.0f;
         }
 
+        public override void RowSelected(UITableView tableView, Foundation.NSIndexPath indexPath) {
+            base.RowSelected(tableView, indexPath);
+
+            var cell = GetCell(tableView,indexPath);
+            if (cell is CommandCellView) {
+                (cell as CommandCellView)?.Execute();
+            }
+        }
+
+       
         class IndentLabel : UILabel{
             bool _isFirst;
 

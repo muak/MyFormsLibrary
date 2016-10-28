@@ -1,40 +1,56 @@
 ﻿using System;
 using Xamarin.Forms;
 using System.Windows.Input;
+using MyFormsLibrary.CustomRenderers;
 
 namespace MyFormsLibrary.CustomRenderers
 {
-    public class CommandCell:Cell
+    public class CommandCell:CellBase
     {
         public CommandCell() {
         }
 
-        public static BindableProperty LabelTextProperty =
+        public static BindableProperty ValueTextProperty =
             BindableProperty.Create(
-                nameof(LabelText),
+                nameof(ValueText),
                 typeof(string),
                 typeof(CommandCell),
                 default(string),
                 defaultBindingMode: BindingMode.OneWay
             );
 
-        public string LabelText {
-            get { return (string)GetValue(LabelTextProperty); }
-            set { SetValue(LabelTextProperty, value); }
+        public string ValueText {
+            get { return (string)GetValue(ValueTextProperty); }
+            set { SetValue(ValueTextProperty, value); }
         }
 
-        public static BindableProperty TextProperty =
+        public static BindableProperty ValueTextColorProperty =
             BindableProperty.Create(
-                nameof(Text),
-                typeof(string),
+                nameof(ValueTextColor),
+                typeof(Color),
                 typeof(CommandCell),
-                default(string),
+                default(Color),
                 defaultBindingMode: BindingMode.OneWay
             );
 
-        public string Text {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
+        public Color ValueTextColor {
+            get { return (Color)GetValue(ValueTextColorProperty); }
+            set { SetValue(ValueTextColorProperty, value); }
+        }
+
+        public static BindableProperty ValueTextFontSizeProperty =
+            BindableProperty.Create(
+                nameof(ValueTextFontSize),
+                typeof(double),
+                typeof(CommandCell),
+                -1.0d,
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        [TypeConverter(typeof(FontSizeConverter))]
+        public double ValueTextFontSize {
+            get { return (double)GetValue(ValueTextFontSizeProperty); }
+            set { SetValue(ValueTextFontSizeProperty, value); }
         }
 
         public static BindableProperty CommandProperty =

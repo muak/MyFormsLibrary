@@ -13,6 +13,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             base.OnElementChanged(e);
 
             if (e.NewElement != null) {
+                Control.SeparatorStyle = UITableViewCellSeparatorStyle.SingleLine;
                 UpdateSeparator();
 
                 SetSource();
@@ -30,6 +31,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
                 Control.ReloadData();
             }
         }
+
 
         void UpdateSeparator() {
             var color = (Element as TableViewEx).SeparatorColor;

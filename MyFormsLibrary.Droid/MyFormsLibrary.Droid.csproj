@@ -126,10 +126,11 @@
     <Compile Include="Effects\NumberPickerPlatform.cs" />
     <Compile Include="Effects\ShowBorderPlatformEffect.cs" />
     <Compile Include="CustomRenderers\NonSelectionListViewRenderer.cs" />
-    <Compile Include="CustomRenderers\NonSelectionViewCellRenderer.cs" />
     <Compile Include="CustomRenderers\TableViewExRenderer.cs" />
     <Compile Include="CustomRenderers\TableViewModelExRenderer.cs" />
-    <Compile Include="CustomRenderers\EntryCellExRenderer.cs" />
+    <Compile Include="CustomRenderers\Cells\EntryCellExRenderer.cs" />
+    <Compile Include="CustomRenderers\Cells\NonSelectionViewCellRenderer.cs" />
+    <Compile Include="CustomRenderers\Cells\CellBaseView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -146,6 +147,7 @@
   <ItemGroup>
     <Folder Include="CustomRenderers\" />
     <Folder Include="DependencyServices\" />
+    <Folder Include="CustomRenderers\Cells\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj">

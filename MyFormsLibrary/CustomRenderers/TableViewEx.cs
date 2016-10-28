@@ -31,5 +31,7 @@ namespace MyFormsLibrary.CustomRenderers
             get { return (Color)GetValue(SectionTitleColorProperty); }
             set { SetValue(SectionTitleColorProperty, value); }
         }
+
+      
     }
 }

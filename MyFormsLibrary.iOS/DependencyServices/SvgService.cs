@@ -24,7 +24,11 @@ namespace MyFormsLibrary.iOS.DependencyServices
 		}
 
 		public IImage GetCanvas(Graphic g, double width, double height, Xamarin.Forms.Color color) {
-			var transform = Transform.AspectFillRect(g.ViewBox, new Rect(0, 0, width, height));
+			if (color == Xamarin.Forms.Color.Default) {
+                return GetCanvas(g, width, height);
+            }
+
+            var transform = Transform.AspectFillRect(g.ViewBox, new Rect(0, 0, width, height));
 			var transGraphic = g.TransformGeometry(transform);
 
 			var canvas = Platforms.Current.CreateImageCanvas(
@@ -39,9 +43,6 @@ namespace MyFormsLibrary.iOS.DependencyServices
 				ApplyColor(element, nColor);
 				element.Draw(canvas);
 			}
-
-
-			//transGraphic.Draw(canvas);
 
 			return canvas.GetImage();
 		}
