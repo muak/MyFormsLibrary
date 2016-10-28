@@ -14,7 +14,6 @@
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>MyFormsLibrary.Droid</AssemblyName>
     <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
-    <ReleaseVersion>1.0.6</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -126,6 +125,11 @@
     <Compile Include="Effects\SliderColorPlatformEffect.cs" />
     <Compile Include="Effects\NumberPickerPlatform.cs" />
     <Compile Include="Effects\ShowBorderPlatformEffect.cs" />
+    <Compile Include="CustomRenderers\NonSelectionListViewRenderer.cs" />
+    <Compile Include="CustomRenderers\NonSelectionViewCellRenderer.cs" />
+    <Compile Include="CustomRenderers\TableViewExRenderer.cs" />
+    <Compile Include="CustomRenderers\TableViewModelExRenderer.cs" />
+    <Compile Include="CustomRenderers\EntryCellExRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

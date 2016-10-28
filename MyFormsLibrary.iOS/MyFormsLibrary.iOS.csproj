@@ -9,7 +9,6 @@
     <RootNamespace>MyFormsLibrary.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>MyFormsLibrary.iOS</AssemblyName>
-    <ReleaseVersion>1.0.6</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -94,6 +93,12 @@
     <Compile Include="Effects\SliderColorPlatformEffect.cs" />
     <Compile Include="Effects\NumberPickerPlatform.cs" />
     <Compile Include="Effects\ShowBorderPlatformEffect.cs" />
+    <Compile Include="CustomRenderers\NonSelectionListViewRenderer.cs" />
+    <Compile Include="CustomRenderers\NonSelectionViewCellRenderer.cs" />
+    <Compile Include="CustomRenderers\TableViewExRenderer.cs" />
+    <Compile Include="CustomRenderers\TableViewModelExRenderer.cs" />
+    <Compile Include="CustomRenderers\EntryCellExRenderer.cs" />
+    <Compile Include="CustomRenderers\CommandCellRenderer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\Pixie\packages\Xamarin.Forms.2.3.0.46-pre3\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\Pixie\packages\Xamarin.Forms.2.3.0.46-pre3\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
