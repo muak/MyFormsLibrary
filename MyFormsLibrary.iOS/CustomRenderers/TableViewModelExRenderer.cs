@@ -22,7 +22,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         public override UIKit.UIView GetViewForHeader(UIKit.UITableView tableView, nint section) {
             
             var title = TitleForHeader(tableView, section);
-            var label = new IndentLabel(section == 0);
+            var label = new IndentLabel();
             label.Text = title;
             label.TextColor = Model.SectionTitleColor == Color.Default ? 
                              UIColor.Gray : Model.SectionTitleColor.ToUIColor();
@@ -32,9 +32,6 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         }
 
         public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
-            if (section == 0) {
-                return 50.0f;
-            }
             return 30.0f;
         }
 
@@ -49,15 +46,13 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
        
         class IndentLabel : UILabel{
-            bool _isFirst;
 
-            public IndentLabel(bool isFirst = false) :base() {
-                _isFirst = isFirst;
+            public IndentLabel() :base() {
+               
             }
 
             public override void DrawText(CGRect rect) {
-                var top = _isFirst ? 28 : 8;
-                var insets = new UIEdgeInsets(top, 14, 8, 6);
+                var insets = new UIEdgeInsets(8, 14, 8, 6);
                 base.DrawText(insets.InsetRect(rect));
             }
         }

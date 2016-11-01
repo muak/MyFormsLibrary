@@ -25,12 +25,14 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             }
             else {
                 TableViewCell.Execute = null;
+                ParentElement.PropertyChanged -= ParentElement_PropertyChanged;
                 item.PropertyChanged -= Item_PropertyChanged;          
             }
 
             Cell = TableViewCell;
             TableViewCell.Cell = item;
             item.PropertyChanged += Item_PropertyChanged;
+            ParentElement.PropertyChanged += ParentElement_PropertyChanged;
             TableViewCell.Execute = () => CommandCell.Command?.Execute(CommandCell.CommandParameter);
 
             WireUpForceUpdateSizeRequested(item, TableViewCell, tv);
@@ -45,22 +47,14 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             return TableViewCell;
         }
 
-        void UpdateValueText() {
-            TableViewCell.DetailTextLabel.Text = CommandCell.ValueText;
-        }
-        void UpdateValueTextFontSize() {
-            if (CommandCell.ValueTextFontSize < 0) {
-                TableViewCell.DetailTextLabel.Font = TableViewCell.DetailTextLabel.Font.WithSize((nfloat)CommandCell.LabelFontSize);
+        void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == TableViewEx.CellValueTextColorProperty.PropertyName) {
+                UpdateValueTextColor();
             }
-            else {
-                TableViewCell.DetailTextLabel.Font =
-                    TableViewCell.DetailTextLabel.Font.WithSize((nfloat)CommandCell.ValueTextFontSize);
+            else if (e.PropertyName == TableViewEx.CellValueTextFontSizeProperty.PropertyName) {
+                UpdateValueTextFontSize();
             }
-        }
-        void UpdateValueTextColor() {
-            if (CommandCell.ValueTextColor != Xamarin.Forms.Color.Default) {
-                TableViewCell.DetailTextLabel.TextColor = CommandCell.ValueTextColor.ToUIColor();
-            }
+
         }
 
         void Item_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -74,6 +68,30 @@ namespace MyFormsLibrary.iOS.CustomRenderers
                 UpdateValueTextColor();
             }
         }
+
+        void UpdateValueText() {
+            TableViewCell.DetailTextLabel.Text = CommandCell.ValueText;
+        }
+        void UpdateValueTextFontSize() {
+            if (CommandCell.ValueTextFontSize > 0) {
+                TableViewCell.DetailTextLabel.Font = TableViewCell.DetailTextLabel.Font.WithSize((nfloat)CommandCell.ValueTextFontSize);
+            }
+            else {
+                TableViewCell.DetailTextLabel.Font = TableViewCell.DetailTextLabel.Font.WithSize((nfloat)ParentElement.CellValueTextFontSize);
+            }
+            Cell.SetNeedsLayout();
+
+        }
+        void UpdateValueTextColor() {
+            if (CommandCell.ValueTextColor != Xamarin.Forms.Color.Default) {
+                TableViewCell.DetailTextLabel.TextColor = CommandCell.ValueTextColor.ToUIColor();
+            }
+            else if (ParentElement.CellValueTextColor != Xamarin.Forms.Color.Default) {
+                TableViewCell.DetailTextLabel.TextColor = ParentElement.CellValueTextColor.ToUIColor();
+            }
+        }
+
+
 
 
     }

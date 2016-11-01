@@ -29,10 +29,12 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             }
             else {
                 CellView.Execute = null;
+                ParentElement.PropertyChanged -= ParentElement_PropertyChanged;
             }
 
             BaseView = CellView;
 
+            ParentElement.PropertyChanged += ParentElement_PropertyChanged;
             CellView.Execute = () => CommandCell.Command?.Execute(CommandCell.CommandParameter);
 
             UpdateBase();
@@ -60,21 +62,36 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
         }
 
+        void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == TableViewEx.CellValueTextColorProperty.PropertyName) {
+                UpdateValueTextColor();
+            }
+            else if (e.PropertyName == TableViewEx.CellValueTextFontSizeProperty.PropertyName) {
+                UpdateValueTextFontSize();
+            }
+        }
+
         void UpdateValueText() {
             CellView.TextView.Text = CommandCell.ValueText;
         }
         void UpdateValueTextFontSize() {
-            if (CommandCell.ValueTextFontSize < 0) {
-                CellView.TextView.SetTextSize(ComplexUnitType.Sp,(float)CommandCell.LabelFontSize);
+            if (CommandCell.ValueTextFontSize > 0) {
+                CellView.TextView.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)CommandCell.ValueTextFontSize);
             }
             else {
-                CellView.TextView.SetTextSize(ComplexUnitType.Sp,(float)CommandCell.ValueTextFontSize);
+                CellView.TextView.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)ParentElement.CellValueTextFontSize);
+
             }
+            CellView.Invalidate();
         }
         void UpdateValueTextColor() {
             if (CommandCell.ValueTextColor != Xamarin.Forms.Color.Default) {
                 CellView.TextView.SetTextColor(CommandCell.ValueTextColor.ToAndroid());
             }
+            else if (ParentElement.CellValueTextColor != Xamarin.Forms.Color.Default) {
+                CellView.TextView.SetTextColor(ParentElement.CellValueTextColor.ToAndroid());
+            }
+            CellView.Invalidate();
         }
 
     }
@@ -88,7 +105,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             TextView = new TextView(context);
             TextView.SetSingleLine(true);
             TextView.Ellipsize = TextUtils.TruncateAt.End;
-            TextView.SetTextSize(ComplexUnitType.Sp, 14f);
+            //TextView.SetTextSize(ComplexUnitType.Sp, 14f);
             TextView.Gravity = GravityFlags.Right;
 
             var textParams = new LayoutParams(

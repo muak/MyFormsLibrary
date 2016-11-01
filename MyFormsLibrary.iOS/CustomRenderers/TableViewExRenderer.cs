@@ -13,13 +13,10 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             base.OnElementChanged(e);
 
             if (e.NewElement != null) {
-                Control.SeparatorStyle = UITableViewCellSeparatorStyle.SingleLine;
                 UpdateSeparator();
-
                 SetSource();
             }
         }
-
 
         protected override void OnElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             base.OnElementPropertyChanged(sender, e);
@@ -30,15 +27,13 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             else if (e.PropertyName == TableViewEx.SectionTitleColorProperty.PropertyName) {
                 Control.ReloadData();
             }
-        }
 
+        }
 
         void UpdateSeparator() {
             var color = (Element as TableViewEx).SeparatorColor;
             Control.SeparatorColor = color == Color.Default ? UIColor.FromRGB(199,199,204) :color.ToUIColor();
         }
-
-    
 
         void SetSource() {
             var modeledView = Element;

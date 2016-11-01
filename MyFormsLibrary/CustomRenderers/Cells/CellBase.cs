@@ -43,8 +43,7 @@ namespace MyFormsLibrary.CustomRenderers
                 typeof(double),
                 typeof(CellBase),
                 -1.0,
-                defaultBindingMode: BindingMode.OneWay,
-                defaultValueCreator: bindable => Device.GetNamedSize(NamedSize.Default, (CellBase)bindable)
+                defaultBindingMode: BindingMode.OneWay
             );
 
         [TypeConverter(typeof(FontSizeConverter))]

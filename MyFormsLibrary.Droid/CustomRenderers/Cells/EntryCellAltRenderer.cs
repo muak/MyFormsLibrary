@@ -33,10 +33,12 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             else {
                 CellView.TextChanged = null;
                 CellView.EditingCompleted = null;
-
+                ParentElement.PropertyChanged -= ParentElement_PropertyChanged;
             }
 
             BaseView = CellView;
+
+            ParentElement.PropertyChanged += ParentElement_PropertyChanged;
 
             UpdateBase();
             UpdateText();
@@ -50,6 +52,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
             return CellView;
         }
+
+
 
         protected override void OnCellPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             base.OnCellPropertyChanged(sender, e);
@@ -68,6 +72,16 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             }
         }
 
+        void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == TableViewEx.CellValueTextColorProperty.PropertyName) {
+                UpdateTextColor();
+            }
+            else if (e.PropertyName == TableViewEx.CellValueTextFontSizeProperty.PropertyName) {
+                UpdateTextFontSize();
+            }
+        }
+
+
         void OnTextChanged(string text) {
             EntryCell.Text = text;
         }
@@ -78,22 +92,34 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         }
 
         void UpdateText() {
-            CellView.EditText.Text = EntryCell.Text;
+            if (CellView.EditText.Text != EntryCell.Text) {
+                CellView.EditText.Text = EntryCell.Text;
+            }
         }
+
         void UpdateTextColor() {
             if (EntryCell.TextColor != Color.Default) {
                 CellView.EditText.SetTextColor(EntryCell.TextColor.ToAndroid());
             }
+            else if (ParentElement.CellValueTextColor != Xamarin.Forms.Color.Default) {
+                CellView.EditText.SetTextColor(ParentElement.CellValueTextColor.ToAndroid());
+            }
+            CellView.Invalidate();
         }
+
         void UpdateTextFontSize() {
-            if (EntryCell.TextFontSize < 0) {
-                CellView.EditText.SetTextSize(Android.Util.ComplexUnitType.Sp,(float)EntryCell.LabelFontSize);
+
+            if (EntryCell.TextFontSize > 0) {
+                CellView.EditText.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)EntryCell.TextFontSize);
             }
             else {
-                CellView.EditText.SetTextSize(Android.Util.ComplexUnitType.Sp,(float)EntryCell.TextFontSize);
+                CellView.EditText.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)ParentElement.CellValueTextFontSize);
+
             }
-           
+            CellView.Invalidate();
+
         }
+
         void UpdateKeyboard() {
             CellView.EditText.InputType = EntryCell.Keyboard.ToInputType();
         }
@@ -118,6 +144,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             EditText.SetOnTouchListener(this);
             EditText.SetSingleLine(true);
             EditText.Gravity = GravityFlags.Right;
+
            
             var textParams = new LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent) {
                 Width = 0,

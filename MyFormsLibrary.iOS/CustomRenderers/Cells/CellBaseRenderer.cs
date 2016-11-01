@@ -9,22 +9,38 @@ namespace MyFormsLibrary.iOS.CustomRenderers
     public class CellBaseRenderer:CellRenderer
     {
         protected CellTableViewCell Cell { get; set; }
+        protected TableViewEx ParentElement;
         CellBase Item;
+
 
         public override UIKit.UITableViewCell GetCell(Xamarin.Forms.Cell item, UIKit.UITableViewCell reusableCell, UIKit.UITableView tv) {
             Item = item as CellBase;
 
+            ParentElement = item.Parent as TableViewEx;
+
             var tvc = reusableCell;
-           
-            if (tvc == null)
+
+            if (tvc == null) {
                 item.PropertyChanged += Item_PropertyChanged;
+                ParentElement.PropertyChanged += ParentElement_PropertyChanged;
+            }
             else {
                 item.PropertyChanged -= Item_PropertyChanged;
+                ParentElement.PropertyChanged -= ParentElement_PropertyChanged;
             }
 
             return tvc;
         }
 
+        void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == TableViewEx.CellLabelColorProperty.PropertyName) {
+                UpdateLabelColor();
+            }
+            else if (e.PropertyName == TableViewEx.CellLabelFontSizeProperty.PropertyName) {
+                UpdateLabelFontSize();
+            }
+
+        }
 
         void UpdateLabelText() {
             Cell.TextLabel.Text = Item.LabelText;
@@ -33,9 +49,19 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             if (Item.LabelColor != Xamarin.Forms.Color.Default) {
                 Cell.TextLabel.TextColor = Item.LabelColor.ToUIColor();
             }
+            else if(ParentElement.CellLabelColor != Xamarin.Forms.Color.Default) {
+                
+                Cell.TextLabel.TextColor = ParentElement.CellLabelColor.ToUIColor();
+            }
         }
         void UpdateLabelFontSize() {
-            Cell.TextLabel.Font = Cell.TextLabel.Font.WithSize((nfloat)Item.LabelFontSize);
+            if (Item.LabelFontSize > 0) {
+               Cell.TextLabel.Font = Cell.TextLabel.Font.WithSize((nfloat)Item.LabelFontSize);
+            }
+            else {
+                Cell.TextLabel.Font = Cell.TextLabel.Font.WithSize((nfloat)ParentElement.CellLabelFontSize);
+            }
+            Cell.SetNeedsLayout();
         }
         void UpdateIcon() {
             Cell.ImageView.Image = Item.Image?.GetUIImage();

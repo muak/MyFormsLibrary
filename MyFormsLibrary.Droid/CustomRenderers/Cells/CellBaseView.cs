@@ -36,7 +36,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             TitleLabel = new TextView(context);
             TitleLabel.SetSingleLine(true);
             TitleLabel.Ellipsize = TextUtils.TruncateAt.End;
-            TitleLabel.SetTextSize(ComplexUnitType.Sp, 14f);
+            //TitleLabel.SetTextSize(ComplexUnitType.Sp, 14f);
 
             var textParams = new LayoutParams(ViewGroup.LayoutParams.WrapContent,ViewGroup.LayoutParams.WrapContent) {
                 Gravity = GravityFlags.Left | GravityFlags.CenterVertical

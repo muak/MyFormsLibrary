@@ -10,19 +10,20 @@ namespace MyFormsLibrary.Droid.CustomRenderers
     {
 
         protected CellBaseView BaseView { get; set; }
+        protected TableViewEx ParentElement;
         CellBase Item;
 
         protected override Android.Views.View GetCellCore(Xamarin.Forms.Cell item, Android.Views.View convertView, Android.Views.ViewGroup parent, Android.Content.Context context) {
             //base.GetCellCore(item, convertView, parent, context);
 
             Item = item as CellBase;
-
+            ParentElement = item.Parent as TableViewEx;
 
             if (convertView == null) {
-               
+                ParentElement.PropertyChanged += ParentElement_PropertyChanged;
             }
             else {
-               
+                ParentElement.PropertyChanged -= ParentElement_PropertyChanged;
             }
 
             return convertView;
@@ -54,6 +55,16 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             UpdateHeight();
         }
 
+        void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == TableViewEx.CellLabelColorProperty.PropertyName) {
+                UpdateLabelColor();
+            }
+            else if (e.PropertyName == TableViewEx.CellLabelFontSizeProperty.PropertyName) {
+                UpdateLabelFontSize();
+            }
+
+        }
+
         void UpdateLabelText() {
             BaseView.TitleLabel.Text = Item.LabelText;
         }
@@ -61,9 +72,20 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             if (Item.LabelColor != Xamarin.Forms.Color.Default) {
                 BaseView.TitleLabel.SetTextColor(Item.LabelColor.ToAndroid());
             }
+            else if (ParentElement.CellLabelColor != Xamarin.Forms.Color.Default) {
+                BaseView.TitleLabel.SetTextColor(ParentElement.CellLabelColor.ToAndroid());
+            }
+            BaseView.Invalidate();
         }
         void UpdateLabelFontSize() {
-            BaseView.TitleLabel.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)Item.LabelFontSize);
+            if (Item.LabelFontSize > 0) {
+                BaseView.TitleLabel.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)Item.LabelFontSize);
+            }
+            else {
+                BaseView.TitleLabel.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)ParentElement.CellLabelFontSize);
+            }
+            BaseView.Invalidate();
+
         }
         void UpdateIcon() {
             var image = Item.Image as NGraphics.BitmapImage;

@@ -71,5 +71,7 @@ namespace MyFormsLibrary.CustomRenderers
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }
+
+
     }
 }

@@ -24,10 +24,10 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             TableViewCell = reusableCell as EntryCellAltView;
             if (TableViewCell == null) {
                 TableViewCell = new EntryCellAltView(item.GetType().FullName);
-               
             }
             else {
                 item.PropertyChanged -= Item_PropertyChanged;
+                ParentElement.PropertyChanged -= ParentElement_PropertyChanged;
                 TableViewCell.TextFieldTextChanged -= OnTextFieldTextChanged;
                 TableViewCell.KeyboardDoneButtonPressed -= OnKeyboardDoneButtonPressed;
             }
@@ -36,6 +36,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             TableViewCell.Cell = item;
 
             item.PropertyChanged += Item_PropertyChanged;
+            ParentElement.PropertyChanged += ParentElement_PropertyChanged;
             TableViewCell.TextFieldTextChanged += OnTextFieldTextChanged;
             TableViewCell.KeyboardDoneButtonPressed += OnKeyboardDoneButtonPressed;
 
@@ -50,6 +51,16 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             UpdateKeyboard();
 
             return TableViewCell;
+        }
+
+        void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == TableViewEx.CellValueTextColorProperty.PropertyName) {
+                UpdateTextColor();
+            }
+            else if (e.PropertyName == TableViewEx.CellValueTextFontSizeProperty.PropertyName) {
+                UpdateTextFontSize();
+            }
+
         }
 
         void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -76,21 +87,27 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         }
 
         void UpdateText() {
-            TableViewCell.TextField.Text = EntryCell.Text;
+            if (TableViewCell.TextField.Text != EntryCell.Text) {
+                TableViewCell.TextField.Text = EntryCell.Text;
+            }
         }
         void UpdateTextColor() {
             if (EntryCell.TextColor != Color.Default) {
                 TableViewCell.TextField.TextColor = EntryCell.TextColor.ToUIColor();
             }
+            else if (ParentElement.CellValueTextColor != Xamarin.Forms.Color.Default) {
+                TableViewCell.TextField.TextColor = ParentElement.CellValueTextColor.ToUIColor();
+            }
         }
         void UpdateTextFontSize() {
-            if (EntryCell.TextFontSize < 0) {
-                TableViewCell.TextField.Font = TableViewCell.TextField.Font.WithSize((nfloat)EntryCell.LabelFontSize);
+            if (EntryCell.LabelFontSize > 0) {
+                TableViewCell.TextField.Font = TableViewCell.TextField.Font.WithSize((nfloat)EntryCell.TextFontSize);
             }
             else {
-                TableViewCell.TextField.Font =
-                                 TableViewCell.TextField.Font.WithSize((nfloat)EntryCell.TextFontSize);
+                TableViewCell.TextField.Font = TableViewCell.TextField.Font.WithSize((nfloat)ParentElement.CellValueTextFontSize);
             }
+            Cell.SetNeedsLayout();
+
         }
         void UpdateKeyboard() {
             TableViewCell.TextField.ApplyKeyboard(EntryCell.Keyboard);
