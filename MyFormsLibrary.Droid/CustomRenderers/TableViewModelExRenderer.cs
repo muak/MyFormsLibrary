@@ -1,4 +1,5 @@
 ﻿using Android.Content;
+using Android.Graphics.Drawables;
 using Android.Widget;
 using MyFormsLibrary.CustomRenderers;
 using Xamarin.Forms;
@@ -37,11 +38,26 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                     if (color != Color.Default) {
                         border.SetBackgroundColor(color.ToAndroid());
                     }
+                    //ヘッダー境界線の太さ
+                    border.LayoutParameters.Height = 3;
                 }
 
+
             }
+
            
             return layout;
+        }
+
+
+        protected override void HandleItemClick(AdapterView parent, Android.Views.View nview, int position, long id) {
+            base.HandleItemClick(parent, nview, position, id);
+
+            var view = (nview as LinearLayout)?.GetChildAt(0);
+
+            if (view is CommandCellView) {
+                (view as CommandCellView)?.Execute();
+            }
         }
 
         bool IsHeader(int position) {

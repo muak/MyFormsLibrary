@@ -10,6 +10,7 @@
     <AssemblyName>MyFormsLibrary</AssemblyName>
     <TargetFrameworkProfile>Profile78</TargetFrameworkProfile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ReleaseVersion>1.0.7</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,7 +73,6 @@
     <Compile Include="CustomRenderers\NonSelectionListView.cs" />
     <Compile Include="CustomRenderers\TableViewEx.cs" />
     <Compile Include="CustomRenderers\Cells\CommandCell.cs" />
-    <Compile Include="CustomRenderers\Cells\EntryCellEx.cs" />
     <Compile Include="CustomRenderers\Cells\NonSelectionViewCell.cs" />
     <Compile Include="CustomRenderers\Cells\CellBase.cs" />
     <Compile Include="CustomRenderers\Cells\EntryCellAlt.cs" />

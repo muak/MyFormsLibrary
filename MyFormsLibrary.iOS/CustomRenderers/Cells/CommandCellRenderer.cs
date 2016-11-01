@@ -22,15 +22,16 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             TableViewCell = reusableCell as CommandCellView;
             if (TableViewCell == null) {
                 TableViewCell = new CommandCellView(item.GetType().FullName);
-                TableViewCell.Execute = () => CommandCell.Command?.Execute(CommandCell.CommandParameter);
             }
             else {
+                TableViewCell.Execute = null;
                 item.PropertyChanged -= Item_PropertyChanged;          
             }
 
             Cell = TableViewCell;
             TableViewCell.Cell = item;
             item.PropertyChanged += Item_PropertyChanged;
+            TableViewCell.Execute = () => CommandCell.Command?.Execute(CommandCell.CommandParameter);
 
             WireUpForceUpdateSizeRequested(item, TableViewCell, tv);
 

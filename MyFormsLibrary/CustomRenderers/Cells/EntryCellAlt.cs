@@ -3,7 +3,7 @@ using Xamarin.Forms;
 
 namespace MyFormsLibrary.CustomRenderers
 {
-    public class EntryCellAlt:CellBase   
+    public class EntryCellAlt:CellBase,IEntryCellController
     {
         public EntryCellAlt() {
         }
@@ -65,7 +65,11 @@ namespace MyFormsLibrary.CustomRenderers
             set { SetValue(KeyboardProperty, value); }
         }
 
-
-
+        public event EventHandler Completed;
+        public void SendCompleted() {
+           EventHandler handler = Completed;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
     }
 }

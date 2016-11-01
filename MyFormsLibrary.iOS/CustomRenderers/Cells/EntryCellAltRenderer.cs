@@ -28,14 +28,16 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             }
             else {
                 item.PropertyChanged -= Item_PropertyChanged;
-                TableViewCell.TextFieldTextChanged -= TableViewCell_TextFieldTextChanged;
+                TableViewCell.TextFieldTextChanged -= OnTextFieldTextChanged;
+                TableViewCell.KeyboardDoneButtonPressed -= OnKeyboardDoneButtonPressed;
             }
 
             Cell = TableViewCell;
             TableViewCell.Cell = item;
 
             item.PropertyChanged += Item_PropertyChanged;
-            TableViewCell.TextFieldTextChanged += TableViewCell_TextFieldTextChanged;
+            TableViewCell.TextFieldTextChanged += OnTextFieldTextChanged;
+            TableViewCell.KeyboardDoneButtonPressed += OnKeyboardDoneButtonPressed;
 
             WireUpForceUpdateSizeRequested(item, TableViewCell, tv);
 
@@ -65,8 +67,12 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             }
         }
 
-        void TableViewCell_TextFieldTextChanged(object sender, EventArgs e) {
+        void OnTextFieldTextChanged(object sender, EventArgs e) {
             EntryCell.Text = TableViewCell.TextField.Text;
+        }
+
+        void OnKeyboardDoneButtonPressed(object sender, EventArgs e) {
+            EntryCell.SendCompleted();
         }
 
         void UpdateText() {
@@ -121,7 +127,13 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
         public event EventHandler TextFieldTextChanged;
 
+        public event EventHandler KeyboardDoneButtonPressed;
+
         bool OnShouldReturn(UITextField view) {
+            var handler = KeyboardDoneButtonPressed;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+
             TextField.ResignFirstResponder();
             return true;
         }

@@ -3,6 +3,7 @@ using MyFormsLibrary.CustomRenderers;
 using MyFormsLibrary.Droid.CustomRenderers;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
+using Android.Graphics.Drawables;
 
 [assembly: ExportRenderer(typeof(TableViewEx), typeof(TableViewExRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
@@ -14,6 +15,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
             if (e.NewElement != null) {
                 UpdateSeparator();
+
             }
         }
 
@@ -36,7 +38,10 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         void UpdateSeparator() {
             var color = (Element as TableViewEx).SeparatorColor;
             if (color != Color.Default) {
-                Control.Divider.SetColorFilter(color.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn);
+                //Control.Divider.SetColorFilter(color.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn);
+                Control.Divider = new ColorDrawable(color.ToAndroid());
+                Control.DividerHeight = 1;
+                //Control.ScrollingCacheEnabled = false;
             }
 
         }

@@ -9,6 +9,7 @@
     <RootNamespace>MyFormsLibrary.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>MyFormsLibrary.iOS</AssemblyName>
+    <ReleaseVersion>1.0.7</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -98,7 +99,6 @@
     <Compile Include="CustomRenderers\TableViewExRenderer.cs" />
     <Compile Include="CustomRenderers\TableViewModelExRenderer.cs" />
     <Compile Include="CustomRenderers\Cells\CommandCellRenderer.cs" />
-    <Compile Include="CustomRenderers\Cells\EntryCellExRenderer.cs" />
     <Compile Include="CustomRenderers\Cells\NonSelectionViewCellRenderer.cs" />
     <Compile Include="CustomRenderers\Cells\CellBaseRenderer.cs" />
     <Compile Include="CustomRenderers\Cells\EntryCellAltRenderer.cs" />

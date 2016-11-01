@@ -90,7 +90,7 @@ namespace MyFormsLibrary.CustomRenderers
                     var sv = DependencyService.Get<ISvgService>();
                     Device.OnPlatform(
                         iOS: () => { _Image = sv.GetCanvas(g, 25, 25,IconColor);},
-                        Android: () => { _Image = sv.GetCanvas(g, 24, 24,IconColor); }
+                        Android: () => { _Image = sv.GetCanvas(g, 30, 30,IconColor); }
                     );
                 }
 
