@@ -18,18 +18,18 @@ namespace MyFormsLibrary.CustomRenderers
             set { SetValue(SeparatorColorProperty, value); }
         }
 
-        public static BindableProperty SectionTitleColorProperty =
+        public static BindableProperty HeaderTextColorProperty =
             BindableProperty.Create(
-                nameof(SectionTitleColor),
+                nameof(HeaderTextColor),
                 typeof(Color),
                 typeof(TableViewEx),
                 default(Color),
                 defaultBindingMode: BindingMode.OneWay
             );
 
-        public Color SectionTitleColor {
-            get { return (Color)GetValue(SectionTitleColorProperty); }
-            set { SetValue(SectionTitleColorProperty, value); }
+        public Color HeaderTextColor {
+            get { return (Color)GetValue(HeaderTextColorProperty); }
+            set { SetValue(HeaderTextColorProperty, value); }
         }
 
         public static BindableProperty CellLabelColorProperty =
@@ -90,6 +90,65 @@ namespace MyFormsLibrary.CustomRenderers
         public double CellValueTextFontSize {
             get { return (double)GetValue(CellValueTextFontSizeProperty); }
             set { SetValue(CellValueTextFontSizeProperty, value); }
+        }
+
+        public static BindableProperty HeaderFontSizeProperty =
+            BindableProperty.Create(
+                nameof(HeaderFontSize),
+                typeof(double),
+                typeof(TableViewEx),
+                -1.0,
+                defaultBindingMode: BindingMode.OneWay,
+                defaultValueCreator: bindable => Device.GetNamedSize(NamedSize.Small, (TableViewEx)bindable)
+            );
+
+        [TypeConverter(typeof(FontSizeConverter))]
+        public double HeaderFontSize {
+            get { return (double)GetValue(HeaderFontSizeProperty); }
+            set { SetValue(HeaderFontSizeProperty, value); }
+        }
+
+
+        public static BindableProperty HeaderTextVerticalAlignProperty =
+            BindableProperty.Create(
+                nameof(HeaderTextVerticalAlign),
+                typeof(LayoutAlignment),
+                typeof(TableViewEx),
+                LayoutAlignment.End,
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public LayoutAlignment HeaderTextVerticalAlign {
+            get { return (LayoutAlignment)GetValue(HeaderTextVerticalAlignProperty); }
+            set { SetValue(HeaderTextVerticalAlignProperty, value); }
+        }
+
+        public static BindableProperty HeaderBackgroundColorProperty =
+            BindableProperty.Create(
+                nameof(HeaderBackgroundColor),
+                typeof(Color),
+                typeof(TableViewEx),
+                Color.Transparent,
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public Color HeaderBackgroundColor {
+            get { return (Color)GetValue(HeaderBackgroundColorProperty); }
+            set { SetValue(HeaderBackgroundColorProperty, value); }
+        }
+
+        public static BindableProperty HeaderHeightProperty =
+            BindableProperty.Create(
+                nameof(HeaderHeight),
+                typeof(float),
+                typeof(TableViewEx),
+                44f,
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public float HeaderHeight {
+            get { return (float)GetValue(HeaderHeightProperty); }
+            set { SetValue(HeaderHeightProperty, value); }
         }
       
     }

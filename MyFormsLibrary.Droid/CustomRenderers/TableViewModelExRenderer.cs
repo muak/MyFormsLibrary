@@ -5,17 +5,19 @@ using MyFormsLibrary.CustomRenderers;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using AListView = Android.Widget.ListView;
+using Android.Views;
+using Android.Support.V4.View;
 
 namespace MyFormsLibrary.Droid.CustomRenderers
 {
     public class TableViewModelExRenderer:TableViewModelRenderer
     {
-        readonly TableView _view;
+        readonly TableViewEx _view;
         ITableViewController Controller => _view;
 
         public TableViewModelExRenderer(Context context, AListView listview, TableView view)
             : base(context, listview, view) {
-            _view = view;
+            _view = view as TableViewEx;
         }
 
         public override Android.Views.View GetView(int position, Android.Views.View convertView, Android.Views.ViewGroup parent) {
@@ -25,30 +27,53 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             if (IsHeader(position)) {
                
                 var tmp = layout as LinearLayout;
+
                 var textView = tmp.GetChildAt(0) as BaseCellView;
                 if (textView != null) {
-                    var color = (_view as TableViewEx).SectionTitleColor;
-                    if (color != Color.Default) {
-                        textView.SetMainTextColor(color);
-                    }
-                }
+                    HeaderConfiguration(textView);
+                 }
+
                 var border = tmp.GetChildAt(1);
                 if (border != null) {
-                    var color = (_view as TableViewEx).SeparatorColor;
-                    if (color != Color.Default) {
-                        border.SetBackgroundColor(color.ToAndroid());
-                    }
+                    border.SetBackgroundColor(Android.Graphics.Color.Transparent);
                     //ヘッダー境界線の太さ
-                    border.LayoutParameters.Height = 3;
+                    border.LayoutParameters.Height = 0;
                 }
-
-
+               
             }
-
            
             return layout;
         }
 
+        void HeaderConfiguration(BaseCellView textView) {
+            
+            var color = _view.HeaderTextColor;
+
+            if (color != Color.Default) {
+                textView.SetMainTextColor(color);
+            }
+
+            var fontsize = _view.HeaderFontSize;
+            var textContainer = textView.GetChildAt(1) as LinearLayout;
+
+            if (textContainer != null) {
+
+                var tv = textContainer.GetChildAt(0) as TextView;
+                tv?.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)fontsize);
+
+                var vAlign = _view.HeaderTextVerticalAlign;
+                if (vAlign != LayoutAlignment.Center) {
+                    textContainer.LayoutParameters.Height = ViewGroup.LayoutParams.MatchParent;
+                    textContainer.SetGravity(
+                        vAlign == LayoutAlignment.Start ? GravityFlags.Top : GravityFlags.Bottom |
+                        GravityFlags.ClipVertical
+                    );
+                }
+            }
+
+            textView.SetBackgroundColor(_view.HeaderBackgroundColor.ToAndroid());
+            textView.SetRenderHeight(_view.HeaderHeight);
+        }
 
         protected override void HandleItemClick(AdapterView parent, Android.Views.View nview, int position, long id) {
             base.HandleItemClick(parent, nview, position, id);
@@ -56,7 +81,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             var view = (nview as LinearLayout)?.GetChildAt(0);
 
             if (view is CommandCellView) {
-                (view as CommandCellView)?.Execute();
+                (view as CommandCellView)?.Execute?.Invoke();
+               
             }
         }
 

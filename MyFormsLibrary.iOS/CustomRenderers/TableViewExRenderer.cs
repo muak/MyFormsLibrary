@@ -3,6 +3,7 @@ using MyFormsLibrary.iOS.CustomRenderers;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
+using CoreGraphics;
 
 [assembly: ExportRenderer(typeof(TableViewEx), typeof(TableViewExRenderer))]
 namespace MyFormsLibrary.iOS.CustomRenderers
@@ -13,6 +14,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             base.OnElementChanged(e);
 
             if (e.NewElement != null) {
+                Control.SectionFooterHeight = 0;
                 UpdateSeparator();
                 SetSource();
             }
@@ -24,11 +26,12 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             if (e.PropertyName == TableViewEx.SeparatorColorProperty.PropertyName) {
                 UpdateSeparator();
             }
-            else if (e.PropertyName == TableViewEx.SectionTitleColorProperty.PropertyName) {
+            else if (e.PropertyName == TableViewEx.HeaderTextColorProperty.PropertyName) {
                 Control.ReloadData();
             }
 
         }
+
 
         void UpdateSeparator() {
             var color = (Element as TableViewEx).SeparatorColor;

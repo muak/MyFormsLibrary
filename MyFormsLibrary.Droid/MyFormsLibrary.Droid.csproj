@@ -14,7 +14,7 @@
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>MyFormsLibrary.Droid</AssemblyName>
     <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
-    <ReleaseVersion>1.0.8</ReleaseVersion>
+    <ReleaseVersion>1.0.9</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -134,6 +134,7 @@
     <Compile Include="CustomRenderers\Cells\CellBaseRenderer.cs" />
     <Compile Include="CustomRenderers\Cells\EntryCellAltRenderer.cs" />
     <Compile Include="CustomRenderers\Cells\CommandCellRenderer.cs" />
+    <Compile Include="CustomRenderers\Cells\LabelCellRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

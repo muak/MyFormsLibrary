@@ -22,19 +22,31 @@ namespace MyFormsLibrary.iOS.Effects
 				oldBorderValue = textfield.BorderStyle;
 				oldBackgroundValue = textfield.BackgroundColor;
 				textfield.BorderStyle = UITextBorderStyle.None;
-
 			}
-
 		}
 
 		protected override void OnDetached() {
-			if (Control is UITextField) {
-				var textfield = Control as UITextField;
-				textfield.BorderStyle = (UITextBorderStyle)oldBorderValue;
-				textfield.BackgroundColor = (UIColor)oldBackgroundValue;
-			}
+
 		}
 
+        protected override void OnElementPropertyChanged(System.ComponentModel.PropertyChangedEventArgs args) {
+            base.OnElementPropertyChanged(args);
+
+            if (args.PropertyName == HideBorder.IsEnabledProperty.PropertyName) {
+                UpdateIsEnabled();
+            }
+        }
+
+        void UpdateIsEnabled() {
+            var isEnabled = HideBorder.GetIsEnabled(Element);
+            if (!isEnabled) {
+                if (Control is UITextField) {
+                    var textfield = Control as UITextField;
+                    textfield.BorderStyle = (UITextBorderStyle)oldBorderValue;
+                    textfield.BackgroundColor = (UIColor)oldBackgroundValue;
+                 }
+            }
+        }
 	}
 }
 

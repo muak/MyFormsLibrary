@@ -126,7 +126,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
     }
 
-    public class EntryCellAltView:CellBaseView,ITextWatcher,global::Android.Views.View.IOnTouchListener
+    public class EntryCellAltView:CellBaseView,ITextWatcher,global::Android.Views.View.IOnTouchListener,Android.Views.View.IOnClickListener
             ,global::Android.Views.View.IOnFocusChangeListener,TextView.IOnEditorActionListener
     {
         public EntryCellEditText EditText { get; set; }
@@ -144,7 +144,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             EditText.SetOnTouchListener(this);
             EditText.SetSingleLine(true);
             EditText.Gravity = GravityFlags.Right;
-
+            SetOnClickListener(this);
+           
            
             var textParams = new LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent) {
                 Width = 0,
@@ -187,6 +188,14 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                     inputMethodManager.HideSoftInputFromWindow(windowToken, HideSoftInputFlags.None);
             }
         }
+        void ShowKeyboard(Android.Views.View inputView) {
+            using (var inputMethodManager = (InputMethodManager)Forms.Context.GetSystemService(Context.InputMethodService)) {
+                
+                inputMethodManager.ShowSoftInput(inputView, ShowFlags.Forced);
+                inputMethodManager.ToggleSoftInput(ShowFlags.Forced, HideSoftInputFlags.ImplicitOnly);
+               
+            }
+        }
 
         void ITextWatcher.AfterTextChanged(IEditable s) {
         }
@@ -213,11 +222,26 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 editingCompleted();
         }
 
+        public void OnClick(Android.Views.View v) {
+            //EditTextのタッチイベントを生成
+            OnTouch(EditText,
+                        MotionEvent.Obtain(DateTime.Now.Millisecond,
+                                           DateTime.Now.Millisecond + 100,
+                                           MotionEventActions.Down, 0, 0, 0));
+            //この順番じゃないとフォーカスが当たらない
+            EditText.RequestFocus();
+            //自動で出ないので手動でキーボードを出す
+            ShowKeyboard(EditText);
+        }
+
         public bool OnTouch(Android.Views.View v, MotionEvent e) {
             //EditTextがフォーカスを受けられるようにする
             var p = Parent as LinearLayout;
             p.DescendantFocusability = DescendantFocusability.AfterDescendants;
+
             return false;
         }
+
+
     }
 }

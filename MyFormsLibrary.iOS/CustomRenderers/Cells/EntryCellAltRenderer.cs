@@ -5,6 +5,7 @@ using MyFormsLibrary.iOS.CustomRenderers;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
+using NControl.iOS;
 
 [assembly: ExportRenderer(typeof(EntryCellAlt), typeof(EntryCellAltRenderer))]
 namespace MyFormsLibrary.iOS.CustomRenderers
@@ -17,19 +18,24 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         public override UIKit.UITableViewCell GetCell(Xamarin.Forms.Cell item, UIKit.UITableViewCell reusableCell, UIKit.UITableView tv) {
             base.GetCell(item, reusableCell, tv);
 
-            base.GetCell(item, reusableCell, tv);
+            UITapGestureRecognizer tapGesture = null;
 
             EntryCell = (EntryCellAlt)item;
 
             TableViewCell = reusableCell as EntryCellAltView;
             if (TableViewCell == null) {
                 TableViewCell = new EntryCellAltView(item.GetType().FullName);
+
             }
             else {
                 item.PropertyChanged -= Item_PropertyChanged;
                 ParentElement.PropertyChanged -= ParentElement_PropertyChanged;
                 TableViewCell.TextFieldTextChanged -= OnTextFieldTextChanged;
                 TableViewCell.KeyboardDoneButtonPressed -= OnKeyboardDoneButtonPressed;
+                if (tapGesture != null) {
+                    TableViewCell.RemoveGestureRecognizer(tapGesture);
+                    tapGesture.Dispose();
+                }
             }
 
             Cell = TableViewCell;
@@ -39,6 +45,11 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             ParentElement.PropertyChanged += ParentElement_PropertyChanged;
             TableViewCell.TextFieldTextChanged += OnTextFieldTextChanged;
             TableViewCell.KeyboardDoneButtonPressed += OnKeyboardDoneButtonPressed;
+
+            tapGesture = new UITapGestureRecognizer((obj) => {
+                TableViewCell.TextField.BecomeFirstResponder();
+            });
+            TableViewCell.AddGestureRecognizer(tapGesture);
 
             WireUpForceUpdateSizeRequested(item, TableViewCell, tv);
 
@@ -128,6 +139,8 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             TextField.ShouldReturn = OnShouldReturn;
 
             ContentView.AddSubview(TextField);
+
+
         }
 
         public override void LayoutSubviews() {

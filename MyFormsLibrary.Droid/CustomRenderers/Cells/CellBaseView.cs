@@ -28,8 +28,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             Orientation = Orientation.Horizontal;
 
 
-            var padding = (int)context.ToPixels(8);
-            SetPadding((int)context.ToPixels(15), padding, (int)context.ToPixels(15), padding);
+            var padding = (int)context.FromPixels(8);
+         
+            SetPadding(padding + (int)context.ToPixels(15), padding, (int)context.ToPixels(15), padding);
 
             //this.LayoutParameters = new LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent);
 

@@ -26,7 +26,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 UpdateSeparator();
                 Control.InvalidateViews();
             }
-            else if (e.PropertyName == TableViewEx.SectionTitleColorProperty.PropertyName) {
+            else if (e.PropertyName == TableViewEx.HeaderTextColorProperty.PropertyName) {
                 Control.InvalidateViews();
             }
         }
