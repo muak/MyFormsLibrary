@@ -7,7 +7,7 @@ using MyFormsLibrary.CustomRenderers;
 
 namespace MyFormsLibrary.iOS.CustomRenderers
 {
-    public class TableViewModelExRenderer : TableViewModelRenderer
+    public class TableViewModelExRenderer : UnEvenTableViewModelRenderer
     {
         TableViewEx Model;
 
@@ -16,7 +16,20 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         }
 
         public override UITableViewCell GetCell(UITableView tableView, Foundation.NSIndexPath indexPath) {
-            return base.GetCell(tableView, indexPath);
+            var cell =  base.GetCell(tableView, indexPath);
+
+            if (!(Model.BackgroundColor == Color.Default && Model.CellBackgroundColor == Color.Default)) {
+                cell.BackgroundColor = Model.CellBackgroundColor.ToUIColor();
+            }
+            return cell;
+        }
+
+
+        public override nfloat GetHeightForRow(UITableView tableView, Foundation.NSIndexPath indexPath) {
+            if (this is UnEvenTableViewModelExRenderer) {
+                return base.GetHeightForRow(tableView, indexPath);
+            }
+            return UITableView.AutomaticDimension;
         }
 
         public override UIKit.UIView GetViewForHeader(UIKit.UITableView tableView, nint section) {
@@ -95,5 +108,12 @@ namespace MyFormsLibrary.iOS.CustomRenderers
                 End=2
             }
         }
+    }
+    public class UnEvenTableViewModelExRenderer : TableViewModelExRenderer
+    {
+        public UnEvenTableViewModelExRenderer(TableView model) : base(model) {
+        }
+
+       
     }
 }

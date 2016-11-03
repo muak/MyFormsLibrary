@@ -15,7 +15,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
             if (e.NewElement != null) {
                 UpdateSeparator();
-
+                Control.SetDrawSelectorOnTop(true);
             }
         }
 
@@ -38,10 +38,10 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         void UpdateSeparator() {
             var color = (Element as TableViewEx).SeparatorColor;
             if (color != Color.Default) {
-                //Control.Divider.SetColorFilter(color.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn);
-                Control.Divider = new ColorDrawable(color.ToAndroid());
-                Control.DividerHeight = 1;
-                //Control.ScrollingCacheEnabled = false;
+                Control.DividerHeight = 0;
+                Control.Divider = null;
+                Control.SetFooterDividersEnabled(false);
+                Control.SetHeaderDividersEnabled(false);
             }
 
         }

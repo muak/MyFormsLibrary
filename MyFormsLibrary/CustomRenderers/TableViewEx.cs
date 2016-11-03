@@ -4,6 +4,7 @@ namespace MyFormsLibrary.CustomRenderers
 {
     public class TableViewEx:TableView
     {
+        
         public static BindableProperty SeparatorColorProperty =
             BindableProperty.Create(
                 nameof(SeparatorColor),
@@ -149,6 +150,20 @@ namespace MyFormsLibrary.CustomRenderers
         public float HeaderHeight {
             get { return (float)GetValue(HeaderHeightProperty); }
             set { SetValue(HeaderHeightProperty, value); }
+        }
+
+        public static BindableProperty CellBackgroundColorProperty =
+            BindableProperty.Create(
+                nameof(CellBackgroundColor),
+                typeof(Color),
+                typeof(TableViewEx),
+                default(Color),
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public Color CellBackgroundColor {
+            get { return (Color)GetValue(CellBackgroundColorProperty); }
+            set { SetValue(CellBackgroundColorProperty, value); }
         }
       
     }

@@ -14,7 +14,7 @@
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>MyFormsLibrary.Droid</AssemblyName>
     <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
-    <ReleaseVersion>1.0.9</ReleaseVersion>
+    <ReleaseVersion>1.0.11</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

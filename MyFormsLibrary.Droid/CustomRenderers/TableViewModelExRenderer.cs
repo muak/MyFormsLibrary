@@ -8,6 +8,7 @@ using AListView = Android.Widget.ListView;
 using Android.Views;
 using Android.Support.V4.View;
 
+
 namespace MyFormsLibrary.Droid.CustomRenderers
 {
     public class TableViewModelExRenderer:TableViewModelRenderer
@@ -24,23 +25,33 @@ namespace MyFormsLibrary.Droid.CustomRenderers
            
             var layout = base.GetView(position, convertView, parent);
 
-            if (IsHeader(position)) {
-               
-                var tmp = layout as LinearLayout;
+            var linearLayout = layout as LinearLayout;
+            var textView = linearLayout.GetChildAt(0) as BaseCellView;
+            var border = linearLayout.GetChildAt(1);
 
-                var textView = tmp.GetChildAt(0) as BaseCellView;
+            if (IsHeader(position)) {
+
                 if (textView != null) {
                     HeaderConfiguration(textView);
-                 }
+                }
 
-                var border = tmp.GetChildAt(1);
                 if (border != null) {
                     border.SetBackgroundColor(Android.Graphics.Color.Transparent);
                     //ヘッダー境界線の太さ
                     border.LayoutParameters.Height = 0;
                 }
-               
             }
+            else {
+                if (border.Background is ColorDrawable) {
+                    border.LayoutParameters.Height = 0;
+                }
+                else {
+                    border.SetBackgroundColor(_view.SeparatorColor.ToAndroid());
+                }
+
+                layout.SetBackgroundColor(_view.CellBackgroundColor.ToAndroid());
+            }
+
            
             return layout;
         }

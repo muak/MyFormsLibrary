@@ -15,6 +15,9 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
             if (e.NewElement != null) {
                 Control.SectionFooterHeight = 0;
+                if (e.NewElement.BackgroundColor != Color.Default) {
+                    Control.BackgroundColor = e.NewElement.BackgroundColor.ToUIColor();
+                }
                 UpdateSeparator();
                 SetSource();
             }
@@ -40,7 +43,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
         void SetSource() {
             var modeledView = Element;
-            Control.Source = modeledView.HasUnevenRows ? new UnEvenTableViewModelRenderer(modeledView) : (TableViewModelRenderer)new TableViewModelExRenderer(modeledView);
+            Control.Source = modeledView.HasUnevenRows ? new UnEvenTableViewModelExRenderer(modeledView) : (TableViewModelRenderer)new TableViewModelExRenderer(modeledView);
         }
 
     }
