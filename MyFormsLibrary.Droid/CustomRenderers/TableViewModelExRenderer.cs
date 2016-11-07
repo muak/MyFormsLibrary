@@ -36,9 +36,10 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 }
 
                 if (border != null) {
-                    border.SetBackgroundColor(Android.Graphics.Color.Transparent);
+                    border.Background = null;
+                    border.SetBackgroundColor(_view.SeparatorColor.ToAndroid());
                     //ヘッダー境界線の太さ
-                    border.LayoutParameters.Height = 0;
+                    //border.LayoutParameters.Height = 0;
                 }
             }
             else {

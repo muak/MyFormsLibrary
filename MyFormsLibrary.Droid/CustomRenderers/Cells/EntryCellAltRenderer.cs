@@ -10,6 +10,7 @@ using MyFormsLibrary.CustomRenderers;
 using MyFormsLibrary.Droid.CustomRenderers;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
+using Android.Graphics.Drawables;
 
 
 [assembly: ExportRenderer(typeof(EntryCellAlt), typeof(EntryCellAltRenderer))]
@@ -132,6 +133,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         public EntryCellEditText EditText { get; set; }
 
 
+        private Drawable EditTextBack;
 
         public EntryCellAltView(Context context, Cell cell) : base(context,cell) {
 
@@ -145,6 +147,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             EditText.SetSingleLine(true);
             EditText.Gravity = GravityFlags.Right;
             SetOnClickListener(this);
+
+            EditTextBack = EditText.Background;
+            EditText.SetBackground(null);
            
            
             var textParams = new LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent) {
@@ -211,8 +216,15 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
         void IOnFocusChangeListener.OnFocusChange(Android.Views.View v, bool hasFocus) {
             Action<bool> focusChanged = FocusChanged;
-            if (focusChanged != null)
+            if (focusChanged != null) {
                 focusChanged(hasFocus);
+            }
+            if (hasFocus) {
+                EditText.SetBackground(EditTextBack);
+            }
+            else {
+                EditText.SetBackground(null);
+            }
         }
 
         void OnKeyboardDoneButtonPressed(object sender, EventArgs e) {
