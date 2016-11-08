@@ -165,6 +165,21 @@ namespace MyFormsLibrary.CustomRenderers
             get { return (Color)GetValue(CellBackgroundColorProperty); }
             set { SetValue(CellBackgroundColorProperty, value); }
         }
+
+        //Android Only
+        public static BindableProperty ShowSectionTopBottomBorderProperty =
+            BindableProperty.Create(
+                nameof(ShowSectionTopBottomBorder),
+                typeof(bool),
+                typeof(TableViewEx),
+                true,
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public bool ShowSectionTopBottomBorder {
+            get { return (bool)GetValue(ShowSectionTopBottomBorderProperty); }
+            set { SetValue(ShowSectionTopBottomBorderProperty, value); }
+        }
       
     }
 }
