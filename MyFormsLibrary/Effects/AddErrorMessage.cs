@@ -40,7 +40,7 @@ namespace MyFormsLibrary.Effects
         }
 
         private static void OnIsEnabledChanged(BindableObject bindable, object oldValue, object newValue) {
-            var view = bindable as View;
+            var view = bindable as Element;
             if (view == null)
                 return;
 
