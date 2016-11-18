@@ -129,7 +129,7 @@ namespace MyFormsLibrary.CustomRenderers
                 nameof(HeaderBackgroundColor),
                 typeof(Color),
                 typeof(TableViewEx),
-                Color.Transparent,
+                default(Color),
                 defaultBindingMode: BindingMode.OneWay
             );
 

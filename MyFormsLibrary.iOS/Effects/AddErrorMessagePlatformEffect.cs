@@ -4,6 +4,7 @@ using MyFormsLibrary.iOS.Effects;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
+using System.Drawing;
 
 
 [assembly: ExportEffect(typeof(AddErrorMessagePlatformEffect), nameof(AddErrorMessage))]
@@ -24,11 +25,10 @@ namespace MyFormsLibrary.iOS.Effects
             errorLabel.TintAdjustmentMode = UIViewTintAdjustmentMode.Automatic;
             errorLabel.AdjustsFontSizeToFitWidth = true;
             errorLabel.BaselineAdjustment = UIBaselineAdjustment.AlignCenters;
-            errorLabel.TextAlignment = UITextAlignment.Center;
+            errorLabel.TextAlignment = UITextAlignment.Right;
             errorLabel.AdjustsLetterSpacingToFitWidth = true;
             errorLabel.Font = errorLabel.Font.WithSize(10);
 
-            UpdateText();
 
             Container.AddSubview(errorLabel);
 
@@ -40,6 +40,15 @@ namespace MyFormsLibrary.iOS.Effects
                     NSLayoutRelation.Equal,
                     Container,
                     NSLayoutAttribute.Top,
+                    1,
+                    0
+                ),
+                NSLayoutConstraint.Create(
+                    errorLabel,
+                    NSLayoutAttribute.Left,
+                    NSLayoutRelation.Equal,
+                    Container,
+                    NSLayoutAttribute.Left,
                     1,
                     0
                 ),
@@ -64,8 +73,9 @@ namespace MyFormsLibrary.iOS.Effects
             };
 
             Container.AddConstraints(constraint);
-            errorLabel.SizeToFit();
 
+
+            UpdateText();
         }
 
         protected override void OnDetached() {
@@ -78,6 +88,7 @@ namespace MyFormsLibrary.iOS.Effects
             var msg = AddErrorMessage.GetErrorMessage(Element);
             errorLabel.Text = $" {msg} ";
             errorLabel.Hidden = string.IsNullOrEmpty(msg);
+
         }
 
         protected override void OnElementPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e) {

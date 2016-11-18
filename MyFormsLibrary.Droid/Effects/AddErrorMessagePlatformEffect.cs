@@ -17,6 +17,7 @@ namespace MyFormsLibrary.Droid.Effects
     {
         private TextView textView;
         private ARelativeLayout relative;
+        private ContainerOnLayoutChangeListener listener;
 
         protected override void OnAttached() {
             relative = new ARelativeLayout(Container.Context);
@@ -44,7 +45,7 @@ namespace MyFormsLibrary.Droid.Effects
                 Container.AddView(relative, textParams);
             }
 
-            var listener = new ContainerOnLayoutChangeListener(relative,textView);
+            listener = new ContainerOnLayoutChangeListener(relative,textView);
             Control.AddOnLayoutChangeListener(listener);
 
             UpdateText();
@@ -52,6 +53,9 @@ namespace MyFormsLibrary.Droid.Effects
         }
 
         protected override void OnDetached() {
+            Container.RemoveView(relative);
+            Control.RemoveOnLayoutChangeListener(listener);
+            listener.Dispose();
             textView.Dispose();
             relative.Dispose();
         }
