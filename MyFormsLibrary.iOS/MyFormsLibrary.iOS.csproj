@@ -9,7 +9,7 @@
     <RootNamespace>MyFormsLibrary.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>MyFormsLibrary.iOS</AssemblyName>
-    <ReleaseVersion>1.1.0-pre5</ReleaseVersion>
+    <ReleaseVersion>1.1.0-pre6</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

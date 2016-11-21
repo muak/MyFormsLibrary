@@ -159,8 +159,6 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         public EntryCellEditText EditText { get; set; }
         public TextView ErrorLabel { get; private set;}
 
-        private Drawable EditTextBack;
-
         public EntryCellAltView(Context context, Cell cell) : base(context,cell) {
             var relative = new ARelativeLayout(context);
 
@@ -178,9 +176,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 EditText.Gravity = GravityFlags.Right;
                 SetOnClickListener(this);
 
-                EditTextBack = EditText.Background;
-                EditText.SetBackground(null);
-
+                EditText.Background.Alpha = 0;  //下線は非表示
                 relative.AddView(EditText, lparam);
             }
 
@@ -269,10 +265,12 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 focusChanged(hasFocus);
             }
             if (hasFocus) {
-                EditText.SetBackground(EditTextBack);
+                //フォーカス時のみ下線表示
+                EditText.Background.Alpha = 100;
             }
             else {
-                EditText.SetBackground(null);
+                //非フォーカス時は非表示
+                EditText.Background.Alpha = 0;
             }
         }
 
