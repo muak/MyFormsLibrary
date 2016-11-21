@@ -11,7 +11,7 @@ namespace MyFormsLibrary.Navigation
     public static class NavigationServiceExtentions
     {
 
-        public static async Task NavigateAsync<T>(this INavigationService nav,object myParam=null,NavigationParameters originalParam=null,bool animated=true) where T:ContentPage {
+        public static async Task NavigateAsync<T>(this INavigationService nav,object myParam=null,bool animated=true, NavigationParameters originalParam = null) where T:ContentPage {
             var myNavi = nav as MyPageNavigationService;
 
             var param = myNavi.Container.Resolve<INavigationParameter>();
@@ -23,7 +23,7 @@ namespace MyFormsLibrary.Navigation
             await nav.NavigateAsync(typeof(T).Name,originalParam,(bool?)false,animated);
         }
 
-        public static async Task NavigateModalAsync<T>(this INavigationService nav,object myParam=null, NavigationParameters originalParam = null, bool animated = true) where T : ContentPage {
+        public static async Task NavigateModalAsync<T>(this INavigationService nav,object myParam=null, bool animated = true, NavigationParameters originalParam = null) where T : ContentPage {
             var myNavi = nav as MyPageNavigationService;
             var param = myNavi.Container.Resolve<INavigationParameter>();
             param.Value = myParam;

@@ -113,7 +113,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 		}
 		void TabLayout.IOnTabSelectedListener.OnTabSelected(TabLayout.Tab tab) {
-			if (Element == null)
+			if (tabbedEx == null)
 				return;
 
 			int selectedIndex = tab.Position;
@@ -140,11 +140,11 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 			if (tabbedEx.Parent is NavigationPageEx) {
 				var navi = tabbedEx.Parent as NavigationPageEx;
                 navi.BarTextColor = tabbedEx.BarTextColor;
-                if (tabbedEx.BarTextColor != Xamarin.Forms.Color.Default) {
+                if (attr.BarTextColor != Xamarin.Forms.Color.Default) {
                     navi.BarTextColor = attr.BarTextColor;
                 }
                 navi.StatusBarBackColor = tabbedEx.StatusBarBackColor;
-                if (tabbedEx.StatusBarBackColor != Xamarin.Forms.Color.Default) {
+                if (attr.StatusBarBackColor != Xamarin.Forms.Color.Default) {
                     navi.StatusBarBackColor = attr.StatusBarBackColor;
                 }
 				
@@ -160,6 +160,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 		}
 
 		void TabLayout.IOnTabSelectedListener.OnTabUnselected(TabLayout.Tab tab) {
+            if (tabbedEx == null) return;
+
 			int selectedIndex = tab.Position;
 
 			var attr = tabbedEx.TabAttributes[selectedIndex];
