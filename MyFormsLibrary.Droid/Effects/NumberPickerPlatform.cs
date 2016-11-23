@@ -6,6 +6,7 @@ using MyFormsLibrary.Effects;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using APicker = Android.Widget.NumberPicker;
+using System.Windows.Input;
 
 [assembly: ExportEffect(typeof(NumberPickerPlatform), nameof(NumberPicker))]
 namespace MyFormsLibrary.Droid.Effects
@@ -16,6 +17,7 @@ namespace MyFormsLibrary.Droid.Effects
         private APicker Picker;
         private Android.Views.View View;
         private string Title;
+        private ICommand Command;
 
 
         protected override void OnAttached() {
@@ -45,6 +47,7 @@ namespace MyFormsLibrary.Droid.Effects
                         });
                         builder.SetPositiveButton(global::Android.Resource.String.Ok, (o, args) => { 
                             NumberPicker.SetSelectedItem(Element,Picker.Value);
+                            Command?.Execute(Picker.Value);
                         });
 
                         Dialog = builder.Create();
@@ -63,6 +66,7 @@ namespace MyFormsLibrary.Droid.Effects
             UpdateList();
             UpdateSelect();
             UpdateTitle();
+            UpdateCommand();
         }
 
         protected override void OnDetached() {
@@ -84,6 +88,9 @@ namespace MyFormsLibrary.Droid.Effects
         void UpdateTitle() {
             Title = NumberPicker.GetTitle(Element);
         }
+        void UpdateCommand() {
+            Command = NumberPicker.GetCommand(Element);
+        }
 
         protected override void OnElementPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e) {
             base.OnElementPropertyChanged(e);
@@ -99,6 +106,9 @@ namespace MyFormsLibrary.Droid.Effects
             }
             else if (e.PropertyName == NumberPicker.TitleProperty.PropertyName) {
                 UpdateTitle();
+            }
+            else if (e.PropertyName == NumberPicker.CommandProperty.PropertyName) {
+                UpdateCommand();
             }
 
         }

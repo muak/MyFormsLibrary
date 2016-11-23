@@ -39,6 +39,7 @@ namespace MyFormsLibrary.iOS.Effects
 				command?.Execute(commandParameter ?? Element);
 			});
 
+            view.UserInteractionEnabled = true;
 			view.AddGestureRecognizer(tapGesture);
 
 			UpdateCommand();
