@@ -14,7 +14,7 @@ namespace MyFormsLibrary.CustomRenderers
                 typeof(bool),
                 typeof(SwitchCellAlt),
                 default(bool),
-                defaultBindingMode: BindingMode.OneWay
+                defaultBindingMode: BindingMode.TwoWay
             );
 
         public bool On {

@@ -151,7 +151,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 
 
-		void UpdateMenu() {
+		public void UpdateMenu() {
 			foreach (ToolbarItem item in toolbarTracker.ToolbarItems)
 				item.PropertyChanged -= HandleToolbarItemPropertyChanged;
 			

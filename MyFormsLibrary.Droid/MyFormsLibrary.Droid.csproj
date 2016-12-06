@@ -136,6 +136,7 @@
     <Compile Include="CustomRenderers\Cells\LabelCellRenderer.cs" />
     <Compile Include="Effects\AddErrorMessagePlatformEffect.cs" />
     <Compile Include="CustomRenderers\Cells\SwitchCellAltRenderer.cs" />
+    <Compile Include="Effects\ToFlatButtonPlatformEffect.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

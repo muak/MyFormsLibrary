@@ -19,7 +19,6 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
 				//Control.Bounces = false;
 				Control.AllowsSelection = false;
-                Control.TableFooterView = new UIView();
                 ItemCleanUp = new List<NonSelectionViewCellRenderer>();
 			}
 		}

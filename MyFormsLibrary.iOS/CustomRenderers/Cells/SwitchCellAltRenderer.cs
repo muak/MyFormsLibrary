@@ -59,11 +59,11 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         }
     }
 
-    public class SwitchCellAltView : CellTableViewCell
+    public class SwitchCellAltView : CellBaseView
     {
         public UISwitch Switch { get; set; }
        
-        public SwitchCellAltView(SwitchCellAlt cell,string cellName) : base(UIKit.UITableViewCellStyle.Value1, cellName) {
+        public SwitchCellAltView(SwitchCellAlt cell,string cellName) : base(cellName) {
             var switchCell = cell;
 
             Switch = new UISwitch();

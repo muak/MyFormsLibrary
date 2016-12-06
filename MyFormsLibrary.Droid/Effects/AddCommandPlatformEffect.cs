@@ -21,6 +21,8 @@ namespace MyFormsLibrary.Droid.Effects
 	{
 		private ICommand command;
 		private object commandParameter;
+        private ICommand longCommand;
+        private object longCommandParameter;
 		private Android.Views.View view;
 		private FrameLayout layer;
 
@@ -31,6 +33,8 @@ namespace MyFormsLibrary.Droid.Effects
 
 			UpdateCommand();
 			UpdateCommandParameter();
+            UpdateLongCommand();
+            UpdateLongCommandParameter();
 			UpdateEffectColor();
 
 			view.Click += OnClick;
@@ -51,7 +55,19 @@ namespace MyFormsLibrary.Droid.Effects
 			command?.Execute(commandParameter ?? Element);
 		}
 
-		void View_Touch(object sender, Android.Views.View.TouchEventArgs e) {
+        void OnLongClick(object sender, Android.Views.View.LongClickEventArgs e)
+        {
+            if (longCommand == null) {
+                e.Handled = false;
+                return;
+            }
+
+            longCommand?.Execute((longCommandParameter ?? commandParameter) ?? Element);
+
+            e.Handled = true;
+        }
+
+        void View_Touch(object sender, Android.Views.View.TouchEventArgs e) {
 			if (e.Event.Action == MotionEventActions.Down) {
 				Container.AddView(layer);
 				layer.Top = 0;
@@ -73,6 +89,25 @@ namespace MyFormsLibrary.Droid.Effects
 		void UpdateCommandParameter() {
 			commandParameter = AddCommand.GetCommandParameter(Element);
 		}
+
+        void UpdateLongCommand()
+        {
+            if (longCommand != null) {
+                view.LongClick -= OnLongClick;
+            }
+            longCommand = AddCommand.GetLongCommand(Element);
+            if (longCommand == null) {
+                return;
+            }
+
+            view.LongClick += OnLongClick;
+
+        }
+        void UpdateLongCommandParameter()
+        {
+            longCommandParameter = AddCommand.GetLongCommandParameter(Element);
+        }
+
 		void UpdateEffectColor() {
 			
 			view.Touch -= View_Touch;
@@ -103,6 +138,12 @@ namespace MyFormsLibrary.Droid.Effects
 			else if (e.PropertyName == AddCommand.EffectColorProperty.PropertyName) {
 				UpdateEffectColor();
 			}
+            else if (e.PropertyName == AddCommand.LongCommandProperty.PropertyName) {
+                UpdateLongCommand();
+            }
+            else if (e.PropertyName == AddCommand.LongCommandParameterProperty.PropertyName) {
+                UpdateLongCommandParameter();
+            }
 		}
 	}
 }

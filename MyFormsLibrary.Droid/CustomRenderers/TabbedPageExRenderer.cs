@@ -65,6 +65,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                         }
 						tabbedEx.Title = (tabbedEx.CurrentPage as Page).Title;
 						tabbedEx.CurrentPage.PropertyChanged += CurrentPage_PropertyChanged;
+
+                        var renderer = Platform.GetRenderer(navi) as NavigationPageExRenderer;
+                        renderer.UpdateMenu();
 					}
 
 					if (string.IsNullOrEmpty(attr.Resource)) continue;

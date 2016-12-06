@@ -170,7 +170,8 @@ namespace MyFormsLibrary.iOS.Effects
             var a = Items.IndexOf(NumberPicker.GetSelectedItem(Element));
             ((PickerSource)Picker.Model).SelectedIndex = a;
             ((PickerSource)Picker.Model).SelectedItem = NumberPicker.GetSelectedItem(Element).ToString();
-            Picker.Select(a,0,false);       }
+            Picker.Select(a,0,false);       
+        }
 
         void UpdatePickerFromModel(PickerSource s) {
             NumberPicker.SetSelectedItem(Element,Convert.ToInt32(s.SelectedItem));
@@ -224,11 +225,11 @@ namespace MyFormsLibrary.iOS.Effects
 
         internal class NoCaretField : UITextField
         {
-            public NoCaretField() : base(new RectangleF()) {
+            public NoCaretField() : base(new CGRect()) {
             }
 
             public override CoreGraphics.CGRect GetCaretRectForPosition(UITextPosition position) {
-                return new RectangleF();
+                return new CGRect();
             }
 
         }

@@ -59,7 +59,6 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             UpdateTextColor();
             UpdateTextFontSize();
             UpdateKeyboard();
-            UpdateErrorMessage();
             UpdatePlaceholder();
            
             return TableViewCell;
@@ -87,9 +86,6 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             }
             else if (e.PropertyName == EntryCellAlt.KeyboardProperty.PropertyName) {
                 UpdateKeyboard();
-            }
-            else if (e.PropertyName == EntryCellAlt.ErrorMessageProperty.PropertyName) {
-                UpdateErrorMessage();
             }
             else if (e.PropertyName == EntryCellAlt.PlaceholderProperty.PropertyName) {
                 UpdatePlaceholder();
@@ -131,25 +127,16 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             TableViewCell.TextField.ApplyKeyboard(EntryCell.Keyboard);
         }
 
-
-        void UpdateErrorMessage() {
-            TableViewCell.ErrorLabel.Text = EntryCell.ErrorMessage;
-            TableViewCell.ErrorLabel.Hidden = string.IsNullOrEmpty(EntryCell.ErrorMessage);
-        }
-
         void UpdatePlaceholder() {
             TableViewCell.TextField.Placeholder = EntryCell.Placeholder;
         }
     }
 
-    public class EntryCellAltView : CellTableViewCell
+    public class EntryCellAltView : CellBaseView
     {
         public UITextField TextField { get; }
 
-        public UILabel ErrorLabel { get; private set; }
-        private NSLayoutConstraint[] constraint;
-
-        public EntryCellAltView(string cellName) : base(UITableViewCellStyle.Value1,cellName) {
+        public EntryCellAltView(string cellName) : base(cellName) {
             TextField = new UITextField(new RectangleF(0, 0, 100, 30)) { BorderStyle = UITextBorderStyle.None };
             TextField.TextAlignment = UITextAlignment.Right;
 
@@ -158,76 +145,13 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
             ContentView.AddSubview(TextField);
 
-            SetErrorMessageLabel();
         }
 
-        private void SetErrorMessageLabel() {
-            ErrorLabel = new UILabel();
-            ErrorLabel.LineBreakMode = UILineBreakMode.Clip;
-            ErrorLabel.Lines = 1;
-            ErrorLabel.BackgroundColor = UIColor.FromWhiteAlpha(1, .5f);
-            ErrorLabel.TextColor = UIColor.Red.ColorWithAlpha(0.8f);
-            ErrorLabel.TintAdjustmentMode = UIViewTintAdjustmentMode.Automatic;
-            ErrorLabel.AdjustsFontSizeToFitWidth = true;
-            ErrorLabel.BaselineAdjustment = UIBaselineAdjustment.AlignCenters;
-            ErrorLabel.TextAlignment = UITextAlignment.Right;
-            ErrorLabel.AdjustsLetterSpacingToFitWidth = true;
-            ErrorLabel.Font = ErrorLabel.Font.WithSize(10);
-
-            ContentView.AddSubview(ErrorLabel);
-
-            ErrorLabel.TranslatesAutoresizingMaskIntoConstraints = false;
-            constraint = new NSLayoutConstraint[]{
-                NSLayoutConstraint.Create(
-                    ErrorLabel,
-                    NSLayoutAttribute.Top,
-                    NSLayoutRelation.Equal,
-                    ContentView,
-                    NSLayoutAttribute.Top,
-                    1,
-                    2
-                ),
-                NSLayoutConstraint.Create(
-                    ErrorLabel,
-                    NSLayoutAttribute.Right,
-                    NSLayoutRelation.Equal,
-                    ContentView,
-                    NSLayoutAttribute.Right,
-                    1,
-                    -10
-                ),
-                NSLayoutConstraint.Create(
-                    ErrorLabel,
-                    NSLayoutAttribute.Height,
-                    NSLayoutRelation.Equal,
-                    null,
-                    NSLayoutAttribute.Height,
-                    1,
-                    14
-                ),
-                NSLayoutConstraint.Create(
-                    ErrorLabel,
-                    NSLayoutAttribute.Width,
-                    NSLayoutRelation.Equal,
-                    TextField,
-                    NSLayoutAttribute.Width,
-                    1,
-                    0
-                )
-            };
-
-            ContentView.AddConstraints(constraint);
-            ErrorLabel.SizeToFit();
-        }
 
         protected override void Dispose(bool disposing) {
             TextField.EditingChanged -= TextFieldOnEditingChanged;
             TextField.ShouldReturn = null;
             TextField.Dispose();
-
-            ContentView.RemoveConstraints(constraint);
-            ErrorLabel.RemoveFromSuperview();
-            ErrorLabel.Dispose();
 
             base.Dispose(disposing);
         }

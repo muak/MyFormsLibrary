@@ -52,6 +52,49 @@ namespace MyFormsLibrary.CustomRenderers
             set { SetValue(LabelFontSizeProperty, value); }
         }
 
+        public static BindableProperty ValueTextColorProperty =
+            BindableProperty.Create(
+                nameof(ValueTextColor),
+                typeof(Color),
+                typeof(CellBase),
+                default(Color),
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public Color ValueTextColor {
+            get { return (Color)GetValue(ValueTextColorProperty); }
+            set { SetValue(ValueTextColorProperty, value); }
+        }
+
+        public static BindableProperty ValueTextFontSizeProperty =
+            BindableProperty.Create(
+                nameof(ValueTextFontSize),
+                typeof(double),
+                typeof(CellBase),
+                -1.0d,
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        [TypeConverter(typeof(FontSizeConverter))]
+        public double ValueTextFontSize {
+            get { return (double)GetValue(ValueTextFontSizeProperty); }
+            set { SetValue(ValueTextFontSizeProperty, value); }
+        }
+
+        public static BindableProperty ErrorMessageProperty =
+            BindableProperty.Create(
+                nameof(ErrorMessage),
+                typeof(string),
+                typeof(CellBase),
+                default(string),
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public string ErrorMessage {
+            get { return (string)GetValue(ErrorMessageProperty); }
+            set { SetValue(ErrorMessageProperty, value); }
+        }
+
         public static BindableProperty IconResourceProperty =
             BindableProperty.Create(
                 nameof(IconResource),

@@ -72,20 +72,6 @@ namespace MyFormsLibrary.CustomRenderers
                 handler(this, EventArgs.Empty);
         }
 
-        public static BindableProperty ErrorMessageProperty =
-            BindableProperty.Create(
-                nameof(ErrorMessage),
-                typeof(string),
-                typeof(EntryCellAlt),
-                default(string),
-                defaultBindingMode: BindingMode.OneWay
-            );
-
-        public string ErrorMessage {
-            get { return (string)GetValue(ErrorMessageProperty); }
-            set { SetValue(ErrorMessageProperty, value); }
-        }
-
         public static BindableProperty PlaceholderProperty =
             BindableProperty.Create(
                 nameof(Placeholder),
