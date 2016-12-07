@@ -27,18 +27,17 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
             }
             else {
-                ParentElement.PropertyChanged -= ParentElement_PropertyChanged;
+                //ParentElement.PropertyChanged -= ParentElement_PropertyChanged;
             }
 
             BaseView = CellView;
 
-            ParentElement.PropertyChanged += ParentElement_PropertyChanged;
+            //ParentElement.PropertyChanged += ParentElement_PropertyChanged;
            
             UpdateBase();
             UpdateValueText();
-            UpdateValueTextFontSize();
-            UpdateValueTextColor();
-
+            //UpdateValueTextFontSize();
+            //UpdateValueTextColor();
 
             return CellView;
 
@@ -50,69 +49,71 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             if (e.PropertyName == LabelCell.ValueTextProperty.PropertyName) {
                 UpdateValueText();
             }
-            else if (e.PropertyName == LabelCell.ValueTextFontSizeProperty.PropertyName) {
-                UpdateValueTextFontSize();
-            }
-            else if (e.PropertyName == LabelCell.ValueTextColorProperty.PropertyName) {
-                UpdateValueTextColor();
-            }
+            //else if (e.PropertyName == LabelCell.ValueTextFontSizeProperty.PropertyName) {
+            //    UpdateValueTextFontSize();
+            //}
+            //else if (e.PropertyName == LabelCell.ValueTextColorProperty.PropertyName) {
+            //    UpdateValueTextColor();
+            //}
 
         }
 
         void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == TableViewEx.CellValueTextColorProperty.PropertyName) {
-                UpdateValueTextColor();
-            }
-            else if (e.PropertyName == TableViewEx.CellValueTextFontSizeProperty.PropertyName) {
-                UpdateValueTextFontSize();
-            }
+            //if (e.PropertyName == TableViewEx.CellValueTextColorProperty.PropertyName) {
+            //    UpdateValueTextColor();
+            //}
+            //else if (e.PropertyName == TableViewEx.CellValueTextFontSizeProperty.PropertyName) {
+            //    UpdateValueTextFontSize();
+            //}
         }
 
         void UpdateValueText() {
-            CellView.TextView.Text = LabelCell.ValueText;
+            CellView.ValueText.Text = LabelCell.ValueText;
         }
-        void UpdateValueTextFontSize() {
-            if (LabelCell.ValueTextFontSize > 0) {
-                CellView.TextView.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)LabelCell.ValueTextFontSize);
-            }
-            else {
-                CellView.TextView.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)ParentElement.CellValueTextFontSize);
+        //void UpdateValueTextFontSize() {
+        //    if (LabelCell.ValueTextFontSize > 0) {
+        //        CellView.TextView.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)LabelCell.ValueTextFontSize);
+        //    }
+        //    else {
+        //        CellView.TextView.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)ParentElement.CellValueTextFontSize);
 
-            }
-            CellView.Invalidate();
-        }
-        void UpdateValueTextColor() {
-            if (LabelCell.ValueTextColor != Xamarin.Forms.Color.Default) {
-                CellView.TextView.SetTextColor(LabelCell.ValueTextColor.ToAndroid());
-            }
-            else if (ParentElement.CellValueTextColor != Xamarin.Forms.Color.Default) {
-                CellView.TextView.SetTextColor(ParentElement.CellValueTextColor.ToAndroid());
-            }
-            CellView.Invalidate();
-        }
+        //    }
+        //    CellView.Invalidate();
+        //}
+        //void UpdateValueTextColor() {
+        //    if (LabelCell.ValueTextColor != Xamarin.Forms.Color.Default) {
+        //        CellView.TextView.SetTextColor(LabelCell.ValueTextColor.ToAndroid());
+        //    }
+        //    else if (ParentElement.CellValueTextColor != Xamarin.Forms.Color.Default) {
+        //        CellView.TextView.SetTextColor(ParentElement.CellValueTextColor.ToAndroid());
+        //    }
+        //    CellView.Invalidate();
+        //}
     }
     public class CommandCellView : CellBaseView
     {
         public Action Execute { get; set; }
-        public TextView TextView { get; set; }
+        //public TextView TextView { get; set; }
 
         public CommandCellView(Context context, Cell cell) : base(context, cell) {
+            ValueText.Visibility = ViewStates.Visible;
 
-            TextView = new TextView(context);
-            TextView.SetSingleLine(true);
-            TextView.Ellipsize = TextUtils.TruncateAt.End;
-            TextView.Gravity = GravityFlags.Right;
 
-            var textParams = new LayoutParams(
-                ViewGroup.LayoutParams.MatchParent,
-                ViewGroup.LayoutParams.WrapContent) {
-                Width = 0,
-                Weight = 1,
-                Gravity = GravityFlags.FillHorizontal | GravityFlags.CenterVertical
-            };
-            using (textParams) {
-                AddView(TextView, textParams);
-            }
+            //TextView = new TextView(context);
+            //TextView.SetSingleLine(true);
+            //TextView.Ellipsize = TextUtils.TruncateAt.End;
+            //TextView.Gravity = GravityFlags.Right;
+
+            //var textParams = new LayoutParams(
+            //    ViewGroup.LayoutParams.MatchParent,
+            //    ViewGroup.LayoutParams.WrapContent) {
+            //    Width = 0,
+            //    Weight = 1,
+            //    Gravity = GravityFlags.FillHorizontal | GravityFlags.CenterVertical
+            //};
+            //using (textParams) {
+            //    AddView(TextView, textParams);
+            //}
 
         }
     }

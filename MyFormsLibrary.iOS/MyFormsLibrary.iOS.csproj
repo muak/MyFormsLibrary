@@ -109,6 +109,8 @@
     <Compile Include="CustomRenderers\Cells\NumberPickerCellRenderer.cs" />
     <Compile Include="CustomRenderers\Cells\NoCaretField.cs" />
     <Compile Include="CustomRenderers\Cells\NumberPickerSource.cs" />
+    <Compile Include="Effects\MaxLengthPlatformEffect.cs" />
+    <Compile Include="Effects\MaxLengthForEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\Pixie\packages\Xamarin.Forms.2.3.0.46-pre3\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\Pixie\packages\Xamarin.Forms.2.3.0.46-pre3\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

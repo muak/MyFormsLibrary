@@ -47,7 +47,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             UpdateTextColor();
             UpdateTextFontSize();
             UpdateKeyboard();
-            UpdateErrorMessage();
+            //UpdateErrorMessage();
             UpdatePlaceholder();
 
             CellView.TextChanged = OnTextChanged;
@@ -74,9 +74,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             else if (e.PropertyName == EntryCellAlt.KeyboardProperty.PropertyName) {
                 UpdateKeyboard();
             }
-            else if (e.PropertyName == EntryCellAlt.ErrorMessageProperty.PropertyName) {
-                UpdateErrorMessage();
-            }
+            //else if (e.PropertyName == EntryCellAlt.ErrorMessageProperty.PropertyName) {
+            //    UpdateErrorMessage();
+            //}
             else if (e.PropertyName == EntryCellAlt.PlaceholderProperty.PropertyName) {
                 UpdatePlaceholder();
             }
@@ -134,17 +134,17 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             CellView.EditText.InputType = EntryCell.Keyboard.ToInputType();
         }
 
-        void UpdateErrorMessage() {
+        //void UpdateErrorMessage() {
             
-            var msg = EntryCell.ErrorMessage;
-            if (string.IsNullOrEmpty(msg)) {
-                CellView.ErrorLabel.Visibility = ViewStates.Invisible;
-                return;
-            }
+        //    var msg = EntryCell.ErrorMessage;
+        //    if (string.IsNullOrEmpty(msg)) {
+        //        CellView.ErrorLabel.Visibility = ViewStates.Invisible;
+        //        return;
+        //    }
 
-            CellView.ErrorLabel.Text = msg;
-            CellView.ErrorLabel.Visibility = ViewStates.Visible;
-        }
+        //    CellView.ErrorLabel.Text = msg;
+        //    CellView.ErrorLabel.Visibility = ViewStates.Visible;
+        //}
 
         void UpdatePlaceholder() {
             CellView.EditText.Hint = EntryCell.Placeholder;
@@ -157,10 +157,10 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             ,global::Android.Views.View.IOnFocusChangeListener,TextView.IOnEditorActionListener
     {
         public EntryCellEditText EditText { get; set; }
-        public TextView ErrorLabel { get; private set;}
+        //public TextView ErrorLabel { get; private set;}
 
         public EntryCellAltView(Context context, Cell cell) : base(context,cell) {
-            var relative = new ARelativeLayout(context);
+            //var relative = new ARelativeLayout(context);
 
             using (var lparam = new ARelativeLayout.LayoutParams(-1, -1)){
                 lparam.AddRule(LayoutRules.AlignRight);
@@ -177,34 +177,35 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 SetOnClickListener(this);
 
                 EditText.Background.Alpha = 0;  //下線は非表示
-                relative.AddView(EditText, lparam);
+                ContentView.AddView(EditText, lparam);
             }
 
+            ErrorLabel.BringToFront();
 
-            using (var lparam = new ARelativeLayout.LayoutParams(-1, -1)) {
-                lparam.AddRule(LayoutRules.AlignRight);
+            //using (var lparam = new ARelativeLayout.LayoutParams(-1, -1)) {
+            //    lparam.AddRule(LayoutRules.AlignRight);
 
-                ErrorLabel = new TextView(Context);
-                ErrorLabel.SetTextColor(new AGraphics.Color(255, 0, 0, 200));
-                ErrorLabel.SetBackgroundColor(new AGraphics.Color(255, 255, 255, 128));
-                ErrorLabel.TextSize = 10f;
-                ErrorLabel.Gravity = GravityFlags.Right | GravityFlags.Top;
+            //    ErrorLabel = new TextView(Context);
+            //    ErrorLabel.SetTextColor(new AGraphics.Color(255, 0, 0, 200));
+            //    ErrorLabel.SetBackgroundColor(new AGraphics.Color(255, 255, 255, 128));
+            //    ErrorLabel.TextSize = 10f;
+            //    ErrorLabel.Gravity = GravityFlags.Right | GravityFlags.Top;
 
-                ErrorLabel.Visibility = ViewStates.Invisible;
-                ErrorLabel.SetPadding(8, 0, 8, 0);
+            //    ErrorLabel.Visibility = ViewStates.Invisible;
+            //    ErrorLabel.SetPadding(8, 0, 8, 0);
 
-                relative.AddView(ErrorLabel, lparam);
-            }
+            //    relative.AddView(ErrorLabel, lparam);
+            //}
 
 
-            var textParams = new LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent) {
-                Width = 0,
-                Weight = 1,
-                Gravity = GravityFlags.FillHorizontal | GravityFlags.CenterVertical
-            };
-            using (textParams) {
-                AddView(relative, textParams);
-            }
+            //var textParams = new LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent) {
+            //    Width = 0,
+            //    Weight = 1,
+            //    Gravity = GravityFlags.FillHorizontal | GravityFlags.CenterVertical
+            //};
+            //using (textParams) {
+            //    AddView(relative, textParams);
+            //}
 
         }
 

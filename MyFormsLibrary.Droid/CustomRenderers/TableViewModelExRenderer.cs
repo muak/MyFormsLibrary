@@ -107,8 +107,10 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
             if (view is CommandCellView) {
                 (view as CommandCellView)?.Execute?.Invoke();
-               
             }
+            //else if(view is DatePickerCellView) {
+            //    (view as DatePickerCellView)?.OpenDialog?.Invoke();
+            //}
         }
 
 

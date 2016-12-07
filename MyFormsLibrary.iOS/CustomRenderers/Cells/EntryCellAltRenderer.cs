@@ -137,6 +137,8 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         public UITextField TextField { get; }
 
         public EntryCellAltView(string cellName) : base(cellName) {
+            SelectionStyle = UITableViewCellSelectionStyle.None;
+
             TextField = new UITextField(new RectangleF(0, 0, 100, 30)) { BorderStyle = UITextBorderStyle.None };
             TextField.TextAlignment = UITextAlignment.Right;
 

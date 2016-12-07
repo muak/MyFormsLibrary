@@ -6,6 +6,8 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using Android.Text;
 using Android.Util;
+using AGraphics = Android.Graphics;
+using ARelativeLayout = Android.Widget.RelativeLayout;
 
 namespace MyFormsLibrary.Droid.CustomRenderers
 {
@@ -15,6 +17,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
         public TextView TitleLabel { get; set; }
         public ImageView ImageView { get; set; }
+        public ARelativeLayout ContentView { get; private set;}
+        public TextView ErrorLabel { get; private set; }
+        public TextView ValueText { get; set; }
 
         Context  _Context;
         Cell _Cell;
@@ -46,6 +51,43 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 AddView(TitleLabel,textParams);
             }
 
+            ContentView = new ARelativeLayout(context);
+
+            using (var valueTextParams = new ARelativeLayout.LayoutParams(-1, -1)) {
+                valueTextParams.AddRule(LayoutRules.AlignRight);
+
+                ValueText = new TextView(context);
+                ValueText.SetSingleLine(true);
+                ValueText.Ellipsize = TextUtils.TruncateAt.End;
+                ValueText.Gravity = GravityFlags.Right;
+                ValueText.Visibility = ViewStates.Invisible;
+
+                ContentView.AddView(ValueText, valueTextParams);
+            }
+
+            using (var lparam = new ARelativeLayout.LayoutParams(-1, -1)) {
+                lparam.AddRule(LayoutRules.AlignRight);
+
+                ErrorLabel = new TextView(Context);
+                ErrorLabel.SetTextColor(new AGraphics.Color(255, 0, 0, 200));
+                ErrorLabel.SetBackgroundColor(new AGraphics.Color(255, 255, 255, 128));
+                ErrorLabel.TextSize = 10f;
+                ErrorLabel.Gravity = GravityFlags.Right | GravityFlags.Top;
+
+                ErrorLabel.Visibility = ViewStates.Invisible;
+                ErrorLabel.SetPadding(8, 0, 8, 0);
+
+                ContentView.AddView(ErrorLabel, lparam);
+            }
+
+            var relativeParam = new LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent) {
+                Width = 0,
+                Weight = 1,
+                Gravity = GravityFlags.FillHorizontal | GravityFlags.CenterVertical
+            };
+            using (relativeParam) {
+                AddView(ContentView, relativeParam);
+            }
 
             //SetMinimumHeight((int)context.ToPixels(DefaultMinHeight));
         }

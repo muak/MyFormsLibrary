@@ -9,6 +9,10 @@ using System.Diagnostics;
 using Android.Graphics.Drawables;
 using System.Linq;
 using Xamarin.Forms.Platform.Android;
+using ARelativeLayout = Android.Widget.RelativeLayout;
+using Android.Util;
+using Android.Content.Res;
+using Android.Support.V7.Widget;
 
 [assembly: ExportRenderer(typeof(SwitchCellAlt), typeof(SwitchCellAltRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
@@ -17,9 +21,6 @@ namespace MyFormsLibrary.Droid.CustomRenderers
     {
         SwitchCellAlt SwitchCell;
         SwitchCellAltView CellView;
-
-        public SwitchCellAltRenderer() {
-        }
 
         protected override Android.Views.View GetCellCore(Xamarin.Forms.Cell item, Android.Views.View convertView, Android.Views.ViewGroup parent, Android.Content.Context context) {
             base.GetCellCore(item, convertView, parent, context);
@@ -64,49 +65,52 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         public SwitchCellAltView(Context context, Cell cell) : base(context, cell) {
             SwitchCell = cell as SwitchCellAlt;
 
-            var space = new Android.Widget.Space(context);
-            space.SetBackgroundColor(Android.Graphics.Color.Red);
-            using(var param = new LayoutParams(ViewGroup.LayoutParams.WrapContent,
-                  ViewGroup.LayoutParams.WrapContent){Width=0,Weight=1 })
-            {
-                AddView(space,param);
-            }
-
             Switch = new Android.Widget.Switch(context);
+
             Switch.SetOnCheckedChangeListener(this);
             Switch.Gravity = Android.Views.GravityFlags.Right;
 
 
             if (SwitchCell.AccentColor != Xamarin.Forms.Color.Default) {
-                var thumb = Switch.ThumbDrawable.GetConstantState().NewDrawable() as StateListDrawable;
+                
+                var thumb = Switch.ThumbDrawable.GetConstantState().NewDrawable() as AnimatedStateListDrawable;
+                
+
                 var thumbState = thumb.GetConstantState() as DrawableContainer.DrawableContainerState;
                 var thumbChildren = thumbState.GetChildren();
 
-                thumbChildren[3].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //ON
-                //thumbChildren[2].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //OFF初期値？
-                //thumbChildren[5].SetColorFilter(Android.Graphics.Color.Violet, Android.Graphics.PorterDuff.Mode.SrcIn);//OFF
-                thumbChildren[1].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //ON初期値
+                //thumbChildren[0].SetColorFilter(Android.Graphics.Color.Black, Android.Graphics.PorterDuff.Mode.SrcIn);
+                //thumbChildren[1].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //ON初期値
+                thumbChildren[1].SetTint(SwitchCell.AccentColor.ToAndroid());
+                //thumbChildren[2].SetColorFilter(Android.Graphics.Color.Argb(255, 224, 224, 224), Android.Graphics.PorterDuff.Mode.SrcIn); //OFF初期値？
+                thumbChildren[2].SetTint(Android.Graphics.Color.Argb(255, 244, 244, 244));
+                //thumbChildren[3].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //ON
+                thumbChildren[3].SetTint(SwitchCell.AccentColor.ToAndroid());
+                //thumbChildren[4].SetColorFilter(Android.Graphics.Color.Black, Android.Graphics.PorterDuff.Mode.SrcIn);
+                //thumbChildren[5].SetColorFilter(Android.Graphics.Color.Argb(255,224,224,224), Android.Graphics.PorterDuff.Mode.SrcIn);//OFF
+                thumbChildren[5].SetTint(Android.Graphics.Color.Argb(255, 244, 244, 244));  //OFF
+                //thumbChildren[6].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn);
+
                 Switch.ThumbDrawable = thumb;
 
                 var track = Switch.TrackDrawable.GetConstantState().NewDrawable() as StateListDrawable;
                 var trackState = track.GetConstantState() as DrawableContainer.DrawableContainerState;
                 var trackChildren = trackState.GetChildren();
 
-                trackChildren[1].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //ON
-                //trackChildren[2].SetColorFilter(SwitchCell.TrackColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //初期値 OFF
+                //trackChildren[1].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //ON
+                trackChildren[1].SetTint(SwitchCell.AccentColor.ToAndroid());
+                //trackChildren[2].SetColorFilter(Android.Graphics.Color.Argb(255,117,117,117), Android.Graphics.PorterDuff.Mode.SrcIn); //初期値 OFF
+                trackChildren[2].SetTint(Android.Graphics.Color.Argb(255, 117, 117, 117));
 
                 Switch.TrackDrawable = track;
             }
            
-            var Params = new LayoutParams(
-                ViewGroup.LayoutParams.WrapContent,
-                ViewGroup.LayoutParams.WrapContent) {               
-                Gravity = GravityFlags.CenterVertical | GravityFlags.Right
-            };
-            using (Params) {
-                AddView(Switch, Params);
+            using (var lparam = new ARelativeLayout.LayoutParams(-2, -1)) {
+                lparam.AddRule(LayoutRules.AlignParentRight);
+                ContentView.AddView(Switch, lparam);
             }
 
+            ErrorLabel.BringToFront();
 
         }
 

@@ -23,18 +23,18 @@ namespace MyFormsLibrary.CustomRenderers
             set { SetValue(DateProperty, value); }
         }
 
-        public static BindableProperty MaximunDateProperty =
+        public static BindableProperty MaximumDateProperty =
             BindableProperty.Create(
-                nameof(MaximunDate),
+                nameof(MaximumDate),
                 typeof(DateTime),
                 typeof(DatePickerCell),
                 new DateTime(2100, 12, 31),
                 defaultBindingMode: BindingMode.OneWay
             );
 
-        public DateTime MaximunDate {
-            get { return (DateTime)GetValue(MaximunDateProperty); }
-            set { SetValue(MaximunDateProperty, value); }
+        public DateTime MaximumDate {
+            get { return (DateTime)GetValue(MaximumDateProperty); }
+            set { SetValue(MaximumDateProperty, value); }
         }
 
         public static BindableProperty MinimumDateProperty =

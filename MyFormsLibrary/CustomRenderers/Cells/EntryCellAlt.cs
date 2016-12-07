@@ -14,12 +14,38 @@ namespace MyFormsLibrary.CustomRenderers
                 typeof(string),
                 typeof(EntryCellAlt),
                 default(string),
-                defaultBindingMode: BindingMode.OneWay
+                defaultBindingMode: BindingMode.TwoWay,
+                propertyChanging:TextPropertyChanging
             );
+
+        static void  TextPropertyChanging(BindableObject bindable, object oldValue, object newValue)
+        {
+            var maxlength = (int)bindable.GetValue(MaxLengthProperty);
+            if (maxlength < 0) return;
+
+            var newString = newValue.ToString();
+            if (newString.Length > maxlength) {
+                bindable.SetValue(TextProperty,oldValue);
+            }
+        }
 
         public string Text {
             get { return (string)GetValue(TextProperty); }
             set { SetValue(TextProperty, value); }
+        }
+
+        public static BindableProperty MaxLengthProperty =
+            BindableProperty.Create(
+                nameof(MaxLength),
+                typeof(int),
+                typeof(EntryCellAlt),
+                -1,
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public int MaxLength {
+            get { return (int)GetValue(MaxLengthProperty); }
+            set { SetValue(MaxLengthProperty, value); }
         }
 
         public static BindableProperty TextColorProperty =

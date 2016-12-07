@@ -137,6 +137,8 @@
     <Compile Include="Effects\AddErrorMessagePlatformEffect.cs" />
     <Compile Include="CustomRenderers\Cells\SwitchCellAltRenderer.cs" />
     <Compile Include="Effects\ToFlatButtonPlatformEffect.cs" />
+    <Compile Include="CustomRenderers\Cells\DatePickerCellRenderer.cs" />
+    <Compile Include="CustomRenderers\Cells\NumberPickerCellRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

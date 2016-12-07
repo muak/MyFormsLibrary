@@ -57,7 +57,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             else if (e.PropertyName == DatePickerCell.FormatProperty.PropertyName) {
                 UpdateFormat();
             }
-            else if (e.PropertyName == DatePickerCell.MaximunDateProperty.PropertyName) {
+            else if (e.PropertyName == DatePickerCell.MaximumDateProperty.PropertyName) {
                 UpdateMaximumDate();
             }
             else if (e.PropertyName == DatePickerCell.MinimumDateProperty.PropertyName) {
@@ -80,7 +80,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
         void UpdateMaximumDate()
         {
-            _tableViewCell.Picker.MaximumDate = _datePikcerCell.MaximunDate.ToNSDate();
+            _tableViewCell.Picker.MaximumDate = _datePikcerCell.MaximumDate.ToNSDate();
         }
 
         void UpdateMinimumDate()

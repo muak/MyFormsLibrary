@@ -44,6 +44,15 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             else if (e.PropertyName == "RenderHeight") {
                 UpdateHeight();
             }
+            else if (e.PropertyName == CellBase.ErrorMessageProperty.PropertyName) {
+                UpdateErrorMessage();
+            }
+            else if (e.PropertyName == CellBase.ValueTextFontSizeProperty.PropertyName) {
+                UpdateValueTextFontSize();
+            }
+            else if (e.PropertyName == CellBase.ValueTextColorProperty.PropertyName) {
+                UpdateValueTextColor();
+            }
 
         }
 
@@ -53,6 +62,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             UpdateLabelFontSize();
             UpdateIcon();
             UpdateHeight();
+            UpdateValueTextColor();
+            UpdateValueTextFontSize();
         }
 
         void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -62,7 +73,26 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             else if (e.PropertyName == TableViewEx.CellLabelFontSizeProperty.PropertyName) {
                 UpdateLabelFontSize();
             }
+            else if (e.PropertyName == TableViewEx.CellValueTextColorProperty.PropertyName) {
+                UpdateValueTextColor();
+            }
+            else if (e.PropertyName == TableViewEx.CellValueTextFontSizeProperty.PropertyName) {
+                UpdateValueTextFontSize();
+            }
 
+        }
+
+        void UpdateErrorMessage()
+        {
+
+            var msg = Item.ErrorMessage;
+            if (string.IsNullOrEmpty(msg)) {
+                BaseView.ErrorLabel.Visibility = Android.Views.ViewStates.Invisible;
+                return;
+            }
+
+            BaseView.ErrorLabel.Text = msg;
+            BaseView.ErrorLabel.Visibility = Android.Views.ViewStates.Visible;
         }
 
         void UpdateLabelText() {
@@ -87,6 +117,31 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             BaseView.Invalidate();
 
         }
+
+        void UpdateValueTextFontSize()
+        {
+            if (Item.ValueTextFontSize > 0) {
+                BaseView.ValueText.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)Item.ValueTextFontSize);
+            }
+            else {
+                BaseView.ValueText.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)ParentElement.CellValueTextFontSize);
+
+            }
+            BaseView.Invalidate();
+        }
+
+        void UpdateValueTextColor()
+        {
+            if (Item.ValueTextColor != Xamarin.Forms.Color.Default) {
+                BaseView.ValueText.SetTextColor(Item.ValueTextColor.ToAndroid());
+            }
+            else if (ParentElement.CellValueTextColor != Xamarin.Forms.Color.Default) {
+                BaseView.ValueText.SetTextColor(ParentElement.CellValueTextColor.ToAndroid());
+            }
+            BaseView.Invalidate();
+        }
+
+
         void UpdateIcon() {
             var image = Item.Image as NGraphics.BitmapImage;
             if (image != null) {
