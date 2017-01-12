@@ -60,6 +60,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             UpdateTextFontSize();
             UpdateKeyboard();
             UpdatePlaceholder();
+            UpdateTextAlign();
            
             return TableViewCell;
         }
@@ -89,6 +90,9 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             }
             else if (e.PropertyName == EntryCellAlt.PlaceholderProperty.PropertyName) {
                 UpdatePlaceholder();
+            }
+            else if (e.PropertyName == EntryCellAlt.TextAlignProperty.PropertyName) {
+                UpdateTextAlign();
             }
         }
 
@@ -130,6 +134,11 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         void UpdatePlaceholder() {
             TableViewCell.TextField.Placeholder = EntryCell.Placeholder;
         }
+
+        void UpdateTextAlign()
+        {
+            TableViewCell.TextField.TextAlignment = EntryCell.TextAlign.ToNativeTextAlignment();
+        }
     }
 
     public class EntryCellAltView : CellBaseView
@@ -162,9 +171,18 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             base.LayoutSubviews();
 
             // simple algorithm to generally line up entries
-            var start = (float)Math.Round(Math.Max(Frame.Width * 0.3, TextLabel.Frame.Right + 10));
+            // Labelに何も設定されていなければその分大きく入力欄を取る
+            float start = 0;
+            if (!string.IsNullOrEmpty(TextLabel.Text)) {
+                start = (float)Math.Round(Math.Max(Frame.Width * 0.3, TextLabel.Frame.Right + 10));
+            }
+            else {
+                start = ImageView.Image == null ? (float)TextLabel.Frame.Left : (float)ImageView.Frame.Right + 10;
+            }
 
-            var width = ImageView.Image == null ? (float)TextLabel.Frame.Left : (float)ImageView.Frame.Left;
+            var labelLeft = string.IsNullOrEmpty(TextLabel.Text) ? ImageView.Frame.Left : TextLabel.Frame.Left;
+            //セルの右余白の幅の計算
+            var width = ImageView.Image == null ? (float)labelLeft : (float)ImageView.Frame.Left;
             TextField.Frame = new RectangleF(start, ((float)Frame.Height - 30) / 2, (float)Frame.Width - width - start, 30);
             // Centers TextField Content  (iOS6)
             TextField.VerticalAlignment = UIControlContentVerticalAlignment.Center;
@@ -187,6 +205,22 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             var handler = TextFieldTextChanged;
             if (handler != null)
                 handler(this, EventArgs.Empty);
+        }
+    }
+
+    //Xamarn.Formsより。Publicになれば削除する
+    internal static class AlignmentExtensions
+    {
+        internal static UITextAlignment ToNativeTextAlignment(this TextAlignment alignment)
+        {
+            switch (alignment) {
+                case TextAlignment.Center:
+                    return UITextAlignment.Center;
+                case TextAlignment.End:
+                    return UITextAlignment.Right;
+                default:
+                    return UITextAlignment.Left;
+            }
         }
     }
 }

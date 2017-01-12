@@ -59,50 +59,51 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
     public class SwitchCellAltView : CellBaseView, CompoundButton.IOnCheckedChangeListener
     {
-        public Android.Widget.Switch Switch { get; set; }
+        public SwitchCompat Switch { get; set; }
         private SwitchCellAlt SwitchCell;
 
         public SwitchCellAltView(Context context, Cell cell) : base(context, cell) {
             SwitchCell = cell as SwitchCellAlt;
 
-            Switch = new Android.Widget.Switch(context);
+            Switch = new SwitchCompat(context);
 
             Switch.SetOnCheckedChangeListener(this);
-            Switch.Gravity = Android.Views.GravityFlags.Right;
+            Switch.Gravity = Android.Views.GravityFlags.Right | GravityFlags.CenterVertical;
 
 
             if (SwitchCell.AccentColor != Xamarin.Forms.Color.Default) {
                 
-                var thumb = Switch.ThumbDrawable.GetConstantState().NewDrawable() as AnimatedStateListDrawable;
-                
+                var color = SwitchCell.AccentColor.ToAndroid();
 
-                var thumbState = thumb.GetConstantState() as DrawableContainer.DrawableContainerState;
-                var thumbChildren = thumbState.GetChildren();
+                var trackColors = new ColorStateList(new int[][]
+                     {
+                                new int[]{global::Android.Resource.Attribute.StateChecked},
+                                new int[]{-global::Android.Resource.Attribute.StateChecked},
+                     },
+                    new int[] {
+                                Android.Graphics.Color.Argb(76,color.R,color.G,color.B),
+                                Android.Graphics.Color.Argb(76, 117, 117, 117)
+                     });
 
-                //thumbChildren[0].SetColorFilter(Android.Graphics.Color.Black, Android.Graphics.PorterDuff.Mode.SrcIn);
-                //thumbChildren[1].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //ON初期値
-                thumbChildren[1].SetTint(SwitchCell.AccentColor.ToAndroid());
-                //thumbChildren[2].SetColorFilter(Android.Graphics.Color.Argb(255, 224, 224, 224), Android.Graphics.PorterDuff.Mode.SrcIn); //OFF初期値？
-                thumbChildren[2].SetTint(Android.Graphics.Color.Argb(255, 244, 244, 244));
-                //thumbChildren[3].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //ON
-                thumbChildren[3].SetTint(SwitchCell.AccentColor.ToAndroid());
-                //thumbChildren[4].SetColorFilter(Android.Graphics.Color.Black, Android.Graphics.PorterDuff.Mode.SrcIn);
-                //thumbChildren[5].SetColorFilter(Android.Graphics.Color.Argb(255,224,224,224), Android.Graphics.PorterDuff.Mode.SrcIn);//OFF
-                thumbChildren[5].SetTint(Android.Graphics.Color.Argb(255, 244, 244, 244));  //OFF
-                //thumbChildren[6].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn);
 
-                Switch.ThumbDrawable = thumb;
+                Switch.TrackDrawable.SetTintList(trackColors);
 
-                var track = Switch.TrackDrawable.GetConstantState().NewDrawable() as StateListDrawable;
-                var trackState = track.GetConstantState() as DrawableContainer.DrawableContainerState;
-                var trackChildren = trackState.GetChildren();
+                var thumbColors = new ColorStateList(new int[][]
+                     {
+                                new int[]{global::Android.Resource.Attribute.StateChecked},
+                                new int[]{-global::Android.Resource.Attribute.StateChecked},
+                     },
+                    new int[] {
+                                color,
+                                Android.Graphics.Color.Argb(255, 244, 244, 244)
+                     });
 
-                //trackChildren[1].SetColorFilter(SwitchCell.AccentColor.ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcIn); //ON
-                trackChildren[1].SetTint(SwitchCell.AccentColor.ToAndroid());
-                //trackChildren[2].SetColorFilter(Android.Graphics.Color.Argb(255,117,117,117), Android.Graphics.PorterDuff.Mode.SrcIn); //初期値 OFF
-                trackChildren[2].SetTint(Android.Graphics.Color.Argb(255, 117, 117, 117));
+                Switch.ThumbDrawable.SetTintList(thumbColors);
 
-                Switch.TrackDrawable = track;
+                var ripple = Switch.Background as RippleDrawable;
+                ripple.SetColor(trackColors);
+
+
             }
            
             using (var lparam = new ARelativeLayout.LayoutParams(-2, -1)) {

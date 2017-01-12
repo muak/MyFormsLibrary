@@ -80,19 +80,5 @@ namespace MyFormsLibrary.CustomRenderers
             set { SetValue(CommandProperty, value); }
         }
 
-
-        public static BindableProperty AccentColorProperty =
-            BindableProperty.Create(
-                nameof(AccentColor),
-                typeof(Color),
-                typeof(NumberPickerCell),
-                default(Color),
-                defaultBindingMode: BindingMode.OneWay
-            );
-
-        public Color AccentColor {
-            get { return (Color)GetValue(AccentColorProperty); }
-            set { SetValue(AccentColorProperty, value); }
-        }
     }
 }

@@ -111,5 +111,19 @@ namespace MyFormsLibrary.CustomRenderers
             get { return (string)GetValue(PlaceholderProperty); }
             set { SetValue(PlaceholderProperty, value); }
         }
+
+        public static BindableProperty TextAlignProperty =
+            BindableProperty.Create(
+                nameof(TextAlign),
+                typeof(TextAlignment),
+                typeof(EntryCellAlt),
+                TextAlignment.End,
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public TextAlignment TextAlign {
+            get { return (TextAlignment)GetValue(TextAlignProperty); }
+            set { SetValue(TextAlignProperty, value); }
+        }
     }
 }

@@ -140,7 +140,13 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         public void Select(int number)
         {
             var idx = Model.Items.IndexOf(number);
+            if (idx == -1) {
+                number = Model.Items[0];
+                idx = 0;
+            }
             _picker.Select(idx,0,false);
+            Model.SelectedItem = number;
+            Model.SelectedIndex = idx;
             Model.PreSelectedItem = number;
         }
     }

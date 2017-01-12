@@ -34,6 +34,23 @@ namespace MyFormsLibrary.Navigation
             await nav.NavigateAsync(typeof(T).Name, originalParam, (bool?)true, animated);
         }
 
+        public static async Task NavigateModalAsync<Tnavi,Tpage>(this INavigationService nav, object myParam = null, bool animated = true, NavigationParameters originalParam = null) where Tnavi : NavigationPage where Tpage:ContentPage
+        {
+            var myNavi = nav as MyPageNavigationService;
+            var param = myNavi.Container.Resolve<INavigationParameter>();
+            param.Value = myParam;
+
+            if (originalParam == null) {
+                originalParam = new NavigationParameters();
+            }
+            await nav.NavigateAsync(typeof(Tnavi).Name+"/"+typeof(Tpage).Name, originalParam, (bool?)true, animated);
+        }
+
+        public static async Task GoBackModalAsync(this INavigationService nav,bool animated = true)
+        {
+            await nav.GoBackAsync(null, true, animated);
+        }
+
         public static bool ChangeTab<T>(this INavigationService nav) where T:Page {
 
             var mainPage = (nav as MyPageNavigationService)?.MainPage;

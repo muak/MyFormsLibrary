@@ -11,14 +11,13 @@ namespace MyFormsLibrary.iOS.CustomRenderers
     {
         
         public IList<int> Items { get; private set;}
-        public Action UpdatePicker;
 
         public event EventHandler UpdatePickerFromModel;
 
 
         public NumberPickerSource()
         {
-            //UpdatePicker = updatePicker;
+
         }
 
         public int SelectedIndex { get; internal set; }

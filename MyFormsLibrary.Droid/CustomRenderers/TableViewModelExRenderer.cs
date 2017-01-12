@@ -55,6 +55,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                     if (!_view.ShowSectionTopBottomBorder) {
                         border.SetBackgroundColor(Android.Graphics.Color.Transparent);
                     }
+                    else {
+                        border.SetBackgroundColor(_view.SeparatorColor.ToAndroid());
+                    }
                 }
                 else {
                     border.SetBackgroundColor(_view.SeparatorColor.ToAndroid());

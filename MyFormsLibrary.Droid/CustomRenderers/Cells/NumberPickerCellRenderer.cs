@@ -43,7 +43,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
             BaseView = _cellView;
 
-            _cellView.Click += _cellView_Click;;
+            _cellView.Click += _cellView_Click;
 
 
             UpdateBase();

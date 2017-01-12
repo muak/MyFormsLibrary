@@ -51,6 +51,20 @@ namespace MyFormsLibrary.CustomRenderers
 			set { SetValue(IsEnabledExProperty, value); }
 		}
 
+        public static BindableProperty IsLeftIconProperty =
+            BindableProperty.Create(
+                nameof(IsLeftIcon),
+                typeof(bool),
+                typeof(ToolbarItemEx),
+                default(bool),
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public bool IsLeftIcon {
+            get { return (bool)GetValue(IsLeftIconProperty); }
+            set { SetValue(IsLeftIconProperty, value); }
+        }
+
 		private IImage _Image;
 		public IImage Image {
 			get {

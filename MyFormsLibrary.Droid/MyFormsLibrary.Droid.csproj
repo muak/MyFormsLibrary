@@ -139,6 +139,8 @@
     <Compile Include="Effects\ToFlatButtonPlatformEffect.cs" />
     <Compile Include="CustomRenderers\Cells\DatePickerCellRenderer.cs" />
     <Compile Include="CustomRenderers\Cells\NumberPickerCellRenderer.cs" />
+    <Compile Include="Services\ImageManipulator.cs" />
+    <Compile Include="Services\ManipulatableImage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -156,6 +158,7 @@
     <Folder Include="CustomRenderers\" />
     <Folder Include="DependencyServices\" />
     <Folder Include="CustomRenderers\Cells\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj">

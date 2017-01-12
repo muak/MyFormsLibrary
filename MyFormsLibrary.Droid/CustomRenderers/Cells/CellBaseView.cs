@@ -37,12 +37,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
          
             SetPadding(padding + (int)context.ToPixels(15), padding, (int)context.ToPixels(15), padding);
 
-            //this.LayoutParameters = new LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent);
-
             TitleLabel = new TextView(context);
             TitleLabel.SetSingleLine(true);
             TitleLabel.Ellipsize = TextUtils.TruncateAt.End;
-            //TitleLabel.SetTextSize(ComplexUnitType.Sp, 14f);
 
             var textParams = new LayoutParams(ViewGroup.LayoutParams.WrapContent,ViewGroup.LayoutParams.WrapContent) {
                 Gravity = GravityFlags.Left | GravityFlags.CenterVertical
@@ -59,7 +56,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 ValueText = new TextView(context);
                 ValueText.SetSingleLine(true);
                 ValueText.Ellipsize = TextUtils.TruncateAt.End;
-                ValueText.Gravity = GravityFlags.Right;
+                ValueText.Gravity = GravityFlags.Right | GravityFlags.CenterVertical;
                 ValueText.Visibility = ViewStates.Invisible;
 
                 ContentView.AddView(ValueText, valueTextParams);
@@ -80,10 +77,11 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 ContentView.AddView(ErrorLabel, lparam);
             }
 
-            var relativeParam = new LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent) {
+            //幅・高さ目一杯とる
+            var relativeParam = new LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent) {
                 Width = 0,
                 Weight = 1,
-                Gravity = GravityFlags.FillHorizontal | GravityFlags.CenterVertical
+                Gravity = GravityFlags.FillHorizontal | GravityFlags.FillVertical | GravityFlags.CenterVertical
             };
             using (relativeParam) {
                 AddView(ContentView, relativeParam);

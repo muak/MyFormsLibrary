@@ -45,39 +45,107 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 			base.Dispose(disposing);
 		}
 
-		void SetIcons() {
+		void SetIcons() { 
 			
 
 			var formsItems = (Element as NavigationPageEx).CurrentPage
 														  .ToolbarItems
-														  .Where(x => x.Order != ToolbarItemOrder.Secondary)
+														  .Where(x => x.Order != ToolbarItemOrder.Secondary )
 														  .OrderByDescending(x => x.Priority);
+
+            var formsLeftItems = formsItems.Cast<ToolbarItemEx>().Where(x => x.IsLeftIcon);
 
 			var ctrl = ViewControllers.Last();
 			var nativeItems = ctrl.NavigationItem.RightBarButtonItems;
 
-			var ncnt = -1;
-			foreach (var item in formsItems) {
-				ncnt++;
-				var itemEx = item as ToolbarItemEx;
-				if (itemEx == null) continue;
+            var rightItems = new List<UIBarButtonItem>();
 
-				itemEx.PropertyChanged -= ItemEx_PropertyChanged;
-				itemEx.PropertyChanged += ItemEx_PropertyChanged;
+            var ncnt = -1;
+            foreach (var item in formsItems) {
+                ncnt++;
+                var itemEx = item as ToolbarItemEx;
+                if (itemEx == null) continue;
 
-				if (!itemEx.IsVisible) {
-					nativeItems[ncnt].Image = null;
-					nativeItems[ncnt].Title = null;
-					continue;
-				}
-				if (string.IsNullOrEmpty(itemEx.Resource)) continue;
+                if (itemEx.IsLeftIcon) {
+                    continue;
+                }
+
+                rightItems.Add(nativeItems[ncnt]);
+
+                itemEx.PropertyChanged -= ItemEx_PropertyChanged;
+                itemEx.PropertyChanged += ItemEx_PropertyChanged;
+
+                if (!itemEx.IsVisible) {
+                    nativeItems[ncnt].Image = null;
+                    nativeItems[ncnt].Title = null;
+                    continue;
+                }
+                if (string.IsNullOrEmpty(itemEx.Resource)) continue;
 
 
-				nativeItems[ncnt].Image = itemEx.Image.GetUIImage();
-				nativeItems[ncnt].Title = null;
-				nativeItems[ncnt].Style = UIBarButtonItemStyle.Plain;
-				nativeItems[ncnt].Enabled = itemEx.IsEnabledEx;
-			}
+                nativeItems[ncnt].Image = itemEx.Image.GetUIImage();
+                nativeItems[ncnt].Title = null;
+                nativeItems[ncnt].Style = UIBarButtonItemStyle.Plain;
+                nativeItems[ncnt].Enabled = itemEx.IsEnabledEx;
+            }
+
+            ctrl.NavigationItem.SetRightBarButtonItems(rightItems.ToArray(), false);
+
+            var leftItems = new List<UIBarButtonItem>();
+
+            foreach (var item in formsLeftItems) {
+                var itemEx = item as ToolbarItemEx;
+                if (itemEx == null) continue;
+
+                itemEx.PropertyChanged -= ItemEx_PropertyChanged;
+                itemEx.PropertyChanged += ItemEx_PropertyChanged;
+
+                var native = new UIBarButtonItem();
+                leftItems.Add(native);
+
+                if (!itemEx.IsVisible) {
+                    native.Image = null;
+                    native.Title = null;
+                    continue;
+                }
+                if (string.IsNullOrEmpty(itemEx.Resource)) continue;
+
+                native.Image = itemEx.Image.GetUIImage();
+                native.Title = null;
+                native.Style = UIBarButtonItemStyle.Plain;
+                native.Enabled = itemEx.IsEnabledEx;
+                native.Clicked += (sender, e) => {
+                    var controller = itemEx as IMenuItemController;
+                    controller?.Activate();
+                };
+
+
+            }
+
+            ctrl.NavigationItem.SetLeftBarButtonItems(leftItems.ToArray(), false);
+
+			//var ncnt = -1;
+			//foreach (var item in formsItems) {
+			//	ncnt++;
+			//	var itemEx = item as ToolbarItemEx;
+			//	if (itemEx == null) continue;
+
+			//	itemEx.PropertyChanged -= ItemEx_PropertyChanged;
+			//	itemEx.PropertyChanged += ItemEx_PropertyChanged;
+
+			//	if (!itemEx.IsVisible) {
+			//		nativeItems[ncnt].Image = null;
+			//		nativeItems[ncnt].Title = null;
+			//		continue;
+			//	}
+			//	if (string.IsNullOrEmpty(itemEx.Resource)) continue;
+
+
+			//	nativeItems[ncnt].Image = itemEx.Image.GetUIImage();
+			//	nativeItems[ncnt].Title = null;
+			//	nativeItems[ncnt].Style = UIBarButtonItemStyle.Plain;
+			//	nativeItems[ncnt].Enabled = itemEx.IsEnabledEx;
+			//}
 
 		}
 
