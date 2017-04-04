@@ -75,6 +75,11 @@ namespace MyFormsLibrary.Droid.Effects
             OrgStateListAnimator = null;
             OrgBackgroundTint = null;
 
+            Colors = null;
+            Shape = null;
+            Ripple = null;
+            Inset = null;
+
         }
 
         protected override void OnElementPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)

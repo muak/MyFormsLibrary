@@ -3,6 +3,8 @@ using Xamarin.Forms.Platform.Android;
 using MyFormsLibrary.CustomRenderers;
 using Android.Test;
 using Android.Graphics.Drawables;
+using Android.Graphics;
+using Android.Content;
 
 namespace MyFormsLibrary.Droid.CustomRenderers
 {
@@ -12,12 +14,14 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         protected CellBaseView BaseView { get; set; }
         protected TableViewEx ParentElement;
         CellBase Item;
+        Context _context;
 
         protected override Android.Views.View GetCellCore(Xamarin.Forms.Cell item, Android.Views.View convertView, Android.Views.ViewGroup parent, Android.Content.Context context) {
             //base.GetCellCore(item, convertView, parent, context);
 
             Item = item as CellBase;
             ParentElement = item.Parent as TableViewEx;
+            _context = context;
 
             if (convertView == null) {
                 ParentElement.PropertyChanged += ParentElement_PropertyChanged;
@@ -142,17 +146,56 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         }
 
 
-        void UpdateIcon() {
-            var image = Item.Image as NGraphics.BitmapImage;
-            if (image != null) {
-                if (BaseView.ImageView == null) {
-                    BaseView.AddImageView();
-                }
-                if (BaseView.ImageView.Drawable != null) {
-                    BaseView.ImageView.Drawable.Dispose();
-                }
-                BaseView.ImageView.SetImageBitmap(image.Bitmap);
+        async void UpdateIcon() {
+            if (Item.Image == null && Item.ImageSource == null) {
+                return;
             }
+
+            Bitmap image = null;
+
+            if (Item.ImageSource != null) {
+                image = await Item.ImageSource.ToBitmap(_context);
+            }
+            else {
+                image = (Item.Image as NGraphics.BitmapImage)?.Bitmap;
+            }
+
+            if (BaseView.ImageView == null) {
+                BaseView.AddImageView();
+            }
+            if (BaseView.ImageView.Drawable != null) {
+                BaseView.ImageView.Drawable.Dispose();
+            }
+
+            var clipArea = Bitmap.CreateBitmap(image.Width, image.Height, Bitmap.Config.Argb8888);
+            var canvas = new Canvas(clipArea);
+            var paint = new Paint(PaintFlags.AntiAlias);
+            var rect = new Rect(0, 0, clipArea.Width, clipArea.Height);
+            var rectf = new RectF(0, 0, clipArea.Width, clipArea.Height);
+            canvas.DrawARGB(0, 0, 0, 0);
+            canvas.DrawRoundRect(rectf, _context.ToPixels(6), _context.ToPixels(6), paint);
+
+            paint.SetXfermode(new PorterDuffXfermode(PorterDuff.Mode.SrcIn));
+            canvas.DrawBitmap(image, rect, rect, paint);
+
+            BaseView.ImageView.SetImageBitmap(clipArea);
+
+            clipArea.Dispose();
+            image.Dispose();
+            canvas.Dispose();
+            paint.Dispose();
+
+
+            ////var image = Item.Image as NGraphics.BitmapImage;
+            //if (image != null) {
+            //    if (BaseView.ImageView == null) {
+            //        BaseView.AddImageView();
+            //    }
+            //    if (BaseView.ImageView.Drawable != null) {
+            //        BaseView.ImageView.Drawable.Dispose();
+            //    }
+            //    BaseView.ImageView.SetImageBitmap(image.Bitmap);
+            //}
         }
         protected void UpdateHeight() {
             BaseView.SetRenderHeight(Cell.RenderHeight);

@@ -104,6 +104,20 @@ namespace MyFormsLibrary.CustomRenderers
                 defaultBindingMode: BindingMode.OneWay
             );
 
+        public static BindableProperty ImageSourceProperty =
+            BindableProperty.Create(
+                nameof(ImageSource),
+                typeof(ImageSource),
+                typeof(CellBase),
+                default(ImageSource),
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public ImageSource ImageSource {
+            get { return (ImageSource)GetValue(ImageSourceProperty); }
+            set { SetValue(ImageSourceProperty, value); }
+        }
+
         public string IconResource {
             get { return (string)GetValue(IconResourceProperty); }
             set { SetValue(IconResourceProperty, value); }
@@ -139,5 +153,6 @@ namespace MyFormsLibrary.CustomRenderers
                 return _Image;
             }
         }
+
     }
 }

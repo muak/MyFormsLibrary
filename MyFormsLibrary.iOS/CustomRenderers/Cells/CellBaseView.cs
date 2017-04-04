@@ -2,6 +2,8 @@
 using UIKit;
 using Xamarin.Forms.Platform.iOS;
 using System.Linq;
+using NGraphics;
+using CoreGraphics;
 
 namespace MyFormsLibrary.iOS.CustomRenderers
 {
@@ -81,6 +83,17 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
             ContentView.AddConstraints(_constraint);
             ErrorLabel.SizeToFit();
+        }
+
+        public override void LayoutSubviews()
+        {
+            base.LayoutSubviews();
+            if (ImageView.Image == null) {
+                return;
+            }
+
+            var rect = ImageView.Bounds;
+            ImageView.Bounds = new CGRect(3, 3, rect.Width - 6, rect.Height-6);
         }
     }
 }

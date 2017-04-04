@@ -24,7 +24,7 @@ namespace MyFormsLibrary.Navigation
             var param = new NavigationParameters();
 
             PageUtilities.OnNavigatingTo(tabbedPage.CurrentPage, param);
-            PageUtilities.OnNavigatedTo(tabbedPage.CurrentPage,param);
+            PageUtilities.OnNavigatedTo(tabbedPage.CurrentPage, param);
         }
     }
 }

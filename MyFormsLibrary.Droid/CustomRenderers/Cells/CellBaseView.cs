@@ -103,8 +103,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         public void AddImageView() {
             ImageView = new ImageView(_Context);
             var imageParams = new LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent) {
-                Width = (int)_Context.ToPixels(30),
-                Height = (int)_Context.ToPixels(30),
+                Width = (int)_Context.ToPixels(36),
+                Height = (int)_Context.ToPixels(36),
                 RightMargin = (int)_Context.ToPixels(10),
                 Gravity = GravityFlags.Center
             };

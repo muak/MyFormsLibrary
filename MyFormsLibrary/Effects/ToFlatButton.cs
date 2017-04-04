@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace MyFormsLibrary.Effects
 {
-    public class ToFlatButton
+    public static class ToFlatButton
     {
         public static readonly BindableProperty OnProperty =
             BindableProperty.CreateAttached(
@@ -25,7 +25,43 @@ namespace MyFormsLibrary.Effects
             return (bool)view.GetValue(OnProperty);
         }
 
-      
+
+        public static readonly BindableProperty RippleColorProperty =
+            BindableProperty.CreateAttached(
+                    "RippleColor",
+                    typeof(Color),
+                    typeof(ToFlatButton),
+                    default(Color)
+                );
+
+        public static void SetRippleColor(BindableObject view, Color value)
+        {
+            view.SetValue(RippleColorProperty, value);
+        }
+
+        public static Color GetRippleColor(BindableObject view)
+        {
+            return (Color)view.GetValue(RippleColorProperty);
+        }
+
+        //public static readonly BindableProperty RippleColorProperty =
+        //    BindableProperty.CreateAttached(
+        //            "RippleColor",
+        //            typeof(Color),
+        //            typeof(ToFlatButton),
+        //            default(Color)
+        //        );
+
+        //public static void SetRippleColor(BindableObject view, Color value)
+        //{
+        //    view.SetValue(RippleColorProperty, value);
+        //}
+
+        //public static Color GetRippleColor(BindableObject view)
+        //{
+        //    return (Color)view.GetValue(RippleColorProperty);
+        //}
+
         private static void OnOffChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var view = bindable as View;
@@ -44,21 +80,7 @@ namespace MyFormsLibrary.Effects
             }
         }
 
-        public static readonly BindableProperty RippleColorProperty =
-            BindableProperty.CreateAttached(
-                    "RippleColor",
-                    typeof(Color),
-                    typeof(ToFlatButton),
-                    default(Color)
-                );
 
-        public static void SetRippleColor(BindableObject view, Color value) {
-            view.SetValue(RippleColorProperty, value);
-        }
-
-        public static Color GetRippleColor(BindableObject view) {
-            return (Color)view.GetValue(RippleColorProperty);
-        }
 
         class ToFlatButtonRoutingEffect : RoutingEffect
         {

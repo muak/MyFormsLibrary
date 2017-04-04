@@ -128,6 +128,12 @@ namespace MyFormsLibrary.NControls
 			else if (propertyName == ColorProperty.PropertyName) {
 				Invalidate();
 			}
+            else if (propertyName == ResourceProperty.PropertyName) {
+                Invalidate();
+            }
+            else if (propertyName == IsVisibleProperty.PropertyName) {
+                Invalidate();
+            }
 			base.OnPropertyChanged(propertyName);
 		}
 

@@ -97,10 +97,16 @@ namespace MyFormsLibrary.CustomViews
                 invalidate = true;
             }
 
+            if (e.Action == NotifyCollectionChangedAction.Reset) {
+                this.Children.Clear();
+            }
+
             if (invalidate) {
                 this.UpdateChildrenLayout();
                 this.InvalidateLayout();
             }
+
+
         }
 
         private View CreateChildViewFor(object item) {

@@ -2,10 +2,11 @@
 using Xamarin.Forms;
 using Microsoft.Practices.ObjectBuilder2;
 using System.Windows.Input;
+using MyFormsLibrary.CustomRenderers.Cells;
 
 namespace MyFormsLibrary.CustomRenderers
 {
-	public class NonSelectionViewCell:ViewCell
+	public class NonSelectionViewCell:ViewCell,IContextMenuCell
 	{
 
 		public static BindableProperty CommandProperty =

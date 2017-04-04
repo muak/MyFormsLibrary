@@ -4,6 +4,8 @@ using MyFormsLibrary.CustomRenderers;
 using Xamarin.Forms;
 using UIKit;
 using NGraphics;
+using CoreGraphics;
+
 namespace MyFormsLibrary.iOS.CustomRenderers
 {
     public class CellBaseRenderer : CellRenderer
@@ -120,9 +122,25 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             }
         }
 
-        void UpdateIcon()
+        async void UpdateIcon()
         {
-            Cell.ImageView.Image = Item.Image?.GetUIImage();
+            UIImage image = null;
+            if (Item.Image == null && Item.ImageSource != null) {
+                image = await Item.ImageSource.ToUIImage();
+
+            }
+            else if (Item.Image != null) {
+                image = Item.Image?.GetUIImage();
+               
+            }
+            else {
+                return;
+            }
+
+            Cell.ImageView.Image = image;
+            Cell.ImageView.ClipsToBounds = true;
+            Cell.ImageView.Layer.CornerRadius = 3;
+            Cell.SetNeedsLayout();
         }
 
         void UpdateErrorMessage()
