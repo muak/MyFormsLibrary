@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using Moq;
@@ -13,7 +14,9 @@ using Prism.Logging;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Unity;
+using Prism.Unity.Navigation;
 using Xamarin.Forms;
+using System.Linq;
 
 namespace MyFormsLibrary.Tests.Navigations
 {
@@ -29,11 +32,13 @@ namespace MyFormsLibrary.Tests.Navigations
             Container = new UnityContainer();
 
             Log = new Mock<ILoggerFacade>().Object;
+            App = new ApplicationProviderMock();
 
-            Container.RegisterType<IApplicationProvider, ApplicationProviderMock>(null, new ContainerControlledLifetimeManager());
-            Container.RegisterType<INavigationService, MyPageNavigationService>("MyPageNavigationService");
+            Container.RegisterInstance(Log);
+            Container.RegisterInstance(App, new ContainerControlledLifetimeManager());
+            Container.RegisterType<INavigationServiceEx, MyPageNavigationService>();
             Container.RegisterType<INavigationParameter, NavigationParameter>(null, new ContainerControlledLifetimeManager());
-
+           
             Container.RegisterTypeForNavigation<ContentPageNoAction>();
             Container.RegisterTypeForNavigation<ContentPageAllAction>();
             Container.RegisterTypeForNavigation<PageAlpha>();
@@ -43,10 +48,24 @@ namespace MyFormsLibrary.Tests.Navigations
             Container.RegisterTypeForNavigation<NavigationBeta>();
             Container.RegisterTypeForNavigation<NavigationGamma>();
             Container.RegisterTypeForNavigation<NavigationTop>();
-          
-            App = Container.Resolve<IApplicationProvider>();
+            Container.RegisterTypeForNavigation<NextPage>();
 
-            ViewModelLocationProvider.SetDefaultViewModelFactory((type) => Container.Resolve(type));
+            ViewModelLocationProvider.SetDefaultViewModelFactory((view, type) => {
+                ParameterOverrides overrides = null;
+
+                var page = view as Page;
+                if (page != null) {
+                    var navService = Container.Resolve<INavigationServiceEx>();
+                    ((IPageAware)navService).Page = page;
+
+                    overrides = new ParameterOverrides
+                    {
+                        { "navigationService", navService }
+                    };
+                }
+
+                return Container.Resolve(type, overrides);
+            });
 
         }
 
@@ -128,15 +147,16 @@ namespace MyFormsLibrary.Tests.Navigations
             var vmA = pageA.BindingContext as PageAlphaViewModel;
             var vmB = pageB.BindingContext as PageBetaViewModel;
 
+            //どちらもNavigatingTo NavigatedToが発火する
             vmA.DoneNavigatingTo.IsTrue();
             vmA.DoneNavigatedTo.IsTrue();
             vmA.DoneNavigatedFrom.IsFalse();
             vmA.DoneOnActive.IsTrue();
-            vmA.DoneOnNonActive.IsTrue();
+            vmA.DoneOnNonActive.IsFalse();
             vmA.IsActive.IsTrue();
 
-            vmB.DoneNavigatingTo.IsFalse();
-            vmB.DoneNavigatedTo.IsFalse();
+            vmB.DoneNavigatingTo.IsTrue();
+            vmB.DoneNavigatedTo.IsTrue();
             vmB.DoneNavigatedFrom.IsFalse();
             vmB.DoneOnActive.IsFalse();
             vmB.DoneOnNonActive.IsFalse();
@@ -158,7 +178,6 @@ namespace MyFormsLibrary.Tests.Navigations
                     pageB
                 }
             );
-
             App.MainPage = page;
 
             var tabbed = page.CurrentPage as IPageController;
@@ -170,8 +189,9 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.AllClear();
             vmB.AllClear();
 
-            ((IPageAware)nav).Page = pageA;
-            await nav.NavigateAsync(nameof(ContentPageAllAction));
+            var curNavi = vmA.NavigationService;
+            await curNavi.NavigateAsync(nameof(NextPage));
+            var asfassde = pageA.Navigation.NavigationStack;
             tabbed.SendDisappearing();
 
             vmA.DoneNavigatingTo.IsFalse();
@@ -181,7 +201,6 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.DoneOnActive.IsFalse();
             vmA.DoneOnNonActive.IsTrue();
 
-
             vmB.DoneNavigatingTo.IsFalse();
             vmB.DoneNavigatedTo.IsFalse();
             vmB.DoneNavigatedFrom.IsFalse();
@@ -189,11 +208,20 @@ namespace MyFormsLibrary.Tests.Navigations
             vmB.DoneOnNonActive.IsFalse();
             vmB.IsActive.IsFalse();
 
+            var nextVM = page.CurrentPage.BindingContext as NextPageViewModel;
+
+            nextVM.DoneNavigatingTo.IsTrue();
+            nextVM.DoneNavigatedTo.IsTrue();
+            nextVM.DoneNavigatedFrom.IsFalse();
+            nextVM.DoneOnActive.IsFalse();
+            nextVM.DoneOnNonActive.IsFalse();
+
             vmA.AllClear();
             vmB.AllClear();
+            nextVM.AllClear();
 
-            ((IPageAware)nav).Page = new ContentPage();
-            await nav.GoBackAsync();
+            var ret = await nextVM.NavigationService.GoBackAsync();
+            ret.IsTrue();
             tabbed.SendAppearing();
 
             vmA.DoneNavigatingTo.IsTrue();
@@ -209,6 +237,13 @@ namespace MyFormsLibrary.Tests.Navigations
             vmB.DoneOnActive.IsFalse();
             vmB.DoneOnNonActive.IsFalse();
             vmB.IsActive.IsFalse();
+
+            nextVM.DoneNavigatingTo.IsFalse();
+            nextVM.DoneNavigatedTo.IsFalse();
+            nextVM.DoneNavigatedFrom.IsTrue();
+            nextVM.DoneOnActive.IsFalse();
+            nextVM.DoneOnNonActive.IsFalse();
+
         }
 
         [Test]
@@ -238,7 +273,7 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.DoneNavigatedTo.IsTrue();
             vmA.DoneNavigatedFrom.IsFalse();
             vmA.DoneOnActive.IsTrue();
-            vmA.DoneOnNonActive.IsTrue();
+            vmA.DoneOnNonActive.IsFalse();
             vmA.IsActive.IsTrue();
 
             vmB.DoneNavigatingTo.IsTrue();
@@ -248,6 +283,335 @@ namespace MyFormsLibrary.Tests.Navigations
             vmB.DoneOnNonActive.IsFalse();
             vmB.IsActive.IsFalse();
 
+        }
+
+        /// <summary>
+        /// Tabbed->Navi->ConentPageパターン
+        /// 次ページ遷移で次ページのIsActiveがtrueになる
+        /// 遷移しても遷移元おIsActiveはtrueのまま
+        /// あくまでも現在のタブの状態を入れるようにする
+        /// 戻る時は次ページのActiveは何も変更しない
+        /// </summary>
+        [Test]
+        public async Task TabbedHasNavigationGoNextGoBack() {
+            var nav = new MyPageNavigationService(Container, App, Log);
+
+            var naviA = await nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
+            var naviB = await nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
+
+            var tabbed = nav.CreateMainPageTabbedHasNavigation(nameof(MainTabbedPage), new List<NavigationPage>{
+                naviA,naviB});
+
+            App.MainPage = tabbed;
+
+            (tabbed as IPageController).SendAppearing();
+
+            var vmA = naviA.CurrentPage.BindingContext as PageAlphaViewModel;
+            var vmB = naviB.CurrentPage.BindingContext as PageBetaViewModel;
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            var curNavi = vmA.NavigationService;
+            await curNavi.NavigateAsync(nameof(NextPage));
+
+            vmA.DoneNavigatingTo.IsFalse();
+            vmA.DoneNavigatedTo.IsFalse();
+            vmA.DoneNavigatedFrom.IsTrue();
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsFalse();
+
+
+            vmB.DoneNavigatingTo.IsFalse();
+            vmB.DoneNavigatedTo.IsFalse();
+            vmB.DoneNavigatedFrom.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsFalse();
+            vmB.IsActive.IsFalse();
+
+            var nextVM = naviA.CurrentPage.BindingContext as NextPageViewModel;
+
+            nextVM.DoneNavigatingTo.IsTrue();
+            nextVM.DoneNavigatedTo.IsTrue();
+            nextVM.DoneNavigatedFrom.IsFalse();
+            nextVM.IsActive.IsTrue();
+            nextVM.DoneOnActive.IsTrue();
+            nextVM.DoneOnNonActive.IsFalse();
+
+            vmA.AllClear();
+            vmB.AllClear();
+            nextVM.AllClear();
+
+            var ret = await nextVM.NavigationService.GoBackAsync();
+            ret.IsTrue();
+
+            vmA.DoneNavigatingTo.IsTrue();
+            vmA.DoneNavigatedTo.IsTrue();
+            vmA.DoneNavigatedFrom.IsFalse();
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsFalse();
+            vmA.IsActive.IsTrue();
+
+            vmB.DoneNavigatingTo.IsFalse();
+            vmB.DoneNavigatedTo.IsFalse();
+            vmB.DoneNavigatedFrom.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsFalse();
+            vmB.IsActive.IsFalse();
+
+            nextVM.DoneNavigatingTo.IsFalse();
+            nextVM.DoneNavigatedTo.IsFalse();
+            nextVM.DoneNavigatedFrom.IsTrue();
+            nextVM.IsActive.IsTrue();
+            nextVM.DoneOnActive.IsFalse();
+            nextVM.DoneOnNonActive.IsFalse();
+        }
+
+        [Test]
+        public async Task NavigateAsync_ForViewType() {
+            var Inav = new MyPageNavigationService(Container, App, Log) as INavigationServiceEx;
+
+            var naviPage = new NavigationAlpha();
+            App.MainPage = naviPage;
+
+
+            await Inav.NavigateAsync(nameof(PageAlpha));
+
+            var vm1 = naviPage.CurrentPage.BindingContext as PageAlphaViewModel;
+
+            naviPage.CurrentPage.GetType().Is(typeof(PageAlpha));
+            naviPage.Navigation.NavigationStack.Count.Is(1);
+
+            vm1.DoneNavigatingTo.IsTrue();
+            vm1.DoneNavigatedTo.IsTrue();
+            vm1.DoneNavigatedFrom.IsFalse();
+            vm1.NavigatingCount.Is(1);
+            vm1.NavigatedToCount.Is(1);
+
+            var param = "Parameter";
+
+            //((IPageAware)Inav).Page = naviPage.CurrentPage;
+            await vm1.NavigationService.NavigateAsync<PageBeta>(param);
+
+            vm1.MyParam.Value.Is("Parameter");
+            naviPage.CurrentPage.GetType().Is(typeof(PageBeta));
+            naviPage.Navigation.NavigationStack.Count.Is(2);
+
+            var vm2 = naviPage.CurrentPage.BindingContext as PageBetaViewModel;
+
+            vm1.DoneNavigatedFrom.IsTrue();
+            vm1.NavigatedFromCount.Is(1);
+            vm2.DoneNavigatingTo.IsTrue();
+            vm2.DoneNavigatedTo.IsTrue();
+            vm2.DoneNavigatedFrom.IsFalse();
+            vm2.NavigatingCount.Is(1);
+            vm2.NavigatedToCount.Is(1);
+        }
+
+        [Test]
+        public async Task NavigateModalAsync_ForViewtype() {
+            var Inav = new MyPageNavigationService(Container, App, Log) as INavigationService;
+
+            var naviPage = new NavigationAlpha();
+            App.MainPage = naviPage;
+
+
+            await Inav.NavigateAsync(nameof(PageAlpha));
+
+            var vm1 = naviPage.CurrentPage.BindingContext as PageAlphaViewModel;
+
+            naviPage.CurrentPage.GetType().Is(typeof(PageAlpha));
+            naviPage.Navigation.NavigationStack.Count.Is(1);
+
+            vm1.DoneNavigatingTo.IsTrue();
+            vm1.DoneNavigatedTo.IsTrue();
+            vm1.DoneNavigatedFrom.IsFalse();
+            vm1.NavigatingCount.Is(1);
+            vm1.NavigatedToCount.Is(1);
+           
+            await vm1.NavigationService.NavigateModalAsync<PageBeta>();
+            naviPage.Navigation.ModalStack.Count.Is(1);
+            (naviPage.Navigation.ModalStack[0].BindingContext as PageBetaViewModel).MyParam.Value.IsNull();
+
+            var vm2 = naviPage.Navigation.ModalStack[0].BindingContext as PageBetaViewModel;
+
+            vm1.DoneNavigatedFrom.IsTrue();
+            vm1.NavigatedFromCount.Is(1);
+            vm2.DoneNavigatingTo.IsTrue();
+            vm2.DoneNavigatedTo.IsTrue();
+            vm2.DoneNavigatedFrom.IsFalse();
+            vm2.NavigatingCount.Is(1);
+            vm2.NavigatedToCount.Is(1);
+        }
+
+        [Test]
+        public async Task ChangeTab_NaviTabbed() {
+            var nav = new MyPageNavigationService(Container, App, Log);
+
+            var pageA = nav.CreateContentPage(nameof(PageAlpha));
+            var pageB = nav.CreateContentPage(nameof(PageBeta));
+
+            var page = await nav.CreateMainPageNavigationHasTabbed(
+                "NavigationTop", "MainTabbedPage",
+               new List<ContentPage> {
+                    pageA,
+                    pageB
+                }
+            );
+
+            App.MainPage = page;
+
+            var tabbed = page.CurrentPage as IPageController;
+            tabbed.SendAppearing();
+
+            var vmA = pageA.BindingContext as PageAlphaViewModel;
+            var vmB = pageB.BindingContext as PageBetaViewModel;
+
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsTrue();
+            vmA.DoneOnNonActive.IsFalse();
+            vmA.OnActiveCount.Is(1);
+            vmB.IsActive.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsFalse();
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            var ret = vmA.NavigationService.ChangeTab<PageAlpha>();
+            ret.IsTrue();
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsFalse();
+            vmB.IsActive.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsFalse();
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            ret = vmA.NavigationService.ChangeTab<PageBeta>();
+
+            ret.IsTrue();
+
+            vmA.IsActive.IsFalse();
+            vmA.DoneOnNonActive.IsTrue();
+            vmA.OnActiveCount.Is(0);
+            vmA.OnNonActiveCount.Is(1);
+            vmB.IsActive.IsTrue();
+            vmB.DoneOnActive.IsTrue();
+            vmB.OnActiveCount.Is(1);
+            vmB.OnNonActiveCount.Is(0);
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            ret = vmB.NavigationService.ChangeTab<NavigationPage>();
+            ret.IsFalse();
+        }
+
+        [Test]
+        public async Task ChangeTab_TabbedNavi() {
+            var nav = new MyPageNavigationService(Container, App, Log);
+
+            var naviA = await nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
+            var naviB = await nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
+
+            var tabbed = nav.CreateMainPageTabbedHasNavigation(nameof(MainTabbedPage), new List<NavigationPage>{
+                naviA,naviB});
+
+            App.MainPage = tabbed;
+            (tabbed as IPageController).SendAppearing();
+
+
+            var vmA = naviA.CurrentPage.BindingContext as PageAlphaViewModel;
+            var vmB = naviB.CurrentPage.BindingContext as PageBetaViewModel;
+
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsTrue();
+            vmA.DoneOnNonActive.IsFalse();
+            vmA.OnActiveCount.Is(1);
+            vmB.IsActive.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsFalse();
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            var ret = vmA.NavigationService.ChangeTab<NavigationBeta>();
+
+            ret.IsTrue();
+            vmA.IsActive.IsFalse();
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsTrue();
+            vmA.OnNonActiveCount.Is(1);
+            vmB.IsActive.IsTrue();
+            vmB.DoneOnActive.IsTrue();
+            vmB.DoneOnNonActive.IsFalse();
+            vmB.OnActiveCount.Is(1);
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            ret = vmB.NavigationService.ChangeTab<PageAlpha>();
+            ret.IsTrue();
+
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsTrue();
+            vmA.DoneOnNonActive.IsFalse();
+            vmA.OnActiveCount.Is(1);
+            vmB.IsActive.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsTrue();
+            vmB.OnNonActiveCount.Is(1);
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            await vmA.NavigationService.NavigateAsync<NextPage>();
+
+            var nextVM = naviA.CurrentPage.BindingContext as NextPageViewModel;
+
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsFalse();
+            vmB.IsActive.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsFalse();
+
+            nextVM.IsActive.IsTrue();
+            nextVM.DoneOnActive.IsTrue();
+            nextVM.DoneOnNonActive.IsFalse();
+            nextVM.OnActiveCount.Is(1);
+
+            vmA.AllClear();
+            vmB.AllClear();
+            nextVM.AllClear();
+
+            ret = nextVM.NavigationService.ChangeTab<PageBeta>();
+            ret.IsTrue();
+
+            vmA.IsActive.IsFalse();
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsTrue();
+            vmA.OnNonActiveCount.Is(1);
+            vmB.IsActive.IsTrue();
+            vmB.DoneOnActive.IsTrue();
+            vmB.DoneOnNonActive.IsFalse();
+            vmB.OnActiveCount.Is(1);
+
+            nextVM.IsActive.IsFalse();
+            nextVM.DoneOnActive.IsFalse();
+            nextVM.DoneOnNonActive.IsTrue();
+            nextVM.OnNonActiveCount.Is(1);
+
+            vmA.AllClear();
+            vmB.AllClear();
+            nextVM.AllClear();
+
+            ret = vmB.NavigationService.ChangeTab<ContentPage>();
+            ret.IsFalse();
         }
     }
 }

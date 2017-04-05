@@ -58,6 +58,12 @@ namespace MyFormsLibrary.Tests.Mocks.Views
         }
     }
 
+    public class NextPage:ContentPage
+    {
+        public NextPage() {
+            ViewModelLocator.SetAutowireViewModel(this, true);
+        }
+    }
 
 }
 

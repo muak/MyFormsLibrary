@@ -5,6 +5,11 @@ using Prism.Navigation;
 using Xamarin.Forms;
 namespace MyFormsLibrary.Navigation
 {
+    /// <summary>
+    /// NavigationPage/TabbedPage/ContentPageの構成の時に
+    /// Pop時にContentPage側のOnNavigationgToとOnNavigatedToを発火させるためのBehavior
+    /// ついでにGoBackAsync時のパラメータの引き継ぎも行う
+    /// </summary>
     public class NavigationPageOverTabbedPageCurrentBehavior:BehaviorBase<NavigationPage>
     {
         protected override void OnAttachedTo(NavigationPage bindable)

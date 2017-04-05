@@ -1,20 +1,21 @@
 ﻿using System;
 using Prism.Navigation;
-using Prism;
 using MyFormsLibrary.Navigation;
+using Prism.Common;
+using Prism;
 
 namespace MyFormsLibrary.Tests.Mocks.ViewModels
 {
-    public class PageBetaViewModel:ContentPageAllActionViewModel,INavigationAware,IActiveAware,IDestructible
+    public class NextPageViewModel:ContentPageAllActionViewModel,INavigationAware,IActiveAware
     {
-        public INavigationParameter MyParam { get; set; }
-
-        public PageBetaViewModel(INavigationServiceEx navigationService, INavigationParameter param) {
+        public NextPageViewModel(INavigationServiceEx navigationService) {
             NavigationService = navigationService;
-            MyParam = param;
         }
 
         private bool _IsActive;
+
+        public event EventHandler IsActiveChanged;
+
         public bool IsActive {
             get {
                 return _IsActive;
@@ -40,8 +41,6 @@ namespace MyFormsLibrary.Tests.Mocks.ViewModels
             OnNonActiveCount++;
         }
 
-        public event EventHandler IsActiveChanged;
-
         public void OnNavigatedFrom(NavigationParameters parameters) {
             DoneNavigatedFrom = true;
             NavigatedFromCount++;
@@ -58,9 +57,5 @@ namespace MyFormsLibrary.Tests.Mocks.ViewModels
             NavigatingCount++;
         }
 
-        public void Destroy() {
-            DoneDestroy = true;
-            DestroyCount++;
-        }
     }
 }

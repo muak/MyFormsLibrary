@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Prism.Behaviors;
 
 namespace MyFormsLibrary.Navigation
 {
@@ -33,26 +34,34 @@ namespace MyFormsLibrary.Navigation
         }
 
         public TabbedPage CreateMainPageTabbedHasNavigation(string tabbedName, IEnumerable<NavigationPage> children) {
-            var tabbedPage = CreatePageFromSegment(tabbedName) as TabbedPage;
+            var tabbedPage = CreatePage(tabbedName) as TabbedPage;
+            SetAutowireViewModelOnPage(tabbedPage);
 
             tabbedPage.Behaviors.Add(new TabbedPageOverNavigationPageActiveAwareBehavior());
 
             foreach (var c in children) {
                 tabbedPage.Children.Add(c);
+                c.Behaviors.Add(new TabbedPageHasNavigationPageActionBehavior());
             }
+
+            //子を追加し終わってからBehaviorを適用しないとActiveAwareが余分に呼ばれる
+            ApplyPageBehaviors(tabbedPage);
 
             return tabbedPage;
         }
 
         public async Task<NavigationPage> CreateMainPageNavigationHasTabbed(string naviName, string tabbedName, IEnumerable<ContentPage> children) {
-            var tabbedPage = CreatePageFromSegment(tabbedName) as TabbedPage;
-
+            var tabbedPage = CreatePage(tabbedName) as TabbedPage;
+            SetAutowireViewModelOnPage(tabbedPage);
 
             foreach (var c in children) {
                 PageUtilities.OnNavigatingTo(c, new NavigationParameters());
                 tabbedPage.Children.Add(c);
                 PageUtilities.OnNavigatedTo(c, new NavigationParameters());
             }
+
+            //子を追加し終わってからBehaviorを適用しないとActiveAwareが余分に呼ばれる
+            ApplyPageBehaviors(tabbedPage);
 
             var naviPage = CreatePageFromSegment(naviName) as NavigationPage;
 
@@ -62,7 +71,6 @@ namespace MyFormsLibrary.Navigation
 
             PageUtilities.OnNavigatedTo(tabbedPage, new NavigationParameters());
 
-            //tabbedPage.Behaviors.Add(new TabbedPageCurrentPageOnNavigatedToBehavior());
             naviPage.Behaviors.Add(new NavigationPageOverTabbedPageCurrentBehavior());
             return naviPage;
         }
@@ -183,5 +191,26 @@ namespace MyFormsLibrary.Navigation
 
             return false;
         }
+
+
+        protected override async Task DoPush(Page currentPage, Page page, bool? useModalNavigation, bool animated) {
+            if (page == null)
+                return;
+
+            if (currentPage == null) {
+                _applicationProvider.MainPage = page;
+            }
+            else {
+                if (useModalNavigation ?? false)
+                    await currentPage.Navigation.PushModalAsync(page, animated);
+                else
+                    await currentPage.Navigation.PushAsync(page, animated);
+            }
+
+            //本家でわけのわからんModal判定をしているのでbaseは呼ばない
+        }
     }
+
+
+
 }
