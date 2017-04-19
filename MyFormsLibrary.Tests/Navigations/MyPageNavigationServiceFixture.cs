@@ -85,10 +85,10 @@ namespace MyFormsLibrary.Tests.Navigations
         };
 
         [TestCaseSource("Src_CreateNavigationPage")]
-        public async Task CreateNavigationPage(NavigationParameters param) {
+        public void CreateNavigationPage(NavigationParameters param) {
             var nav = new MyPageNavigationService(Container, App, Log);
 
-            var page = await nav.CreateNavigationPage("NavigationAlpha", nameof(PageAlpha),param);
+            var page = nav.CreateNavigationPage("NavigationAlpha", nameof(PageAlpha),param);
 
             page.GetType().Is(typeof(NavigationAlpha));
             var realPage = page as NavigationAlpha;
@@ -116,10 +116,10 @@ namespace MyFormsLibrary.Tests.Navigations
 
 
         [Test]
-        public async Task CreateMainPageNavigationHasTabbed() {
+        public void CreateMainPageNavigationHasTabbed() {
             var nav = new MyPageNavigationService(Container, App, Log);
            
-            var page = await nav.CreateMainPageNavigationHasTabbed(
+            var page = nav.CreateMainPageNavigationHasTabbed(
                 "NavigationTop", "MainTabbedPage",
                new List<ContentPage> {
                     nav.CreateContentPage(nameof(PageAlpha)),
@@ -171,7 +171,7 @@ namespace MyFormsLibrary.Tests.Navigations
             var pageA = nav.CreateContentPage(nameof(PageAlpha));
             var pageB = nav.CreateContentPage(nameof(PageBeta));
 
-            var page = await nav.CreateMainPageNavigationHasTabbed(
+            var page = nav.CreateMainPageNavigationHasTabbed(
                 "NavigationTop", "MainTabbedPage",
                new List<ContentPage> {
                     pageA,
@@ -250,8 +250,8 @@ namespace MyFormsLibrary.Tests.Navigations
         public async Task CreateMainPageTabbedHasNavigation() {
             var nav = new MyPageNavigationService(Container, App, Log);
 
-            var naviA = await nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
-            var naviB = await nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
+            var naviA = nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
+            var naviB = nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
 
             var tabbed = nav.CreateMainPageTabbedHasNavigation(nameof(MainTabbedPage),new List<NavigationPage>{ 
                 naviA,naviB});
@@ -296,8 +296,8 @@ namespace MyFormsLibrary.Tests.Navigations
         public async Task TabbedHasNavigationGoNextGoBack() {
             var nav = new MyPageNavigationService(Container, App, Log);
 
-            var naviA = await nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
-            var naviB = await nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
+            var naviA = nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
+            var naviB = nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
 
             var tabbed = nav.CreateMainPageTabbedHasNavigation(nameof(MainTabbedPage), new List<NavigationPage>{
                 naviA,naviB});
@@ -452,7 +452,7 @@ namespace MyFormsLibrary.Tests.Navigations
             var pageA = nav.CreateContentPage(nameof(PageAlpha));
             var pageB = nav.CreateContentPage(nameof(PageBeta));
 
-            var page = await nav.CreateMainPageNavigationHasTabbed(
+            var page = nav.CreateMainPageNavigationHasTabbed(
                 "NavigationTop", "MainTabbedPage",
                new List<ContentPage> {
                     pageA,
@@ -515,8 +515,8 @@ namespace MyFormsLibrary.Tests.Navigations
         public async Task ChangeTab_TabbedNavi() {
             var nav = new MyPageNavigationService(Container, App, Log);
 
-            var naviA = await nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
-            var naviB = await nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
+            var naviA = nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
+            var naviB = nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
 
             var tabbed = nav.CreateMainPageTabbedHasNavigation(nameof(MainTabbedPage), new List<NavigationPage>{
                 naviA,naviB});

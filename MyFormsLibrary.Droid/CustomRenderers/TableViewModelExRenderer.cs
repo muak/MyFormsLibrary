@@ -116,7 +116,6 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             //}
         }
 
-
         void JudgeSpecialPosition(int position,out bool isHeader,out bool isNextHeader) {
             isHeader = false;
             isNextHeader = false;

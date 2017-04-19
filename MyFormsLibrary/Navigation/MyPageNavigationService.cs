@@ -50,7 +50,7 @@ namespace MyFormsLibrary.Navigation
             return tabbedPage;
         }
 
-        public async Task<NavigationPage> CreateMainPageNavigationHasTabbed(string naviName, string tabbedName, IEnumerable<ContentPage> children) {
+        public NavigationPage CreateMainPageNavigationHasTabbed(string naviName, string tabbedName, IEnumerable<ContentPage> children) {
             var tabbedPage = CreatePage(tabbedName) as TabbedPage;
             SetAutowireViewModelOnPage(tabbedPage);
 
@@ -67,7 +67,7 @@ namespace MyFormsLibrary.Navigation
 
             PageUtilities.OnNavigatingTo(tabbedPage, new NavigationParameters());
 
-            await naviPage.PushAsync(tabbedPage,false);
+            naviPage.PushAsync(tabbedPage,false).Wait();
 
             PageUtilities.OnNavigatedTo(tabbedPage, new NavigationParameters());
 
@@ -75,7 +75,7 @@ namespace MyFormsLibrary.Navigation
             return naviPage;
         }
 
-        public async Task<NavigationPage> CreateNavigationPage(string navName,string pageName,NavigationParameters parameters=null){
+        public NavigationPage CreateNavigationPage(string navName,string pageName,NavigationParameters parameters=null){
 
             var naviPage = CreatePageFromSegment(navName) as NavigationPage;
 
@@ -87,7 +87,7 @@ namespace MyFormsLibrary.Navigation
 
             PageUtilities.OnNavigatingTo(contentPage,parameters);
 
-            await naviPage.PushAsync(contentPage, false);
+            naviPage.PushAsync(contentPage, false).Wait();
 
             PageUtilities.OnNavigatedTo(contentPage,parameters);
 

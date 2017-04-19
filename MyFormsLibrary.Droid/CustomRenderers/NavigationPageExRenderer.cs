@@ -72,7 +72,6 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 					}
 				}
 
-
 			}
 		}
 
