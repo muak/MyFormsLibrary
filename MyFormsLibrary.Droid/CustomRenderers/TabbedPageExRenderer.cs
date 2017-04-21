@@ -12,6 +12,7 @@ using Android.Views;
 using System.Runtime.Remoting.Contexts;
 using Android.Support.V4.View;
 using System.Linq;
+using Xamarin.Forms.Internals;
 
 [assembly: ExportRenderer(typeof(TabbedPageEx), typeof(TabbedPageExRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
@@ -32,6 +33,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 			fieldInfo = typeof(TabbedPageRenderer).GetField("_viewPager", BindingFlags.Instance | BindingFlags.NonPublic);
 			var viewPager = (ViewPager)fieldInfo.GetValue(this);
 
+			var methodInfo = typeof(TabbedPageRenderer).GetMethod("TeardownPage", BindingFlags.Instance | BindingFlags.NonPublic);
+
 			
 			window = (Context as FormsAppCompatActivity).Window;
 
@@ -49,6 +52,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 //非表示タブをキャッシュしておく数 タブ数3で2にすれば全ページキャッシュとなる
                 viewPager.OffscreenPageLimit = tabbedEx.OffScreenPageLimit;
 
+				foreach (var page in Element.Children){
+					methodInfo.Invoke(this,new object[]{page});
+				}
 
 				for (var i = 0; i < tabbedEx.TabAttributes.Count; i++) {
 					var attr = tabbedEx.TabAttributes[i];
@@ -183,6 +189,13 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 		void CurrentPage_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 			if (e.PropertyName == Page.TitleProperty.PropertyName) {
 				tabbedEx.Title = (sender as Page).Title;
+                if(!tabbedEx.IsTextHidden){
+                    return;
+                }
+                var cnt = tabs.TabCount;
+                for(var i=0;i<cnt;i++){
+                    tabs.GetTabAt(i).SetText("");
+                }
 			}
 		}
 	}
