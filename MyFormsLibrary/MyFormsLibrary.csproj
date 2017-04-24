@@ -10,6 +10,7 @@
     <AssemblyName>MyFormsLibrary</AssemblyName>
     <TargetFrameworkProfile>Profile78</TargetFrameworkProfile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ReleaseVersion>1.04</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,14 +33,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CustomRenderers\NoIconNavigationPage.cs" />
-    <Compile Include="Navigation\INavigationController.cs" />
-    <Compile Include="Navigation\NavigationController.cs" />
     <Compile Include="Navigation\INavigationParameter.cs" />
     <Compile Include="Navigation\NavigationParameter.cs" />
-    <Compile Include="Navigation\INavigationAction.cs" />
-    <Compile Include="Navigation\ITabAction.cs" />
-    <Compile Include="Navigation\ApplicationProviderForNavi.cs" />
-    <Compile Include="Navigation\IApplicationProviderForNavi.cs" />
     <Compile Include="DependencyServices\ILoadingMessage.cs" />
     <Compile Include="CustomViews\WrapLayout.cs" />
     <Compile Include="CustomViews\RepeaterWrapLayout.cs" />

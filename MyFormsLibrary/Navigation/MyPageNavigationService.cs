@@ -55,9 +55,9 @@ namespace MyFormsLibrary.Navigation
             SetAutowireViewModelOnPage(tabbedPage);
 
             foreach (var c in children) {
-                PageUtilities.OnNavigatingTo(c, new NavigationParameters());
+				PageUtilities.OnNavigatingTo(c, new NavigationParameters{{KnownNavigationParameters.NavigationMode,NavigationMode.New}});
                 tabbedPage.Children.Add(c);
-                PageUtilities.OnNavigatedTo(c, new NavigationParameters());
+				PageUtilities.OnNavigatedTo(c, new NavigationParameters{{KnownNavigationParameters.NavigationMode,NavigationMode.New}});
             }
 
             //子を追加し終わってからBehaviorを適用しないとActiveAwareが余分に呼ばれる
@@ -65,11 +65,11 @@ namespace MyFormsLibrary.Navigation
 
             var naviPage = CreatePageFromSegment(naviName) as NavigationPage;
 
-            PageUtilities.OnNavigatingTo(tabbedPage, new NavigationParameters());
+			PageUtilities.OnNavigatingTo(tabbedPage, new NavigationParameters{{KnownNavigationParameters.NavigationMode,NavigationMode.New}});
 
             naviPage.PushAsync(tabbedPage,false).Wait();
 
-            PageUtilities.OnNavigatedTo(tabbedPage, new NavigationParameters());
+			PageUtilities.OnNavigatedTo(tabbedPage, new NavigationParameters{{KnownNavigationParameters.NavigationMode,NavigationMode.New}});
 
             naviPage.Behaviors.Add(new NavigationPageOverTabbedPageCurrentBehavior());
             return naviPage;
@@ -84,6 +84,7 @@ namespace MyFormsLibrary.Navigation
             if (parameters == null) {
                 parameters = new NavigationParameters();
             }
+			parameters.Add(KnownNavigationParameters.NavigationMode,NavigationMode.New);
 
             PageUtilities.OnNavigatingTo(contentPage,parameters);
 
