@@ -105,12 +105,14 @@ namespace MyFormsLibrary.Tests.Navigations
             vm.DoneOnNonActive.IsFalse();
 
             if (param == null) {
-                vm.Param.Count.Is(0);
+                vm.Param.GetNavigationMode().Is(NavigationMode.New);
+                vm.Param.Count.Is(1);
             }
             else {
+                vm.Param.GetNavigationMode().Is(NavigationMode.New);
                 vm.Param.ContainsKey("Key").IsTrue();
                 vm.Param["Key"].Is("Value");
-                vm.Param.Count.Is(1);
+                vm.Param.Count.Is(2);
             }
         }
 

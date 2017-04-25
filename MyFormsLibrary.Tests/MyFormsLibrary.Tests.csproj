@@ -78,13 +78,10 @@
   <ItemGroup>
     <Compile Include="Tests.cs" />
     <Compile Include="AppInitializer.cs" />
-    <Compile Include="Navigations\NavigationControllerFixture.cs" />
     <Compile Include="Mocks\Views\Navigations.cs" />
     <Compile Include="Mocks\Views\ContentPages.cs" />
-    <Compile Include="Mocks\ApplicationProviderForNaviMock.cs" />
     <Compile Include="ChainingAssertion.NUnit.cs" />
     <Compile Include="Mocks\ViewModels\GetParamPageViewModel.cs" />
-    <Compile Include="Mocks\ViewModels\AllActionPageViewModel.cs" />
     <Compile Include="Navigations\MyPageNavigationServiceFixture.cs" />
     <Compile Include="Mocks\ViewModels\ContentPageNoActionViewModel.cs" />
     <Compile Include="Mocks\ViewModels\ContentPageAllActionViewModel.cs" />
