@@ -7,7 +7,10 @@ using Xamarin.Forms.Platform.Android;
 using AListView = Android.Widget.ListView;
 using Android.Views;
 using Android.Support.V4.View;
-
+using System;
+using System.Runtime.InteropServices;
+using Android.Text;
+using System.Collections.Generic;
 
 namespace MyFormsLibrary.Droid.CustomRenderers
 {
@@ -16,41 +19,45 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         readonly TableViewEx _view;
         ITableViewController Controller => _view;
 
-        public TableViewModelExRenderer(Context context, AListView listview, TableView view)
+		public TableViewModelExRenderer(Context context, AListView listview, TableView view)
             : base(context, listview, view) {
             _view = view as TableViewEx;
         }
 
         public override Android.Views.View GetView(int position, Android.Views.View convertView, Android.Views.ViewGroup parent) {
-           
             var layout = base.GetView(position, convertView, parent);
 
             var linearLayout = layout as LinearLayout;
             var textView = linearLayout.GetChildAt(0) as BaseCellView;
             var border = linearLayout.GetChildAt(1);
 
-            if (IsHeader(position)) {
+            bool isHeader, isNextHeader;
+
+            JudgeSpecialPosition(position,out isHeader,out isNextHeader);
+
+            if (isHeader) {
 
                 if (textView != null) {
                     HeaderConfiguration(textView);
                 }
 
                 if (border != null) {
-                    border.Background = null;
                     if (_view.ShowSectionTopBottomBorder) {
                         border.SetBackgroundColor(_view.SeparatorColor.ToAndroid());
                     }
                     else {
-                        border.Background = null;
-                        //ヘッダー境界線の太さ
-                        border.LayoutParameters.Height = 0;
+                        border.SetBackgroundColor(Android.Graphics.Color.Transparent);
                     }
                 }
             }
             else {
-                if (border.Background is ColorDrawable && !_view.ShowSectionTopBottomBorder) {
-                    border.Background = null;
-                    border.LayoutParameters.Height = 0;
+                if (isNextHeader) {
+                    if (!_view.ShowSectionTopBottomBorder) {
+                        border.SetBackgroundColor(Android.Graphics.Color.Transparent);
+                    }
+                    else {
+                        border.SetBackgroundColor(_view.SeparatorColor.ToAndroid());
+                    }
                 }
                 else {
                     border.SetBackgroundColor(_view.SeparatorColor.ToAndroid());
@@ -88,8 +95,11 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                     );
                 }
             }
+            var backcolor = _view.HeaderBackgroundColor == Color.Default ? 
+                                 _view.BackgroundColor : _view.HeaderBackgroundColor;
 
-            textView.SetBackgroundColor(_view.HeaderBackgroundColor.ToAndroid());
+
+            textView.SetBackgroundColor(backcolor.ToAndroid());
             textView.SetRenderHeight(_view.HeaderHeight);
         }
 
@@ -100,12 +110,16 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
             if (view is CommandCellView) {
                 (view as CommandCellView)?.Execute?.Invoke();
-               
             }
+            //else if(view is DatePickerCellView) {
+            //    (view as DatePickerCellView)?.OpenDialog?.Invoke();
+            //}
         }
 
-        bool IsHeader(int position) {
-          
+        void JudgeSpecialPosition(int position,out bool isHeader,out bool isNextHeader) {
+            isHeader = false;
+            isNextHeader = false;
+
             ITableModel model = Controller.Model;
             int sectionCount = model.GetSectionCount();
 
@@ -113,12 +127,17 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 int size = model.GetRowCount(sectionIndex) + 1;
 
                 if (position == 0) {
-                    return true;
+                    isHeader = true;
+                    isNextHeader = size == 0 && sectionIndex < sectionCount - 1;
+                    return;
                 }
-                 position -= size;
-            }
+                if (position < size) {
+                   isNextHeader = position == size - 1;
+                   return;
+                }
 
-            return false;
+                position -= size;
+            }
         }
     }
 }

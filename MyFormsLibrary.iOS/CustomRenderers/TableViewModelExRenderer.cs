@@ -54,8 +54,8 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
         public override void RowSelected(UITableView tableView, Foundation.NSIndexPath indexPath) {
             base.RowSelected(tableView, indexPath);
-
-            var cell = GetCell(tableView, indexPath);
+                       
+            var cell = tableView.CellAt(indexPath);
             if (cell is CommandCellView) {
                 (cell as CommandCellView)?.Execute?.Invoke();
             }

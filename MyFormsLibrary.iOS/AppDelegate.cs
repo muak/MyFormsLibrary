@@ -10,7 +10,7 @@ namespace MyFormsLibrary.iOS
     public static class Forms
     {
         public static void Init() {
-            new MyAppDelegate();
+            //new MyAppDelegate();
         }
     }
 }

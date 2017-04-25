@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyFormsLibrary.Effects;
 using CoreGraphics;
+using System.Windows.Input;
 
 [assembly: ExportEffect(typeof(NumberPickerPlatform), nameof(NumberPicker))]
 namespace MyFormsLibrary.iOS.Effects
@@ -21,6 +22,8 @@ namespace MyFormsLibrary.iOS.Effects
         private IList<int> Items;
         private UIView View;
         private NSLayoutConstraint[] Constraint;
+        private UILabel Title;
+        private ICommand Command;
 
         protected override void OnAttached() {
             View = Control ?? Container;
@@ -89,21 +92,31 @@ namespace MyFormsLibrary.iOS.Effects
                     0
                 ),
             };
+            View.UserInteractionEnabled = true;
             View.AddConstraints(Constraint);
             View.SendSubviewToBack(Entry);
 
             Picker = new UIPickerView();
 
+            Title = new UILabel();
+            UpdateTitle();
+
             var width = UIScreen.MainScreen.Bounds.Width;
             var toolbar = new UIToolbar(new RectangleF(0, 0, (float)width, 44)) { BarStyle = UIBarStyle.Default, Translucent = true };
+            var cancelButton = new UIBarButtonItem(UIBarButtonSystemItem.Cancel, (o, e) => {
+                Entry.ResignFirstResponder();
+            });
+
+            var labelButton = new UIBarButtonItem(Title);
             var spacer = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace);
             var doneButton = new UIBarButtonItem(UIBarButtonSystemItem.Done, (o, a) => {
                 var s = (PickerSource)Picker.Model;
                 UpdatePickerFromModel(s);
                 Entry.ResignFirstResponder();
+                Command?.Execute(int.Parse(((PickerSource)Picker.Model).SelectedItem));
             });
 
-            toolbar.SetItems(new[] { spacer, doneButton }, false);
+            toolbar.SetItems(new[] {cancelButton,spacer, labelButton,spacer, doneButton }, false);
 
             Entry.InputView = Picker;
             Entry.InputAccessoryView = toolbar;
@@ -112,12 +125,14 @@ namespace MyFormsLibrary.iOS.Effects
 
             UpdateList();
             UpdateSelect();
+            UpdateCommand();
         }
 
         protected override void OnDetached() {
             View.RemoveConstraints(Constraint);
             Entry.RemoveFromSuperview();
             Entry.Dispose();
+            Title.Dispose();
             Picker.Dispose();
         }
 
@@ -132,6 +147,12 @@ namespace MyFormsLibrary.iOS.Effects
             }
             else if (e.PropertyName == NumberPicker.SelectedItemProperty.PropertyName) {
                 UpdateSelect();
+            }
+            else if (e.PropertyName == NumberPicker.TitleProperty.PropertyName) {
+                UpdateTitle();
+            }
+            else if (e.PropertyName == NumberPicker.CommandProperty.PropertyName) {
+                UpdateCommand();
             }
 
         }
@@ -149,10 +170,19 @@ namespace MyFormsLibrary.iOS.Effects
             var a = Items.IndexOf(NumberPicker.GetSelectedItem(Element));
             ((PickerSource)Picker.Model).SelectedIndex = a;
             ((PickerSource)Picker.Model).SelectedItem = NumberPicker.GetSelectedItem(Element).ToString();
-            Picker.Select(a,0,false);       }
+            Picker.Select(a,0,false);       
+        }
 
         void UpdatePickerFromModel(PickerSource s) {
             NumberPicker.SetSelectedItem(Element,Convert.ToInt32(s.SelectedItem));
+        }
+
+        void UpdateTitle() {
+            Title.Text = NumberPicker.GetTitle(Element);
+            Title.SizeToFit();
+        }
+        void UpdateCommand() {
+            Command = NumberPicker.GetCommand(Element);
         }
 
 
@@ -195,11 +225,11 @@ namespace MyFormsLibrary.iOS.Effects
 
         internal class NoCaretField : UITextField
         {
-            public NoCaretField() : base(new RectangleF()) {
+            public NoCaretField() : base(new CGRect()) {
             }
 
             public override CoreGraphics.CGRect GetCaretRectForPosition(UITextPosition position) {
-                return new RectangleF();
+                return new CGRect();
             }
 
         }

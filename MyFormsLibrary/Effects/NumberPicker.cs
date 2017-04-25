@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Xamarin.Forms;
+using System.Windows.Input;
 
 namespace MyFormsLibrary.Effects
 {
@@ -85,6 +86,23 @@ namespace MyFormsLibrary.Effects
 
         public static string GetTitle(BindableObject view) {
             return (string)view.GetValue(TitleProperty);
+        }
+
+
+        public static readonly BindableProperty CommandProperty =
+            BindableProperty.CreateAttached(
+                    "Command",
+                    typeof(ICommand),
+                    typeof(NumberPicker),
+                    default(ICommand)
+                );
+
+        public static void SetCommand(BindableObject view, ICommand value) {
+            view.SetValue(CommandProperty, value);
+        }
+
+        public static ICommand GetCommand(BindableObject view) {
+            return (ICommand)view.GetValue(CommandProperty);
         }
 
         private static void OnIsEnabledChanged(BindableObject bindable, object oldValue, object newValue) {

@@ -24,8 +24,10 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
 			cell = reusableCell;
 			if (cell != null) {
-				cell.RemoveGestureRecognizer(tapGesture);
-				tapGesture.Dispose();
+                if (tapGesture != null) {
+                    cell.RemoveGestureRecognizer(tapGesture);
+                    tapGesture.Dispose();
+                }
 			}
 
 			cell = base.GetCell(item, reusableCell, tv);

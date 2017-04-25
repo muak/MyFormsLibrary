@@ -5,7 +5,6 @@ using MyFormsLibrary.iOS.CustomRenderers;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
-using NControl.iOS;
 
 [assembly: ExportRenderer(typeof(EntryCellAlt), typeof(EntryCellAltRenderer))]
 namespace MyFormsLibrary.iOS.CustomRenderers
@@ -60,7 +59,9 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             UpdateTextColor();
             UpdateTextFontSize();
             UpdateKeyboard();
-
+            UpdatePlaceholder();
+            UpdateTextAlign();
+           
             return TableViewCell;
         }
 
@@ -86,6 +87,12 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             }
             else if (e.PropertyName == EntryCellAlt.KeyboardProperty.PropertyName) {
                 UpdateKeyboard();
+            }
+            else if (e.PropertyName == EntryCellAlt.PlaceholderProperty.PropertyName) {
+                UpdatePlaceholder();
+            }
+            else if (e.PropertyName == EntryCellAlt.TextAlignProperty.PropertyName) {
+                UpdateTextAlign();
             }
         }
 
@@ -124,14 +131,23 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             TableViewCell.TextField.ApplyKeyboard(EntryCell.Keyboard);
         }
 
-      
+        void UpdatePlaceholder() {
+            TableViewCell.TextField.Placeholder = EntryCell.Placeholder;
+        }
+
+        void UpdateTextAlign()
+        {
+            TableViewCell.TextField.TextAlignment = EntryCell.TextAlign.ToNativeTextAlignment();
+        }
     }
 
-    public class EntryCellAltView : CellTableViewCell
+    public class EntryCellAltView : CellBaseView
     {
         public UITextField TextField { get; }
 
-        public EntryCellAltView(string cellName) : base(UITableViewCellStyle.Value1,cellName) {
+        public EntryCellAltView(string cellName) : base(cellName) {
+            SelectionStyle = UITableViewCellSelectionStyle.None;
+
             TextField = new UITextField(new RectangleF(0, 0, 100, 30)) { BorderStyle = UITextBorderStyle.None };
             TextField.TextAlignment = UITextAlignment.Right;
 
@@ -140,16 +156,33 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
             ContentView.AddSubview(TextField);
 
+        }
 
+
+        protected override void Dispose(bool disposing) {
+            TextField.EditingChanged -= TextFieldOnEditingChanged;
+            TextField.ShouldReturn = null;
+            TextField.Dispose();
+
+            base.Dispose(disposing);
         }
 
         public override void LayoutSubviews() {
             base.LayoutSubviews();
 
             // simple algorithm to generally line up entries
-            var start = (float)Math.Round(Math.Max(Frame.Width * 0.3, TextLabel.Frame.Right + 10));
+            // Labelに何も設定されていなければその分大きく入力欄を取る
+            float start = 0;
+            if (!string.IsNullOrEmpty(TextLabel.Text)) {
+                start = (float)Math.Round(Math.Max(Frame.Width * 0.3, TextLabel.Frame.Right + 10));
+            }
+            else {
+                start = ImageView.Image == null ? (float)TextLabel.Frame.Left : (float)ImageView.Frame.Right + 10;
+            }
 
-            var width = ImageView.Image == null ? (float)TextLabel.Frame.Left : (float)ImageView.Frame.Left;
+            var labelLeft = string.IsNullOrEmpty(TextLabel.Text) ? ImageView.Frame.Left : TextLabel.Frame.Left;
+            //セルの右余白の幅の計算
+            var width = ImageView.Image == null ? (float)labelLeft : (float)ImageView.Frame.Left;
             TextField.Frame = new RectangleF(start, ((float)Frame.Height - 30) / 2, (float)Frame.Width - width - start, 30);
             // Centers TextField Content  (iOS6)
             TextField.VerticalAlignment = UIControlContentVerticalAlignment.Center;
@@ -172,6 +205,22 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             var handler = TextFieldTextChanged;
             if (handler != null)
                 handler(this, EventArgs.Empty);
+        }
+    }
+
+    //Xamarn.Formsより。Publicになれば削除する
+    internal static class AlignmentExtensions
+    {
+        internal static UITextAlignment ToNativeTextAlignment(this TextAlignment alignment)
+        {
+            switch (alignment) {
+                case TextAlignment.Center:
+                    return UITextAlignment.Center;
+                case TextAlignment.End:
+                    return UITextAlignment.Right;
+                default:
+                    return UITextAlignment.Left;
+            }
         }
     }
 }

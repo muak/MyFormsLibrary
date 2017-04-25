@@ -4,16 +4,19 @@ using MyFormsLibrary.CustomRenderers;
 using Xamarin.Forms;
 using UIKit;
 using NGraphics;
+using CoreGraphics;
+
 namespace MyFormsLibrary.iOS.CustomRenderers
 {
-    public class CellBaseRenderer:CellRenderer
+    public class CellBaseRenderer : CellRenderer
     {
-        protected CellTableViewCell Cell { get; set; }
+        protected CellBaseView Cell { get; set; }
         protected TableViewEx ParentElement;
         CellBase Item;
 
 
-        public override UIKit.UITableViewCell GetCell(Xamarin.Forms.Cell item, UIKit.UITableViewCell reusableCell, UIKit.UITableView tv) {
+        public override UIKit.UITableViewCell GetCell(Xamarin.Forms.Cell item, UIKit.UITableViewCell reusableCell, UIKit.UITableView tv)
+        {
             Item = item as CellBase;
 
             ParentElement = item.Parent as TableViewEx;
@@ -32,50 +35,24 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             return tvc;
         }
 
-        void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        void ParentElement_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
             if (e.PropertyName == TableViewEx.CellLabelColorProperty.PropertyName) {
                 UpdateLabelColor();
             }
             else if (e.PropertyName == TableViewEx.CellLabelFontSizeProperty.PropertyName) {
                 UpdateLabelFontSize();
             }
-
-        }
-
-        void UpdateLabelText() {
-            Cell.TextLabel.Text = Item.LabelText;
-        }
-        void UpdateLabelColor() {
-            if (Item.LabelColor != Xamarin.Forms.Color.Default) {
-                Cell.TextLabel.TextColor = Item.LabelColor.ToUIColor();
+            else if (e.PropertyName == TableViewEx.CellValueTextColorProperty.PropertyName) {
+                UpdateValueTextColor();
             }
-            else if(ParentElement.CellLabelColor != Xamarin.Forms.Color.Default) {
-                
-                Cell.TextLabel.TextColor = ParentElement.CellLabelColor.ToUIColor();
+            else if (e.PropertyName == TableViewEx.CellValueTextFontSizeProperty.PropertyName) {
+                UpdateValueTextFontSize();
             }
         }
-        void UpdateLabelFontSize() {
-            if (Item.LabelFontSize > 0) {
-               Cell.TextLabel.Font = Cell.TextLabel.Font.WithSize((nfloat)Item.LabelFontSize);
-            }
-            else {
-                Cell.TextLabel.Font = Cell.TextLabel.Font.WithSize((nfloat)ParentElement.CellLabelFontSize);
-            }
-            Cell.SetNeedsLayout();
-        }
-        void UpdateIcon() {
-            Cell.ImageView.Image = Item.Image?.GetUIImage();
-        }
 
-
-        protected void UpdateBase() {
-            UpdateLabelText();
-            UpdateLabelColor();
-            UpdateLabelFontSize();
-            UpdateIcon();
-        }
-
-        void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
             if (e.PropertyName == CellBase.LabelTextProperty.PropertyName) {
                 UpdateLabelText();
             }
@@ -85,6 +62,106 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             else if (e.PropertyName == CellBase.LabelFontSizeProperty.PropertyName) {
                 UpdateLabelFontSize();
             }
+            else if (e.PropertyName == CellBase.ErrorMessageProperty.PropertyName) {
+                UpdateErrorMessage();
+            }
+            else if (e.PropertyName == CellBase.ValueTextFontSizeProperty.PropertyName) {
+                UpdateValueTextFontSize();
+            }
+            else if (e.PropertyName == CellBase.ValueTextColorProperty.PropertyName) {
+                UpdateValueTextColor();
+            }
         }
+
+        void UpdateLabelText()
+        {
+            Cell.TextLabel.Text = Item.LabelText;
+        }
+
+        void UpdateLabelColor()
+        {
+            if (Item.LabelColor != Xamarin.Forms.Color.Default) {
+                Cell.TextLabel.TextColor = Item.LabelColor.ToUIColor();
+            }
+            else if (ParentElement.CellLabelColor != Xamarin.Forms.Color.Default) {
+
+                Cell.TextLabel.TextColor = ParentElement.CellLabelColor.ToUIColor();
+            }
+        }
+
+        void UpdateLabelFontSize()
+        {
+            if (Item.LabelFontSize > 0) {
+                Cell.TextLabel.Font = Cell.TextLabel.Font.WithSize((nfloat)Item.LabelFontSize);
+            }
+            else {
+                Cell.TextLabel.Font = Cell.TextLabel.Font.WithSize((nfloat)ParentElement.CellLabelFontSize);
+            }
+            Cell.SetNeedsLayout();
+        }
+
+        void UpdateValueTextFontSize()
+        {
+            if (Item.ValueTextFontSize > 0) {
+                Cell.DetailTextLabel.Font = Cell.DetailTextLabel.Font.WithSize((nfloat)Item.ValueTextFontSize);
+            }
+            else {
+                Cell.DetailTextLabel.Font = Cell.DetailTextLabel.Font.WithSize((nfloat)ParentElement.CellValueTextFontSize);
+            }
+            Cell.SetNeedsLayout();
+
+        }
+
+        void UpdateValueTextColor()
+        {
+            if (Item.ValueTextColor != Xamarin.Forms.Color.Default) {
+                Cell.DetailTextLabel.TextColor = Item.ValueTextColor.ToUIColor();
+            }
+            else if (ParentElement.CellValueTextColor != Xamarin.Forms.Color.Default) {
+                Cell.DetailTextLabel.TextColor = ParentElement.CellValueTextColor.ToUIColor();
+            }
+        }
+
+        async void UpdateIcon()
+        {
+            UIImage image = null;
+            if (Item.Image == null && Item.ImageSource != null) {
+                image = await Item.ImageSource.ToUIImage();
+
+            }
+            else if (Item.Image != null) {
+                image = Item.Image?.GetUIImage();
+               
+            }
+            else {
+                return;
+            }
+
+            Cell.ImageView.Image = image;
+            Cell.ImageView.ClipsToBounds = true;
+            Cell.ImageView.Layer.CornerRadius = 3;
+            Cell.SetNeedsLayout();
+        }
+
+        void UpdateErrorMessage()
+        {
+            Cell.ErrorLabel.Text = Item.ErrorMessage;
+            Cell.ErrorLabel.Hidden = string.IsNullOrEmpty(Item.ErrorMessage);
+        }
+
+        protected void UpdateBase()
+        {
+            UpdateLabelText();
+            UpdateLabelColor();
+            UpdateLabelFontSize();
+            UpdateIcon();
+            UpdateValueTextColor();
+            UpdateValueTextFontSize();
+            UpdateErrorMessage();
+        }
+
+
+
+
     }
 }

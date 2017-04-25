@@ -17,7 +17,7 @@ namespace MyFormsLibrary.Droid.Effects
 			if (textview == null) {
 				return;
 			}
-			textview.SetBackground(null);
+            textview.Background.Alpha = 0;
 
 		}
 

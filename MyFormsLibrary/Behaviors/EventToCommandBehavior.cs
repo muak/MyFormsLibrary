@@ -53,8 +53,8 @@ namespace MyFormsLibrary.Behaviors
 		}
 
 		protected override void OnDetachingFrom(View bindable) {
-			base.OnDetachingFrom(bindable);
 			DeregisterEvent(EventName);
+            base.OnDetachingFrom(bindable);
 		}
 
 		void RegisterEvent(string name) {

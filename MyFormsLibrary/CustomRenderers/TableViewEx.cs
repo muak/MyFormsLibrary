@@ -1,10 +1,43 @@
 ﻿using System;
 using Xamarin.Forms;
+using MyFormsLibrary.Effects;
 namespace MyFormsLibrary.CustomRenderers
 {
     public class TableViewEx:TableView
     {
         
+        public TableViewEx()
+        {
+            Intent = TableIntent.Settings;
+            // ToDo
+            // もしSectionの表示・非表示を実装するならこのあたりで
+            //this.Root.CollectionChanged += Root_CollectionChanged;
+        }
+
+        void Root_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) {
+                var s = e.NewItems[0] as TableSection;
+                s.PropertyChanged += Section_PropertyChanged;
+            }
+
+        }
+
+        void Section_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == SectionAt.IsVisibleProperty.PropertyName) {
+                var s = sender as TableSection;
+                var ret = (bool)SectionAt.GetIsVisible(s);
+                if (!ret) {
+                    //ToDo 元に戻す方法は別途考える必要あり
+                    // Dictionary<TableSection,bool>とかで管理かな
+                    var idx = this.Root.IndexOf(s);
+                    this.Root.RemoveAt(idx);
+                }
+             }
+        }
+
+
         public static BindableProperty SeparatorColorProperty =
             BindableProperty.Create(
                 nameof(SeparatorColor),
@@ -129,7 +162,7 @@ namespace MyFormsLibrary.CustomRenderers
                 nameof(HeaderBackgroundColor),
                 typeof(Color),
                 typeof(TableViewEx),
-                Color.Transparent,
+                default(Color),
                 defaultBindingMode: BindingMode.OneWay
             );
 

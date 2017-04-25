@@ -89,6 +89,42 @@ namespace MyFormsLibrary.Effects
 			return (Color)view.GetValue(EffectColorProperty);
 		}
 
+        public static readonly BindableProperty LongCommandProperty =
+            BindableProperty.CreateAttached(
+                    "LongCommand",
+                    typeof(ICommand),
+                    typeof(AddCommand),
+                    default(ICommand)
+                );
+
+        public static void SetLongCommand(BindableObject view, ICommand value)
+        {
+            view.SetValue(LongCommandProperty, value);
+        }
+
+        public static ICommand GetLongCommand(BindableObject view)
+        {
+            return (ICommand)view.GetValue(LongCommandProperty);
+        }
+
+        public static readonly BindableProperty LongCommandParameterProperty =
+            BindableProperty.CreateAttached(
+                    "LongCommandParameter",
+                    typeof(object),
+                    typeof(AddCommand),
+                    default(object)
+                );
+
+        public static void SetLongCommandParameter(BindableObject view, object value)
+        {
+            view.SetValue(LongCommandParameterProperty, value);
+        }
+
+        public static object GetLongCommandParameter(BindableObject view)
+        {
+            return (object)view.GetValue(LongCommandParameterProperty);
+        }
+
 
 		class AddCommandRoutingEffect : RoutingEffect
 		{
