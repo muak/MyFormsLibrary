@@ -10,7 +10,7 @@ using Android.Support.V4.View;
 using System;
 using System.Runtime.InteropServices;
 using Android.Text;
-
+using System.Collections.Generic;
 
 namespace MyFormsLibrary.Droid.CustomRenderers
 {
@@ -19,7 +19,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         readonly TableViewEx _view;
         ITableViewController Controller => _view;
 
-        public TableViewModelExRenderer(Context context, AListView listview, TableView view)
+		public TableViewModelExRenderer(Context context, AListView listview, TableView view)
             : base(context, listview, view) {
             _view = view as TableViewEx;
         }
@@ -138,7 +138,6 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
                 position -= size;
             }
-
         }
     }
 }

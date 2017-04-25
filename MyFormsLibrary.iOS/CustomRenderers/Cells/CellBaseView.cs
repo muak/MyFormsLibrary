@@ -1,13 +1,11 @@
-﻿using System;
+﻿using CoreGraphics;
 using UIKit;
+using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
-using System.Linq;
-using NGraphics;
-using CoreGraphics;
 
 namespace MyFormsLibrary.iOS.CustomRenderers
 {
-    public class CellBaseView:CellTableViewCell
+	public class CellBaseView:CellTableViewCell
     {
         public UILabel ErrorLabel { get; private set; }
         private NSLayoutConstraint[] _constraint;
@@ -19,10 +17,11 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
         protected override void Dispose(bool disposing)
         {
-            ContentView.RemoveConstraints(_constraint);
-            ErrorLabel.RemoveFromSuperview();
-            ErrorLabel.Dispose();
-            base.Dispose(disposing);
+			Device.BeginInvokeOnMainThread(()=>{
+				ErrorLabel.RemoveFromSuperview();
+	            ErrorLabel.Dispose();
+				base.Dispose(disposing);
+			});            
         }
 
         private void SetErrorMessageLabel()

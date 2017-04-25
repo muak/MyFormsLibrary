@@ -15,6 +15,7 @@
     <AssemblyName>MyFormsLibrary.Droid</AssemblyName>
     <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
     <AndroidTlsProvider></AndroidTlsProvider>
+    <ReleaseVersion>1.04</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -112,7 +113,6 @@
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CustomRenderers\NoIconNavigationRenderer.cs" />
     <Compile Include="DependencyServices\LoadingMessage.cs" />
     <Compile Include="CustomRenderers\SvgViewFixRenderer.cs" />
     <Compile Include="CustomRenderers\CircleBoxViewRenderer.cs" />
@@ -144,6 +144,7 @@
     <Compile Include="Services\ManipulatableImage.cs" />
     <Compile Include="CustomRenderers\ImageSourceExtensions.cs" />
     <Compile Include="CustomRenderers\Cells\TimePickerCellRenderer.cs" />
+    <Compile Include="CustomRenderers\SvgToBitmap.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
