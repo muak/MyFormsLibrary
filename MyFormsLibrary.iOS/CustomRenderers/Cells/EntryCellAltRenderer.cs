@@ -110,7 +110,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             }
         }
         void UpdateTextColor() {
-            if (EntryCell.TextColor != Color.Default) {
+            if (EntryCell.TextColor != Xamarin.Forms.Color.Default) {
                 TableViewCell.TextField.TextColor = EntryCell.TextColor.ToUIColor();
             }
             else if (ParentElement.CellValueTextColor != Xamarin.Forms.Color.Default) {

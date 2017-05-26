@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Support.V7.Widget;
+using Android.Text;
 using Android.Views;
 using MyFormsLibrary.CustomRenderers;
 using MyFormsLibrary.Droid.CustomRenderers;
@@ -13,6 +14,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms.Platform.Android.AppCompat;
+using Android.Text.Style;
 
 [assembly: ExportRenderer(typeof(NavigationPageEx), typeof(NavigationPageExRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
