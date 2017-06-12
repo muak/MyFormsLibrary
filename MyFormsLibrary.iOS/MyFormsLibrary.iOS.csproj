@@ -128,10 +128,6 @@
       <Project>{1B0BE68B-FCF7-46F0-BEAC-66249D650094}</Project>
       <Name>MyFormsLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Pixie\Pixie\Pixie.csproj">
-      <Project>{97361DA6-665D-4569-B450-49C59F9F4CB6}</Project>
-      <Name>Pixie</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
