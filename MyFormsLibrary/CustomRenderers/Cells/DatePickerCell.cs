@@ -78,5 +78,19 @@ namespace MyFormsLibrary.CustomRenderers
             get { return (Color)GetValue(AccentColorProperty); }
             set { SetValue(AccentColorProperty, value); }
         }
+
+        public static BindableProperty TodayTextProperty =
+            BindableProperty.Create(
+                nameof(TodayText),
+                typeof(string),
+                typeof(DatePickerCell),
+                default(string),
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public string TodayText {
+            get { return (string)GetValue(TodayTextProperty); }
+            set { SetValue(TodayTextProperty, value); }
+        }
     }
 }

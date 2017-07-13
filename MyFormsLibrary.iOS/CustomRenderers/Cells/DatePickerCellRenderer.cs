@@ -1,5 +1,6 @@
 ﻿using System;
 using CoreGraphics;
+using Foundation;
 using MyFormsLibrary.CustomRenderers;
 using MyFormsLibrary.iOS.CustomRenderers;
 using UIKit;
@@ -23,28 +24,25 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
             _tableViewCell = reusableCell as DatePickerCellView;
             if (_tableViewCell == null) {
-                _tableViewCell = new DatePickerCellView(item.GetType().FullName);
+                _tableViewCell = new DatePickerCellView(item,item.GetType().FullName);
             }
             else {
                 item.PropertyChanged -= Item_PropertyChanged;
-                _tableViewCell.Picker.ValueChanged -= Picker_ValueChanged;
             }
 
             Cell = _tableViewCell;
             _tableViewCell.Cell = item;
 
             item.PropertyChanged += Item_PropertyChanged;
-            _tableViewCell.Picker.ValueChanged += Picker_ValueChanged;
 
             WireUpForceUpdateSizeRequested(item, _tableViewCell, tv);
 
             UpdateBackground(_tableViewCell, _datePikcerCell);
             UpdateBase();
 
-            UpdateFormat();
-            UpdateMaximumDate();
-            UpdateMinimumDate();
-
+            _tableViewCell.UpdateDate();
+            _tableViewCell.UpdateMaximumDate();
+            _tableViewCell.UpdateMinimumDate();
 
             return _tableViewCell;
         }
@@ -52,57 +50,28 @@ namespace MyFormsLibrary.iOS.CustomRenderers
         void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == DatePickerCell.DateProperty.PropertyName) {
-                UpdateDate();
-            }
-            else if (e.PropertyName == DatePickerCell.FormatProperty.PropertyName) {
-                UpdateFormat();
+                _tableViewCell.UpdateDate();
             }
             else if (e.PropertyName == DatePickerCell.MaximumDateProperty.PropertyName) {
-                UpdateMaximumDate();
+                _tableViewCell.UpdateMaximumDate();
             }
             else if (e.PropertyName == DatePickerCell.MinimumDateProperty.PropertyName) {
-                UpdateMinimumDate();
+                _tableViewCell.UpdateMinimumDate();
             }
-
-        }
-
-        void UpdateFormat()
-        {
-            _format = _datePikcerCell.Format;
-            UpdateDate();
-        }
-
-        void UpdateDate()
-        {
-            _tableViewCell.Picker.SetDate(_datePikcerCell.Date.ToNSDate(),true);
-            _tableViewCell.DetailTextLabel.Text = _datePikcerCell.Date.ToString(_format);
-        }
-
-        void UpdateMaximumDate()
-        {
-            _tableViewCell.Picker.MaximumDate = _datePikcerCell.MaximumDate.ToNSDate();
-        }
-
-        void UpdateMinimumDate()
-        {
-            _tableViewCell.Picker.MinimumDate = _datePikcerCell.MinimumDate.ToNSDate();
-        }
-
-        void Picker_ValueChanged(object sender, EventArgs e)
-        {
-            _datePikcerCell.SetValue(DatePickerCell.DateProperty, _tableViewCell.Picker.Date.ToDateTime().Date);
-            _tableViewCell.DetailTextLabel.Text = _datePikcerCell.Date.ToString(_format);
         }
     }
 
     public class DatePickerCellView : CellBaseView
     {
         public UIDatePicker Picker { get; set; }
-        private NoCaretField _entry;
 
-        public DatePickerCellView(string cellName) : base( cellName)
+        NSDate _preSelectedDate;
+        DatePickerCell _datePickerCell => Cell as DatePickerCell;
+        NoCaretField _entry;
+
+        public DatePickerCellView(Cell cell,string cellName) : base( cellName)
         {
-            
+            Cell = cell;
             _entry = new NoCaretField();
             _entry.BorderStyle = UITextBorderStyle.None;
             _entry.BackgroundColor = UIColor.Clear;
@@ -113,15 +82,58 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
             var width = UIScreen.MainScreen.Bounds.Width;
             var toolbar = new UIToolbar(new CGRect(0, 0, width, 44)) { BarStyle = UIBarStyle.Default, Translucent = true };
+
+            var cancelButton = new UIBarButtonItem(UIBarButtonSystemItem.Cancel, (o, e) => {
+                _entry.ResignFirstResponder();
+                Picker.Date = _preSelectedDate;
+            });
+
             var spacer = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace);
             var doneButton = new UIBarButtonItem(UIBarButtonSystemItem.Done, (o, a) => {
                 _entry.ResignFirstResponder();
+                _datePickerCell.Date = Picker.Date.ToDateTime().Date;
+                DetailTextLabel.Text = _datePickerCell.Date.ToString(_datePickerCell.Format);
+                _preSelectedDate = Picker.Date;
             });
 
-            toolbar.SetItems(new[] { spacer, doneButton }, false);
+            if(!string.IsNullOrEmpty(_datePickerCell.TodayText)){
+                var labelButton = new UIBarButtonItem(_datePickerCell.TodayText, UIBarButtonItemStyle.Plain, (sender, e) => {
+                    SetToday();
+                });
+                var fixspacer = new UIBarButtonItem(UIBarButtonSystemItem.FixedSpace) { Width = 20 };
+                toolbar.SetItems(new[] { cancelButton, spacer, labelButton, fixspacer, doneButton }, false);
+            }
+            else{
+                toolbar.SetItems(new[] {cancelButton, spacer, doneButton }, false);
+            }
 
             _entry.InputView = Picker;
             _entry.InputAccessoryView = toolbar;
+        
+        }
+
+        public void UpdateDate()
+        {
+            Picker.SetDate(_datePickerCell.Date.ToNSDate(),true);
+            DetailTextLabel.Text = _datePickerCell.Date.ToString(_datePickerCell.Format);
+            _preSelectedDate = _datePickerCell.Date.ToNSDate();
+        }
+
+        public void UpdateMaximumDate()
+        {
+            Picker.MaximumDate = _datePickerCell.MaximumDate.ToNSDate();
+        }
+
+        public void UpdateMinimumDate()
+        {
+            Picker.MinimumDate = _datePickerCell.MinimumDate.ToNSDate();
+        }
+
+        void SetToday()
+        {
+            if(Picker.MinimumDate.ToDateTime() <= DateTime.Today && Picker.MaximumDate.ToDateTime() >= DateTime.Today){
+                Picker.SetDate(DateTime.Today.ToNSDate(), true);
+            }
         }
 
         public override void LayoutSubviews()
