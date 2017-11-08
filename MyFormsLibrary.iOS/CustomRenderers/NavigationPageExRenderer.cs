@@ -21,7 +21,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
         protected override void Dispose(bool disposing)
         {
-            var formsItems = (Element as NavigationPageEx).CurrentPage
+            var formsItems = (Element as NavigationPageEx)?.CurrentPage
                                                           .ToolbarItems
                                                           .Where(x => x.Order != ToolbarItemOrder.Secondary)
                                                           .OrderByDescending(x => x.Priority);
@@ -47,8 +47,16 @@ namespace MyFormsLibrary.iOS.CustomRenderers
                                                           .Where(x => x.Order != ToolbarItemOrder.Secondary)
                                                           .OrderByDescending(x => x.Priority);
 
+            if (formsItems == null){
+                return;
+            }
+
             var ctrl = ViewControllers.Last();
             var nativeItems = ctrl.NavigationItem.RightBarButtonItems;
+
+            if(nativeItems == null){
+                return;
+            }
 
             var rightItems = new List<UIBarButtonItem>();
             var leftItems = new List<UIBarButtonItem>();
