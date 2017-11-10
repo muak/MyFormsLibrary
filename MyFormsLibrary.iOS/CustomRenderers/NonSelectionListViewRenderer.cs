@@ -27,6 +27,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 				Control.AllowsSelection = false;
                 ItemCleanUp = new List<NonSelectionViewCellRenderer>();
 
+                //Fix 2.4.0 sr4 時点でのバグ ソース上は修正されているので次回リリースまでの暫定対応
                 var mCollectionChanged = typeof(ListViewRenderer).GetMethod("OnCollectionChanged", BindingFlags.Instance | BindingFlags.NonPublic);
                
                 Action<ITemplatedItemsList<Cell>> removeEvent = (cell) => {
@@ -58,12 +59,9 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
         void TemplatedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            //元のソースも何もせずにReloadDataの処理をGOTOで飛ばして行なっているので直接それを呼んで終わらせる
             Control.ReloadData();          
         }
-
-
-
-
     }
 }
 
