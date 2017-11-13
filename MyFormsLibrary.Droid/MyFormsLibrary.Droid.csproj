@@ -16,7 +16,7 @@
     <AssemblyName>MyFormsLibrary.Droid</AssemblyName>
     <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
     <AndroidTlsProvider></AndroidTlsProvider>
-    <ReleaseVersion>1.1.0-pre6</ReleaseVersion>
+    <ReleaseVersion>1.05</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

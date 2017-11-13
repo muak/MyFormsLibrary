@@ -191,7 +191,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 			//戻った時にこうしとかないと表示されない。BeginInvokeOnMainThreadだと失敗することがある。時間も250は必要。
 			Device.StartTimer(TimeSpan.FromMilliseconds(250), () => {
-				_toolbar.NavigationIcon = icon;
+                if (_toolbar != null) {
+                    _toolbar.NavigationIcon = icon;
+                }
 				return false;
 			});
 			_navigationCustomListener?.Dispose();
