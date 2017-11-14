@@ -7,6 +7,9 @@ namespace MyFormsLibrary.Navigation
 {
     public interface INavigationServiceEx:INavigationService
     {
+        Task NavigateAsync<T>(NavigationParameters parameters = null, bool animated = true) where T : ContentPage;
+        Task NavigateModalAsync<T>(NavigationParameters parameters = null, bool animated = true) where T : ContentPage;
+
         Task NavigateAsync<T>(object myParam = null, bool animated = true, NavigationParameters originalParam = null) where T : ContentPage;
         Task NavigateModalAsync<T>(object myParam = null, bool animated = true, NavigationParameters originalParam = null) where T : ContentPage;
         Task NavigateModalAsync<Tnavi, Tpage>(object myParam = null, bool animated = true, NavigationParameters originalParam = null) where Tnavi : NavigationPage where Tpage : ContentPage;

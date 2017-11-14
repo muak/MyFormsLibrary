@@ -109,6 +109,21 @@ namespace MyFormsLibrary.Navigation
             return await base.GoBackAsync(parameters, useModalNavigation, animated);
         }
 
+        public async Task NavigateAsync<T>(NavigationParameters parameters = null, bool animated = true) where T : ContentPage {
+            
+            if (parameters == null) {
+                parameters = new NavigationParameters();
+            }
+            await base.NavigateAsync(typeof(T).Name, parameters, (bool?)false, animated);
+        }
+
+        public async Task NavigateModalAsync<T>(NavigationParameters parameters = null, bool animated = true) where T : ContentPage {
+            if (parameters == null) {
+                parameters = new NavigationParameters();
+            }
+            await base.NavigateAsync(typeof(T).Name, parameters, (bool?)true, animated);
+        }
+
         public async Task NavigateAsync<T>(object myParam = null, bool animated = true, NavigationParameters originalParam = null) where T : ContentPage
         {
             var param = this.Container.Resolve<INavigationParameter>();
