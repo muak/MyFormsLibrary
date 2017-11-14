@@ -9,7 +9,7 @@
     <RootNamespace>MyFormsLibrary</RootNamespace>
     <AssemblyName>MyFormsLibrary</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <ReleaseVersion>1.05</ReleaseVersion>
+    <ReleaseVersion>1.1.0-pre6</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -86,6 +86,8 @@
     <Compile Include="CustomRenderers\Cells\TimePickerCell.cs" />
     <Compile Include="Navigation\INavigationServiceEx.cs" />
     <Compile Include="Navigation\TabbedPageHasNavigationPageActionBehavior.cs" />
+    <Compile Include="Navigation\ParametersBase.cs" />
+    <Compile Include="Navigation\NavigationParametersExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.3.0.34-pre1\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.0.34-pre1\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
