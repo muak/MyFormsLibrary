@@ -109,19 +109,21 @@ namespace MyFormsLibrary.Navigation
             return await base.GoBackAsync(parameters, useModalNavigation, animated);
         }
 
-        public async Task NavigateAsync<T>(NavigationParameters parameters = null, bool animated = true) where T : ContentPage {
-            
-            if (parameters == null) {
-                parameters = new NavigationParameters();
+        public async Task NavigateAsync<T>(ParametersBase parameters = null, bool animated = true) where T : ContentPage {
+
+            var prismParam = parameters?.ToNavigationParameters();
+            if (prismParam == null) {
+                prismParam = new NavigationParameters();
             }
-            await base.NavigateAsync(typeof(T).Name, parameters, (bool?)false, animated);
+            await base.NavigateAsync(typeof(T).Name, prismParam, (bool?)false, animated);
         }
 
-        public async Task NavigateModalAsync<T>(NavigationParameters parameters = null, bool animated = true) where T : ContentPage {
-            if (parameters == null) {
-                parameters = new NavigationParameters();
+        public async Task NavigateModalAsync<T>(ParametersBase parameters = null, bool animated = true) where T : ContentPage {
+            var prismParam = parameters?.ToNavigationParameters();
+            if (prismParam == null) {
+                prismParam = new NavigationParameters();
             }
-            await base.NavigateAsync(typeof(T).Name, parameters, (bool?)true, animated);
+            await base.NavigateAsync(typeof(T).Name, prismParam, (bool?)true, animated);
         }
 
         public async Task NavigateAsync<T>(object myParam = null, bool animated = true, NavigationParameters originalParam = null) where T : ContentPage
