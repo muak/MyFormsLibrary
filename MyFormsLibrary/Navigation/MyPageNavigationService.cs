@@ -50,14 +50,27 @@ namespace MyFormsLibrary.Navigation
             return tabbedPage;
         }
 
-        public NavigationPage CreateMainPageNavigationHasTabbed(string naviName, string tabbedName, IEnumerable<ContentPage> children) {
+        public NavigationPage CreateMainPageNavigationHasTabbed(string naviName, string tabbedName, IList<ContentPage> children,IList<NavigationParameters> parameters) {
             var tabbedPage = CreatePage(tabbedName) as TabbedPage;
             SetAutowireViewModelOnPage(tabbedPage);
 
-            foreach (var c in children) {
-				PageUtilities.OnNavigatingTo(c, new NavigationParameters{{KnownNavigationParameters.NavigationMode,NavigationMode.New}});
+            if(parameters == null){
+                parameters = new List<NavigationParameters>();
+            }
+
+            foreach(var p in parameters){
+                p.Add(KnownNavigationParameters.NavigationMode, NavigationMode.New);
+            }
+
+            for (var i = parameters.Count - 1; i < children.Count;i++){
+                parameters.Add(new NavigationParameters { { KnownNavigationParameters.NavigationMode, NavigationMode.New } });
+            }
+
+            for (var i = 0; i < children.Count;i++) {
+                var c = children[i];
+				PageUtilities.OnNavigatingTo(c, parameters[i]);
                 tabbedPage.Children.Add(c);
-				PageUtilities.OnNavigatedTo(c, new NavigationParameters{{KnownNavigationParameters.NavigationMode,NavigationMode.New}});
+				PageUtilities.OnNavigatedTo(c, parameters[i]);
             }
 
             //子を追加し終わってからBehaviorを適用しないとActiveAwareが余分に呼ばれる
