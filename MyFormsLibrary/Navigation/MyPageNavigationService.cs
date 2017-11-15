@@ -126,6 +126,18 @@ namespace MyFormsLibrary.Navigation
             await base.NavigateAsync(typeof(T).Name, prismParam, (bool?)true, animated);
         }
 
+        public async Task NavigateModal<Tnavi, Tpage>(ParametersBase parameters = null, bool animated = true)
+            where Tnavi : NavigationPage
+            where Tpage : ContentPage
+        {
+            var prismParam = parameters?.ToNavigationParameters();
+            if (prismParam == null) {
+                prismParam = new NavigationParameters();
+            }
+            await base.NavigateAsync(typeof(Tnavi).Name + "/" + typeof(Tpage).Name, prismParam, (bool?)true, animated);
+        }
+
+
         public async Task NavigateAsync<T>(object myParam = null, bool animated = true, NavigationParameters originalParam = null) where T : ContentPage
         {
             var param = this.Container.Resolve<INavigationParameter>();
