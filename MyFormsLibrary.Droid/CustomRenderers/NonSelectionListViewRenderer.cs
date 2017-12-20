@@ -12,6 +12,7 @@ using AView = Android.Views.View;
 using ListView = Xamarin.Forms.ListView;
 using MyFormsLibrary.CustomRenderers.Cells;
 using System.Reflection;
+using Android.Content;
 
 [assembly: ExportRenderer(typeof(NonSelectionListView), typeof(NonSelectionListViewRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
@@ -26,7 +27,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 		private IList<MenuItem> contextActions;
 		private List<IDisposable> menuDisposable;
 
-
+        public NonSelectionListViewRenderer(Context context):base(context){}
 
 		protected override void OnElementChanged(ElementChangedEventArgs<ListView> e) {
 			base.OnElementChanged(e);
@@ -87,7 +88,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 			for (var i = contextActions.Count-1; i >= 0; i--) {
 				var action = contextActions[i];
-				var menuItem = menu.Add(Menu.None, i, Menu.None, action.Text);
+				var menuItem = menu.Add(Android.Views.Menu.None, i, Android.Views.Menu.None, action.Text);
 
 				var clicked = new MenuItemClickListener(action,menuItem);
 				menuItem.SetOnMenuItemClickListener(clicked);
