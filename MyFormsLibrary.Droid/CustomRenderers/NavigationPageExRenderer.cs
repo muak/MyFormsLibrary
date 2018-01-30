@@ -15,6 +15,7 @@ using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms.Platform.Android.AppCompat;
 using Android.Text.Style;
+using Android.Content;
 
 [assembly: ExportRenderer(typeof(NavigationPageEx), typeof(NavigationPageExRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
@@ -36,6 +37,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 				return (Element as NavigationPage).BarTextColor == Xamarin.Forms.Color.Default;
 			}
 		}
+
+        public NavigationPageExRenderer(Context context):base(context){}
 
 		protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<NavigationPage> e)
 		{
