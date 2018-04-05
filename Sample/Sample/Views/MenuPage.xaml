@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms" 
+    xmlns:cr="clr-namespace:MyFormsLibrary.CustomRenderers;assembly=MyFormsLibrary"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    x:Class="Sample.Views.MenuPage">
+    
+    <ContentPage.ToolbarItems>
+        <cr:ToolbarItemEx  Priority="1" Resource="ios-star.svg" Command="{Binding TestCommand}"/>
+    </ContentPage.ToolbarItems>
+    
+    <StackLayout>
+        <Button Text="Main" Command="{Binding GoToCommand}" />
+    </StackLayout>
+</ContentPage>
