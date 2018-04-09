@@ -1,5 +1,9 @@
 ﻿<Properties StartupConfiguration="{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}|Default">
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="MyFormsLibrary.iOS/CustomRenderers/NavigationPageExRenderer.cs">
+    <Files>
+      <File FileName="MyFormsLibrary.iOS/CustomRenderers/NavigationPageExRenderer.cs" Line="28" Column="10" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

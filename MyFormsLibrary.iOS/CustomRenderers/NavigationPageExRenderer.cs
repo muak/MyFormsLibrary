@@ -6,6 +6,7 @@ using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 [assembly: ExportRenderer(typeof(NavigationPageEx), typeof(NavigationPageExRenderer))]
 namespace MyFormsLibrary.iOS.CustomRenderers
@@ -23,8 +24,35 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
         public override UIViewController PopViewController(bool animated)
         {
-            _itemsCache.TryRemove((Element as NavigationPageEx).CurrentPage,out var ret);
             return base.PopViewController(animated);
+        }
+
+        public override UIViewController[] PopToViewController(UIViewController viewController, bool animated)
+        {
+            return base.PopToViewController(viewController, animated);
+        }
+
+        protected async override Task<bool> OnPopViewAsync(Page page, bool animated)
+        {
+            _itemsCache.TryRemove((Element as NavigationPageEx).CurrentPage, out var ret);
+
+            var baseRet = await base.OnPopViewAsync(page, animated);
+
+            // https://forums.xamarin.com/discussion/88042/back-button-ios-white-page-crash
+            // http://sandreichuk.blogspot.jp/2017/09/xamarinios-xamarinforms-back-navigation.html
+            // ページA遷移→普通にnavigationのbackボタンで戻る→ページA遷移→コードからPopAsync→空白ページ100%発生
+            // この問題の対策
+            // というか2.5.1.444934で解消されていた件… とりあえずコメントアウトして同様の現象が発生したら解除することにする。
+
+            //var formsCount = page.Navigation.NavigationStack.Count;
+            //var nativeCount = ViewControllers.Count();
+
+            //if(formsCount == nativeCount){
+            //    await Task.Delay(100);
+            //    PopToViewController(ViewControllers[ViewControllers.Count() - 2], false);
+            //}
+
+            return baseRet; 
         }
 
         protected override void Dispose(bool disposing)
