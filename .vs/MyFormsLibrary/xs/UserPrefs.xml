@@ -1,7 +1,8 @@
 ﻿<Properties StartupConfiguration="{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MyFormsLibrary.iOS/CustomRenderers/NavigationPageExRenderer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MyFormsLibrary.iOS/CustomRenderers/CircleBoxViewRenderer.cs">
     <Files>
-      <File FileName="MyFormsLibrary.iOS/CustomRenderers/NavigationPageExRenderer.cs" Line="28" Column="10" />
+      <File FileName="MyFormsLibrary.iOS/CustomRenderers/NavigationPageExRenderer.cs" Line="46" Column="13" />
+      <File FileName="MyFormsLibrary.iOS/CustomRenderers/CircleBoxViewRenderer.cs" Line="9" Column="34" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
