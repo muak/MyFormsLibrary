@@ -6,7 +6,7 @@ using Prism;
 
 namespace MyFormsLibrary.Tests.Mocks.ViewModels
 {
-    public class NextPageViewModel:ContentPageAllActionViewModel,INavigationAware,IActiveAware
+    public class NextPageViewModel:ContentPageAllActionViewModel,INavigationAware,IActiveAware,IDestructible
     {
         public NextPageViewModel(INavigationServiceEx navigationService) {
             NavigationService = navigationService;
@@ -57,5 +57,9 @@ namespace MyFormsLibrary.Tests.Mocks.ViewModels
             NavigatingCount++;
         }
 
+        public void Destroy() {
+            DoneDestroy = true;
+            DestroyCount++;
+        }
     }
 }

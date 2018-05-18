@@ -36,7 +36,7 @@ namespace MyFormsLibrary.Navigation
 
             if (parameters == null) {
                 parameters = new NavigationParameters();
-                parameters.Add(KnownNavigationParameters.NavigationMode, NavigationMode.Back);
+                parameters.AddInternalParameter(MyPageNavigationService.NavigationModeKey, NavigationMode.Back);
             }
                 
             PageUtilities.OnNavigatingTo(tabbed.CurrentPage, parameters);

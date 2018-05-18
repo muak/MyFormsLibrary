@@ -1,114 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{1B0BE68B-FCF7-46F0-BEAC-66249D650094}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>MyFormsLibrary</RootNamespace>
-    <AssemblyName>MyFormsLibrary</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <ReleaseVersion>1.1.2</ReleaseVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Navigation\INavigationParameter.cs" />
-    <Compile Include="Navigation\NavigationParameter.cs" />
-    <Compile Include="DependencyServices\ILoadingMessage.cs" />
-    <Compile Include="CustomViews\WrapLayout.cs" />
-    <Compile Include="CustomViews\RepeaterWrapLayout.cs" />
-    <Compile Include="CustomViews\CommandStack.cs" />
-    <Compile Include="CustomViews\CommandGrid.cs" />
-    <Compile Include="CustomViews\CommandAbsolute.cs" />
-    <Compile Include="CustomViews\CommandView.cs" />
-    <Compile Include="Services\IMessagingService.cs" />
-    <Compile Include="Services\MessagingService.cs" />
-    <Compile Include="NControls\SvgView.cs" />
-    <Compile Include="MyFormsLibrary.cs" />
-    <Compile Include="Infrastructure\SvgLoader.cs" />
-    <Compile Include="Behaviors\BehaviorBase.cs" />
-    <Compile Include="Behaviors\EventToCommandBehavior.cs" />
-    <Compile Include="Converters\NullBoolConverter.cs" />
-    <Compile Include="Converters\NullColorConverter.cs" />
-    <Compile Include="Converters\NullSpaceConverter.cs" />
-    <Compile Include="CustomRenderers\CircleBoxView.cs" />
-    <Compile Include="CustomRenderers\NavigationPageEx.cs" />
-    <Compile Include="CustomRenderers\TabbedPageEx.cs" />
-    <Compile Include="CustomRenderers\ToolbarItemEx.cs" />
-    <Compile Include="DependencyServices\ISvgService.cs" />
-    <Compile Include="Effects\AddCommand.cs" />
-    <Compile Include="Effects\HideBorder.cs" />
-    <Compile Include="Effects\LineHeight.cs" />
-    <Compile Include="Effects\Placeholder.cs" />
-    <Compile Include="Effects\SliderColor.cs" />
-    <Compile Include="Effects\NumberPicker.cs" />
-    <Compile Include="Effects\ShowBorder.cs" />
-    <Compile Include="CustomRenderers\NonSelectionListView.cs" />
-    <Compile Include="CustomRenderers\TableViewEx.cs" />
-    <Compile Include="CustomRenderers\Cells\CommandCell.cs" />
-    <Compile Include="CustomRenderers\Cells\NonSelectionViewCell.cs" />
-    <Compile Include="CustomRenderers\Cells\CellBase.cs" />
-    <Compile Include="CustomRenderers\Cells\EntryCellAlt.cs" />
-    <Compile Include="CustomRenderers\Cells\LabelCell.cs" />
-    <Compile Include="Navigation\MyPageNavigationService.cs" />
-    <Compile Include="Navigation\TabbedPageOverNavigationPageActiveAwareBehavior.cs" />
-    <Compile Include="Effects\AddErrorMessage.cs" />
-    <Compile Include="CustomRenderers\Cells\SwitchCellAlt.cs" />
-    <Compile Include="Effects\ToFlatButton.cs" />
-    <Compile Include="CustomRenderers\Cells\DatePickerCell.cs" />
-    <Compile Include="CustomRenderers\Cells\NumberPickerCell.cs" />
-    <Compile Include="Effects\MaxLength.cs" />
-    <Compile Include="Effects\IMaxLength.cs" />
-    <Compile Include="Services\IImageManipulator.cs" />
-    <Compile Include="CustomRenderers\Cells\IContextMenuCell.cs" />
-    <Compile Include="Navigation\NavigationPageOverTabbedPageCurrentBehavior.cs" />
-    <Compile Include="CustomRenderers\TableSectionAlt.cs" />
-    <Compile Include="Behaviors\ItemSelectedToCommandBehavior.cs" />
-    <Compile Include="CustomRenderers\Cells\TimePickerCell.cs" />
-    <Compile Include="Navigation\INavigationServiceEx.cs" />
-    <Compile Include="Navigation\TabbedPageHasNavigationPageActionBehavior.cs" />
-    <Compile Include="Navigation\ParametersBase.cs" />
-    <Compile Include="Navigation\NavigationParametersExtensions.cs" />
-    <Compile Include="CustomRenderers\Cells\ViewCellAlt.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <Import Project="..\packages\Xamarin.Forms.2.3.0.34-pre1\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.0.34-pre1\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
-  <Import Project="..\packages\Xamarin.Forms.2.3.0.46-pre3\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.0.46-pre3\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
-  <Import Project="..\packages\Xamarin.Forms.2.3.0.107\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.0.107\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
-  <Import Project="..\packages\Xamarin.Forms.2.3.2.118-pre1\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.2.118-pre1\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
-  <ItemGroup>
-    <None Include="project.json" />
+    <PackageReference Include="Xamarin.Forms" Version="3.0.0.446417" />
+    <PackageReference Include="Prism.Unity.Forms" Version="7.0.0.396" />
+    <PackageReference Include="NControl" Version="0.9.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Navigation\" />
-    <Folder Include="DependencyServices\" />
-    <Folder Include="CustomViews\" />
-    <Folder Include="Services\" />
-    <Folder Include="NControls\" />
-    <Folder Include="Infrastructure\" />
-    <Folder Include="CustomRenderers\Cells\" />
+    <Compile Remove="Effects\AddCommand.cs" />
+    <Compile Remove="Effects\AddErrorMessage.cs" />
+    <Compile Remove="CustomViews\CommandAbsolute.cs" />
+    <Compile Remove="CustomViews\CommandGrid.cs" />
+    <Compile Remove="CustomRenderers\Cells\CellBase.cs" />
   </ItemGroup>
-  <Import Project="..\packages\Xamarin.Forms.2.3.2.127\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.2.127\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
-  <Import Project="..\packages\Xamarin.Forms.2.3.3.180\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.3.180\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets')" />
-  <Import Project="..\packages\Xamarin.Forms.2.3.3.193\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.3.193\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets')" />
-  <Import Project="..\packages\Xamarin.Forms.2.4.0.38779\build\portable-win+net45+wp80+win81+wpa81\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.4.0.38779\build\portable-win+net45+wp80+win81+wpa81\Xamarin.Forms.targets')" />
 </Project>

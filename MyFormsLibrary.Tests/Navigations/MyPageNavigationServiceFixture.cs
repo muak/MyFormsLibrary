@@ -1,83 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Practices.Unity;
-using Moq;
 using MyFormsLibrary.Navigation;
 using MyFormsLibrary.Tests.Mocks;
 using MyFormsLibrary.Tests.Mocks.ViewModels;
 using MyFormsLibrary.Tests.Mocks.Views;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using Prism.Common;
-using Prism.Logging;
-using Prism.Mvvm;
+using Prism.Behaviors;
 using Prism.Navigation;
-using Prism.Unity;
-using Prism.Unity.Navigation;
 using Xamarin.Forms;
-using System.Linq;
 
 namespace MyFormsLibrary.Tests.Navigations
 {
     [TestFixture]
     public class MyPageNavigationServiceFixture
     {
-        IUnityContainer Container;
-        IApplicationProvider App;
-        ILoggerFacade Log;
+        AppMock App;
 
-        public MyPageNavigationServiceFixture() {
-            
-            Container = new UnityContainer();
-
-            Log = new Mock<ILoggerFacade>().Object;
-            App = new ApplicationProviderMock();
-
-            Container.RegisterInstance(Log);
-            Container.RegisterInstance(App, new ContainerControlledLifetimeManager());
-            Container.RegisterType<INavigationServiceEx, MyPageNavigationService>();
-            Container.RegisterType<INavigationParameter, NavigationParameter>(null, new ContainerControlledLifetimeManager());
-           
-            Container.RegisterTypeForNavigation<ContentPageNoAction>();
-            Container.RegisterTypeForNavigation<ContentPageAllAction>();
-            Container.RegisterTypeForNavigation<PageAlpha>();
-            Container.RegisterTypeForNavigation<PageBeta>();
-            Container.RegisterTypeForNavigation<MainTabbedPage>();
-            Container.RegisterTypeForNavigation<NavigationAlpha>();
-            Container.RegisterTypeForNavigation<NavigationBeta>();
-            Container.RegisterTypeForNavigation<NavigationGamma>();
-            Container.RegisterTypeForNavigation<NavigationTop>();
-            Container.RegisterTypeForNavigation<NextPage>();
-
-            ViewModelLocationProvider.SetDefaultViewModelFactory((view, type) => {
-                ParameterOverrides overrides = null;
-
-                var page = view as Page;
-                if (page != null) {
-                    var navService = Container.Resolve<INavigationServiceEx>();
-                    ((IPageAware)navService).Page = page;
-
-                    overrides = new ParameterOverrides
-                    {
-                        { "navigationService", navService }
-                    };
-                }
-
-                return Container.Resolve(type, overrides);
-            });
-
+        public MyPageNavigationServiceFixture() 
+        {
+            Xamarin.Forms.Mocks.MockForms.Init();
+            App = new AppMock(null);
         }
 
         [Test]
         public void CreateContentPage() {
-            var nav = new MyPageNavigationService(Container, App, Log);
-
-            var page = nav.CreateContentPage("ContentPageNoAction");
+            var page = App.MyPageNavigationService.CreateContentPage("ContentPageNoAction");
 
             page.GetType().Is(typeof(ContentPageNoAction));
             page.BindingContext.GetType().Is(typeof(ContentPageNoActionViewModel));
-
         }
 
         static TestCaseData[] Src_CreateNavigationPage = new[] {
@@ -86,10 +38,12 @@ namespace MyFormsLibrary.Tests.Navigations
 
         [TestCaseSource("Src_CreateNavigationPage")]
         public void CreateNavigationPage(NavigationParameters param) {
-            var nav = new MyPageNavigationService(Container, App, Log);
+            var nav = App.MyPageNavigationService;
 
             var page = nav.CreateNavigationPage("NavigationAlpha", nameof(PageAlpha),param);
 
+            //NavigationPageActiveAwareBehaviorの解除に成功している
+            page.Behaviors.FirstOrDefault(x => x.GetType() == typeof(NavigationPageActiveAwareBehavior)).IsNull();
             page.GetType().Is(typeof(NavigationAlpha));
             var realPage = page as NavigationAlpha;
 
@@ -101,31 +55,36 @@ namespace MyFormsLibrary.Tests.Navigations
             vm.DoneNavigatingTo.IsTrue();
             vm.DoneNavigatedTo.IsTrue();
             vm.DoneNavigatedFrom.IsFalse();
-            vm.DoneOnActive.IsFalse();
+            // Currentにセットされた場合も発火するようになった(7.0〜)、が無理やり剥がして無効にしている
             vm.DoneOnNonActive.IsFalse();
+            vm.DoneOnActive.IsFalse(); 
 
             if (param == null) {
                 vm.Param.GetNavigationMode().Is(NavigationMode.New);
-                vm.Param.Count.Is(1);
+                vm.Param.Count.Is(0); //組み込み要素はノーカウント
             }
+
             else {
                 vm.Param.GetNavigationMode().Is(NavigationMode.New);
                 vm.Param.ContainsKey("Key").IsTrue();
                 vm.Param["Key"].Is("Value");
-                vm.Param.Count.Is(2);
+                vm.Param.Count.Is(1);
             }
         }
 
 
         [Test]
         public void CreateMainPageNavigationHasTabbed() {
-            var nav = new MyPageNavigationService(Container, App, Log);
+            var nav = App.MyPageNavigationService;
            
             var page = nav.CreateMainPageNavigationHasTabbed(
                 "NavigationTop", "MainTabbedPage",
                new List<ContentPage> {
                     nav.CreateContentPage(nameof(PageAlpha)),
                     nav.CreateContentPage(nameof(PageBeta))
+                },
+                new List<NavigationParameters>{
+                    new NavigationParameters{ {"Key","Value" }}
                 }
             );
 
@@ -156,6 +115,9 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.DoneOnActive.IsTrue();
             vmA.DoneOnNonActive.IsFalse();
             vmA.IsActive.IsTrue();
+            vmA.Param.GetNavigationMode().Is(NavigationMode.New);
+            vmA.Param["Key"].Is("Value");
+            vmA.Param.Count.Is(1);
 
             vmB.DoneNavigatingTo.IsTrue();
             vmB.DoneNavigatedTo.IsTrue();
@@ -163,12 +125,14 @@ namespace MyFormsLibrary.Tests.Navigations
             vmB.DoneOnActive.IsFalse();
             vmB.DoneOnNonActive.IsFalse();
             vmB.IsActive.IsFalse();
+            vmB.Param.GetNavigationMode().Is(NavigationMode.New);
+            vmB.Param.Count.Is(0);
 
         }
 
         [Test]
         public async Task NavigationHasTabbedGoNextGoBack() {
-            var nav = new MyPageNavigationService(Container, App, Log);
+            var nav = App.MyPageNavigationService;
 
             var pageA = nav.CreateContentPage(nameof(PageAlpha));
             var pageB = nav.CreateContentPage(nameof(PageBeta));
@@ -178,6 +142,10 @@ namespace MyFormsLibrary.Tests.Navigations
                new List<ContentPage> {
                     pageA,
                     pageB
+                },
+                new List<NavigationParameters>{
+                    new NavigationParameters{ {"Key1","Value1" }},
+                    new NavigationParameters{ {"Key2","Value2" }}
                 }
             );
             App.MainPage = page;
@@ -193,19 +161,19 @@ namespace MyFormsLibrary.Tests.Navigations
 
             var curNavi = vmA.NavigationService;
             await curNavi.NavigateAsync(nameof(NextPage));
-            var asfassde = pageA.Navigation.NavigationStack;
+
             tabbed.SendDisappearing();
 
             vmA.DoneNavigatingTo.IsFalse();
             vmA.DoneNavigatedTo.IsFalse();
-            vmA.DoneNavigatedFrom.IsTrue();
+            vmA.DoneNavigatedFrom.IsTrue(); //カレントページのみ発火
             vmA.IsActive.IsFalse();
             vmA.DoneOnActive.IsFalse();
-            vmA.DoneOnNonActive.IsTrue();
+            vmA.DoneOnNonActive.IsTrue(); //ページ遷移で隠れても非アクティブにする
 
             vmB.DoneNavigatingTo.IsFalse();
             vmB.DoneNavigatedTo.IsFalse();
-            vmB.DoneNavigatedFrom.IsFalse();
+            vmB.DoneNavigatedFrom.IsFalse(); //カレントページでないので発火しない
             vmB.DoneOnActive.IsFalse();
             vmB.DoneOnNonActive.IsFalse();
             vmB.IsActive.IsFalse();
@@ -215,7 +183,7 @@ namespace MyFormsLibrary.Tests.Navigations
             nextVM.DoneNavigatingTo.IsTrue();
             nextVM.DoneNavigatedTo.IsTrue();
             nextVM.DoneNavigatedFrom.IsFalse();
-            nextVM.DoneOnActive.IsFalse();
+            nextVM.DoneOnActive.IsFalse();  //NavigationによるActiveAwareは無効にしている
             nextVM.DoneOnNonActive.IsFalse();
 
             vmA.AllClear();
@@ -226,14 +194,14 @@ namespace MyFormsLibrary.Tests.Navigations
             ret.IsTrue();
             tabbed.SendAppearing();
 
-            vmA.DoneNavigatingTo.IsTrue();
+            vmA.DoneNavigatingTo.IsTrue(); //戻った時も呼ばれるのは仕様
             vmA.DoneNavigatedTo.IsTrue();
             vmA.DoneNavigatedFrom.IsFalse();
-            vmA.DoneOnActive.IsTrue();
+            vmA.DoneOnActive.IsTrue();  //戻ったタイミングでカレントタブはアクティブが発火
             vmA.DoneOnNonActive.IsFalse();
             vmA.IsActive.IsTrue();
 
-            vmB.DoneNavigatingTo.IsFalse();
+            vmB.DoneNavigatingTo.IsFalse(); //非表示タブは発火しない
             vmB.DoneNavigatedTo.IsFalse();
             vmB.DoneNavigatedFrom.IsFalse();
             vmB.DoneOnActive.IsFalse();
@@ -249,8 +217,8 @@ namespace MyFormsLibrary.Tests.Navigations
         }
 
         [Test]
-        public async Task CreateMainPageTabbedHasNavigation() {
-            var nav = new MyPageNavigationService(Container, App, Log);
+        public void CreateMainPageTabbedHasNavigation() {
+            var nav = App.MyPageNavigationService;
 
             var naviA = nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
             var naviB = nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
@@ -290,13 +258,13 @@ namespace MyFormsLibrary.Tests.Navigations
         /// <summary>
         /// Tabbed->Navi->ConentPageパターン
         /// 次ページ遷移で次ページのIsActiveがtrueになる
-        /// 遷移しても遷移元おIsActiveはtrueのまま
+        /// 遷移しても遷移元のIsActiveはtrueのまま
         /// あくまでも現在のタブの状態を入れるようにする
         /// 戻る時は次ページのActiveは何も変更しない
         /// </summary>
         [Test]
         public async Task TabbedHasNavigationGoNextGoBack() {
-            var nav = new MyPageNavigationService(Container, App, Log);
+            var nav = App.MyPageNavigationService;
 
             var naviA = nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
             var naviB = nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
@@ -372,13 +340,12 @@ namespace MyFormsLibrary.Tests.Navigations
 
         [Test]
         public async Task NavigateAsync_ForViewType() {
-            var Inav = new MyPageNavigationService(Container, App, Log) as INavigationServiceEx;
+            var Inav = App.NavigationServiceEx;
 
             var naviPage = new NavigationAlpha();
             App.MainPage = naviPage;
 
-
-            await Inav.NavigateAsync(nameof(PageAlpha));
+            await Inav.Navigate<PageAlpha>();
 
             var vm1 = naviPage.CurrentPage.BindingContext as PageAlphaViewModel;
 
@@ -391,12 +358,12 @@ namespace MyFormsLibrary.Tests.Navigations
             vm1.NavigatingCount.Is(1);
             vm1.NavigatedToCount.Is(1);
 
-            var param = "Parameter";
+            var param = new PageBetaParameters {
+                Name = "hoge",
+                Age = 20
+            };
+            await vm1.NavigationService.Navigate<PageBeta>(param);
 
-            //((IPageAware)Inav).Page = naviPage.CurrentPage;
-            await vm1.NavigationService.NavigateAsync<PageBeta>(param);
-
-            vm1.MyParam.Value.Is("Parameter");
             naviPage.CurrentPage.GetType().Is(typeof(PageBeta));
             naviPage.Navigation.NavigationStack.Count.Is(2);
 
@@ -409,17 +376,17 @@ namespace MyFormsLibrary.Tests.Navigations
             vm2.DoneNavigatedFrom.IsFalse();
             vm2.NavigatingCount.Is(1);
             vm2.NavigatedToCount.Is(1);
+            vm2.Param.To<PageBetaParameters>().IsStructuralEqual(param);
         }
 
         [Test]
         public async Task NavigateModalAsync_ForViewtype() {
-            var Inav = new MyPageNavigationService(Container, App, Log) as INavigationService;
+            var Inav = App.NavigationServiceEx;
 
             var naviPage = new NavigationAlpha();
             App.MainPage = naviPage;
 
-
-            await Inav.NavigateAsync(nameof(PageAlpha));
+            await Inav.Navigate<PageAlpha>();
 
             var vm1 = naviPage.CurrentPage.BindingContext as PageAlphaViewModel;
 
@@ -431,11 +398,14 @@ namespace MyFormsLibrary.Tests.Navigations
             vm1.DoneNavigatedFrom.IsFalse();
             vm1.NavigatingCount.Is(1);
             vm1.NavigatedToCount.Is(1);
-           
-            await vm1.NavigationService.NavigateModalAsync<PageBeta>();
-            naviPage.Navigation.ModalStack.Count.Is(1);
-            (naviPage.Navigation.ModalStack[0].BindingContext as PageBetaViewModel).MyParam.Value.IsNull();
 
+            var param = new PageBetaParameters {
+                Name = "hoge",
+                Age = 20
+            };
+            await vm1.NavigationService.NavigateModal<PageBeta>(param);
+            naviPage.Navigation.ModalStack.Count.Is(1);
+           
             var vm2 = naviPage.Navigation.ModalStack[0].BindingContext as PageBetaViewModel;
 
             vm1.DoneNavigatedFrom.IsTrue();
@@ -445,11 +415,17 @@ namespace MyFormsLibrary.Tests.Navigations
             vm2.DoneNavigatedFrom.IsFalse();
             vm2.NavigatingCount.Is(1);
             vm2.NavigatedToCount.Is(1);
+            vm2.Param.To<PageBetaParameters>().IsStructuralEqual(param);
         }
 
+        /// <summary>
+        /// Prism.Forms 7.0 においてselectedTabパラメータでTab移動が可能になっているが
+        /// 相変わらずの文字列指定で非常に使いにくい上に、selectedTabを発行しただけで
+        /// OnNavigatingToが走ったりと良いことが無いので、独自実装の方の使用を続ける
+        /// </summary>
         [Test]
-        public async Task ChangeTab_NaviTabbed() {
-            var nav = new MyPageNavigationService(Container, App, Log);
+        public void ChangeTab_NaviTabbed() {
+            var nav = App.MyPageNavigationService;
 
             var pageA = nav.CreateContentPage(nameof(PageAlpha));
             var pageB = nav.CreateContentPage(nameof(PageBeta));
@@ -459,7 +435,8 @@ namespace MyFormsLibrary.Tests.Navigations
                new List<ContentPage> {
                     pageA,
                     pageB
-                }
+                },
+                new List<NavigationParameters>()
             );
 
             App.MainPage = page;
@@ -515,7 +492,7 @@ namespace MyFormsLibrary.Tests.Navigations
 
         [Test]
         public async Task ChangeTab_TabbedNavi() {
-            var nav = new MyPageNavigationService(Container, App, Log);
+            var nav = App.MyPageNavigationService;
 
             var naviA = nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
             var naviB = nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
@@ -571,7 +548,7 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.AllClear();
             vmB.AllClear();
 
-            await vmA.NavigationService.NavigateAsync<NextPage>();
+            await vmA.NavigationService.Navigate<NextPage>();
 
             var nextVM = naviA.CurrentPage.BindingContext as NextPageViewModel;
 
@@ -594,6 +571,7 @@ namespace MyFormsLibrary.Tests.Navigations
             ret = nextVM.NavigationService.ChangeTab<PageBeta>();
             ret.IsTrue();
 
+            //
             vmA.IsActive.IsFalse();
             vmA.DoneOnActive.IsFalse();
             vmA.DoneOnNonActive.IsTrue();

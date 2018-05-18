@@ -3,11 +3,14 @@ using Prism;
 using Prism.Behaviors;
 using Prism.Common;
 using Xamarin.Forms;
+using System.Linq;
 namespace MyFormsLibrary.Navigation
 {
     /// <summary>
     /// TabbePage/NavigationPage/ContentPageの構成の時にContentPage側で
     /// ActiveAwareが発動しない問題のFixBehavior
+    /// 7.0でスタックの最後のページのみ発火するようになったが、それ以外は同期しないので
+    /// 最終を除いた残りのスタックも処理するようにする
     /// </summary>
     public class TabbedPageOverNavigationPageActiveAwareBehavior:BehaviorBase<TabbedPage>
     {
@@ -39,7 +42,7 @@ namespace MyFormsLibrary.Navigation
         }
 
         void SetIsActive(Page view, bool isActive) {
-            foreach (var p in view.Navigation.NavigationStack) {
+            foreach (var p in view.Navigation.NavigationStack.Reverse().Skip(1)) {
                 PageUtilities.InvokeViewAndViewModelAction<IActiveAware>(p, activeAware => activeAware.IsActive = isActive);
             }
 
