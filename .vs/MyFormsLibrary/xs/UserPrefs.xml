@@ -1,15 +1,33 @@
 ﻿<Properties StartupConfiguration="{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MyFormsLibrary.iOS/CustomRenderers/CircleBoxViewRenderer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs">
     <Files>
-      <File FileName="MyFormsLibrary.iOS/CustomRenderers/NavigationPageExRenderer.cs" Line="46" Column="13" />
-      <File FileName="MyFormsLibrary.iOS/CustomRenderers/CircleBoxViewRenderer.cs" Line="9" Column="34" />
+      <File FileName="MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" Line="589" Column="28" />
+      <File FileName="MyFormsLibrary/Navigation/IContainerProviderExtensions.cs" Line="11" Column="53" />
+      <File FileName="MyFormsLibrary.Tests/Mocks/Views/ContentPages.cs" Line="53" Column="6" />
+      <File FileName="MyFormsLibrary.Tests/Mocks/Views/Navigations.cs" Line="11" Column="32" />
+      <File FileName="MyFormsLibrary.Tests/Mocks/ViewModels/PageBetaViewModel.cs" Line="48" Column="1" />
+      <File FileName="MyFormsLibrary.Tests/Mocks/ViewModels/PageAlphaViewModel.cs" Line="14" Column="29" />
+      <File FileName="MyFormsLibrary.Tests/Navigations/DefaultNavigationServiceFixture.cs" Line="144" Column="45" />
+      <File FileName="MyFormsLibrary.Tests/Mocks/ViewModels/Parameters.cs" Line="8" Column="37" />
+      <File FileName="MyFormsLibrary/Navigation/TabbedPageHasNavigationPageActionBehavior.cs" Line="22" Column="48" />
+      <File FileName="MyFormsLibrary.Tests/Mocks/ViewModels/ContentPageAllActionViewModel.cs" Line="30" Column="10" />
+      <File FileName="MyFormsLibrary.Tests/Mocks/ViewModels/ContentPageNoActionViewModel.cs" Line="1" Column="1" />
+      <File FileName="MyFormsLibrary.iOS/CustomRenderers/NavigationPageExRenderer.cs" Line="46" Column="13" NotebookId="1" />
+      <File FileName="MyFormsLibrary/Navigation/MyPageNavigationService.cs" Line="50" Column="27" NotebookId="1" />
+      <File FileName="MyFormsLibrary/Navigation/INavigationServiceEx.cs" Line="13" Column="9" NotebookId="1" />
+      <File FileName="MyFormsLibrary/Navigation/TabbedPageOverNavigationPageActiveAwareBehavior.cs" Line="36" Column="13" NotebookId="1" />
+      <File FileName="MyFormsLibrary/Navigation/NavigationPageOverTabbedPageCurrentBehavior.cs" Line="38" Column="57" NotebookId="1" />
+      <File FileName="MyFormsLibrary.Tests/Mocks/AppMock.cs" Line="54" Column="10" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Volumes/SD/Dropbox/work/projects/myformslibrary/MyFormsLibrary.Tests/Mocks/ViewModels/PageAlphaViewModel.cs" relfile="MyFormsLibrary.Tests/Mocks/ViewModels/PageAlphaViewModel.cs" line="31" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.MyFormsLibrary.Droid PreferredExecutionTarget="Android.Pixel_API_22" />
   <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.MyFormsLibrary.Tests PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>

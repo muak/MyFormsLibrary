@@ -69,8 +69,12 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             }
 
             var ctrl = ViewControllers.Last();
-            foreach (var item in ctrl.NavigationItem.LeftBarButtonItems) {
-                item.Dispose();
+            if (ctrl.NavigationItem.LeftBarButtonItems != null)
+            {
+                foreach (var item in ctrl.NavigationItem.LeftBarButtonItems)
+                {
+                    item.Dispose();
+                }
             }
 
             _itemsCache.Clear();

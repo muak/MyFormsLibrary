@@ -3,6 +3,7 @@ using Prism.Mvvm;
 using Xamarin.Forms;
 using MyFormsLibrary.Navigation;
 using System.Net.Mime;
+using Prism.Navigation;
 namespace MyFormsLibrary.Tests.Mocks.Views
 {
     public class ContentPageNonViewNonAction : ContentPage
@@ -58,10 +59,16 @@ namespace MyFormsLibrary.Tests.Mocks.Views
         }
     }
 
-    public class NextPage:ContentPage
+    public class NextPage:ContentPage,IDestructible
     {
+        public bool DoneDestroy { get; set; }
+
         public NextPage() {
             ViewModelLocator.SetAutowireViewModel(this, true);
+        }
+
+        public void Destroy() {
+            DoneDestroy = true;
         }
     }
 

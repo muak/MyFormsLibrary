@@ -7,11 +7,8 @@ namespace MyFormsLibrary.Tests.Mocks.ViewModels
 {
     public class PageBetaViewModel:ContentPageAllActionViewModel,INavigationAware,IActiveAware,IDestructible
     {
-        public INavigationParameter MyParam { get; set; }
-
-        public PageBetaViewModel(INavigationServiceEx navigationService, INavigationParameter param) {
+        public PageBetaViewModel(INavigationServiceEx navigationService) {
             NavigationService = navigationService;
-            MyParam = param;
         }
 
         private bool _IsActive;

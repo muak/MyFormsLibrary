@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Practices.Unity;
+﻿using System.Threading.Tasks;
 using Moq;
 using MyFormsLibrary.Navigation;
 using MyFormsLibrary.Tests.Mocks;
@@ -12,67 +10,24 @@ using Prism.Common;
 using Prism.Logging;
 using Prism.Mvvm;
 using Prism.Navigation;
-using Prism.Unity;
 using Xamarin.Forms;
-using Prism.Unity.Navigation;
 
 namespace MyFormsLibrary.Tests.Navigations
 {
     [TestFixture]
     public class DefaultNavigationServiceFixture
     {
-        IUnityContainer Container;
-        IApplicationProvider App;
-        ILoggerFacade Log;
+        AppMock App;
 
-        public DefaultNavigationServiceFixture() {
-
-            Container = new UnityContainer();
-
-            Log = new Mock<ILoggerFacade>().Object;
-            App = new ApplicationProviderMock();
-
-            Container.RegisterInstance(Log);
-            Container.RegisterInstance(App, new ContainerControlledLifetimeManager());
-            Container.RegisterType<INavigationServiceEx, MyPageNavigationService>();
-            Container.RegisterType<INavigationParameter, NavigationParameter>(null, new ContainerControlledLifetimeManager());
-
-            Container.RegisterTypeForNavigation<ContentPageNoAction>();
-            Container.RegisterTypeForNavigation<ContentPageAllAction>();
-            Container.RegisterTypeForNavigation<PageAlpha>();
-            Container.RegisterTypeForNavigation<PageBeta>();
-            Container.RegisterTypeForNavigation<MainTabbedPage>();
-            Container.RegisterTypeForNavigation<NavigationAlpha>();
-            Container.RegisterTypeForNavigation<NavigationBeta>();
-            Container.RegisterTypeForNavigation<NavigationGamma>();
-            Container.RegisterTypeForNavigation<NavigationTop>();
-            Container.RegisterTypeForNavigation<NavigationPage>();
-            Container.RegisterTypeForNavigation<MyMasterDetail>();
-
-
-            ViewModelLocationProvider.SetDefaultViewModelFactory((view, type) => {
-                ParameterOverrides overrides = null;
-
-                var page = view as Page;
-                if (page != null) {
-                    var navService = Container.Resolve<INavigationServiceEx>();
-                    ((IPageAware)navService).Page = page;
-
-                    overrides = new ParameterOverrides
-                    {
-                        { "navigationService", navService }
-                    };
-                }
-
-                return Container.Resolve(type, overrides);
-            });
-
+        public DefaultNavigationServiceFixture() 
+        {
+            Xamarin.Forms.Mocks.MockForms.Init();
+            App = new AppMock(null);    
         }
 
         [Test]
         public async Task AbsoluteDestroy() {
-            var nav = Container.Resolve<INavigationServiceEx>();
-
+            var nav = App.DefNavigationService;
             var naviPage = new NavigationTop();
             App.MainPage = naviPage;
 
@@ -95,18 +50,19 @@ namespace MyFormsLibrary.Tests.Navigations
 
         [Test]
         public async Task ComplexAbsoluteDestroy() {
-            var nav = Container.Resolve<INavigationServiceEx>();
-
+            var nav = App.DefNavigationService;
+            var menuPage = new NextPage{Title="Hoge"};
+            var naviPage = new NavigationTop();
             var masterd = new MyMasterDetail();
+            masterd.Master = menuPage;
+            masterd.Detail = naviPage;
 
             App.MainPage = masterd;
 
             await nav.NavigateAsync("NavigationTop/PageAlpha/PageBeta");
 
-            ;
-
-            var vmA = masterd.Detail.Navigation.NavigationStack[0].BindingContext as PageAlphaViewModel;
-            var vmB = masterd.Detail.Navigation.NavigationStack[1].BindingContext as PageBetaViewModel;
+            var vmA = naviPage.Navigation.NavigationStack[0].BindingContext as PageAlphaViewModel;
+            var vmB = naviPage.Navigation.NavigationStack[1].BindingContext as PageBetaViewModel;
 
             vmA.DoneNavigatingTo.IsTrue();
             vmB.DoneNavigatingTo.IsTrue();
@@ -117,6 +73,83 @@ namespace MyFormsLibrary.Tests.Navigations
             vmB.DoneDestroy.IsTrue();
             vmA.DestroyCount.Is(1);
             vmB.DestroyCount.Is(1);
+            masterd.DoneDestroy.IsTrue();
+            naviPage.DoneDestroy.IsTrue();
+            menuPage.DoneDestroy.IsTrue();
+        }
+
+        [Test]
+        public async Task NavigationHasTabbedTest()
+        {
+            var nav = App.DefNavigationService;
+
+            await nav.NavigateAsync("/NavigationTop/MainTabbedPage?createTab=PageAlpha&createTab=PageBeta");
+
+            var tabs = App.MainPage.Navigation.NavigationStack[0] as TabbedPage;
+
+            var vmA = tabs.Children[0].BindingContext as PageAlphaViewModel;
+            var vmB = tabs.Children[1].BindingContext as PageBetaViewModel;
+
+            tabs.CurrentPage.GetType().Is(typeof(PageAlpha));
+
+            vmA.DoneNavigatingTo.IsTrue(); //Navigatingは全てのTabで発火する
+            vmA.DoneNavigatedTo.IsTrue(); //NavigatedはカレントTabのみで発火する
+            vmA.DoneNavigatedFrom.IsFalse();
+            vmA.DoneOnActive.IsTrue();
+            vmA.DoneOnNonActive.IsTrue();
+
+            vmB.DoneNavigatingTo.IsTrue();  //全てのTabで発火するのでOK
+            vmB.DoneNavigatedTo.IsFalse();  //カレントじゃないのでFalse
+            vmB.DoneNavigatedFrom.IsFalse(); 
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsFalse();
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            //PageBetaタブに移動
+            await nav.NavigateAsync("MainTabbedPage?selectedTab=PageBeta");
+
+            tabs.CurrentPage.GetType().Is(typeof(PageBeta));
+
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsTrue();
+            vmA.DoneNavigatingTo.IsTrue(); //タブ移動でも走ってしまう ゴミ仕様
+            vmA.DoneNavigatedFrom.IsTrue();
+            vmA.DoneNavigatedTo.IsFalse();
+
+            vmB.DoneOnActive.IsTrue();
+            vmB.DoneOnNonActive.IsFalse();
+            vmB.DoneNavigatingTo.IsTrue(); //タブ移動でも走る
+            vmB.DoneNavigatedFrom.IsFalse();
+            vmB.DoneNavigatedTo.IsTrue();
+        }
+
+        [Test]
+        public async Task TabbedHasNavigationTest()
+        {
+            var nav = App.DefNavigationService;
+
+            await nav.NavigateAsync("/MainTabbedPage?createTab=NavigationAlpha|PageAlpha&createTab=NavigationBeta|PageBeta");
+
+            var tabs = App.MainPage as TabbedPage;
+
+            tabs.CurrentPage.GetType().Is(typeof(NavigationAlpha));
+
+            var vmA = (tabs.Children[0] as NavigationPage).CurrentPage.BindingContext as PageAlphaViewModel;
+            var vmB = (tabs.Children[1] as NavigationPage).CurrentPage.BindingContext as PageBetaViewModel;
+
+            vmA.DoneNavigatingTo.IsTrue(); //Navigatingは全てのTabで発火する
+            vmA.DoneNavigatedTo.IsTrue(); //NavigatedはカレントTabのみで発火する
+            vmA.DoneNavigatedFrom.IsFalse();
+            vmA.DoneOnActive.IsTrue();
+            vmA.DoneOnNonActive.IsTrue();
+
+            vmB.DoneNavigatingTo.IsTrue();  //全てのTabで発火するのでOK
+            vmB.DoneNavigatedTo.IsFalse();  //カレントじゃないのでFalse
+            vmB.DoneNavigatedFrom.IsFalse();
+            vmB.DoneOnActive.IsTrue(); //NavigationのCurrentPageの変更で反応してしまうのでTrue ゴミ仕様
+            vmB.DoneOnNonActive.IsFalse();
         }
 
     }
