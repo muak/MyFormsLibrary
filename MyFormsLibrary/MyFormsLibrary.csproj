@@ -16,4 +16,7 @@
     <Compile Remove="CustomViews\CommandGrid.cs" />
     <Compile Remove="CustomRenderers\Cells\CellBase.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
 </Project>
