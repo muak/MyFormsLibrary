@@ -44,7 +44,7 @@ namespace MyFormsLibrary.Navigation
 
             SetAutowireViewModelOnPage(tabbedPage);
 
-            tabbedPage.Behaviors.Add(new TabbedPageOverNavigationPageActiveAwareBehavior());
+            //tabbedPage.Behaviors.Add(new TabbedPageOverNavigationPageActiveAwareBehavior());
 
             foreach (var c in children) {
                 tabbedPage.Children.Add(c);
@@ -86,7 +86,7 @@ namespace MyFormsLibrary.Navigation
             _pageBehaviorFactory.ApplyPageBehaviors(tabbedPage);
 
             var naviPage = CreatePageFromSegment(naviName) as NavigationPage;
-            naviPage.Behaviors.Remove(naviPage.Behaviors.FirstOrDefault(x => x.GetType() == typeof(NavigationPageActiveAwareBehavior)));
+            //naviPage.Behaviors.Remove(naviPage.Behaviors.FirstOrDefault(x => x.GetType() == typeof(NavigationPageActiveAwareBehavior)));
 
             PageUtilities.OnNavigatingTo(tabbedPage, new NavigationParameters{{NavigationModeKey,NavigationMode.New}});
 

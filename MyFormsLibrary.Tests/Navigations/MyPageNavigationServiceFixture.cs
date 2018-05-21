@@ -183,7 +183,7 @@ namespace MyFormsLibrary.Tests.Navigations
             nextVM.DoneNavigatingTo.IsTrue();
             nextVM.DoneNavigatedTo.IsTrue();
             nextVM.DoneNavigatedFrom.IsFalse();
-            nextVM.DoneOnActive.IsFalse();  //NavigationによるActiveAwareは無効にしている
+            nextVM.DoneOnActive.IsTrue();
             nextVM.DoneOnNonActive.IsFalse();
 
             vmA.AllClear();
@@ -212,7 +212,7 @@ namespace MyFormsLibrary.Tests.Navigations
             nextVM.DoneNavigatedTo.IsFalse();
             nextVM.DoneNavigatedFrom.IsTrue();
             nextVM.DoneOnActive.IsFalse();
-            nextVM.DoneOnNonActive.IsFalse();
+            nextVM.DoneOnNonActive.IsTrue();
 
         }
 
@@ -261,6 +261,7 @@ namespace MyFormsLibrary.Tests.Navigations
         /// 遷移しても遷移元のIsActiveはtrueのまま
         /// あくまでも現在のタブの状態を入れるようにする
         /// 戻る時は次ページのActiveは何も変更しない
+        /// 遷移元に戻ってきた場合はActive化する
         /// </summary>
         [Test]
         public async Task TabbedHasNavigationGoNextGoBack() {
@@ -319,7 +320,7 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.DoneNavigatingTo.IsTrue();
             vmA.DoneNavigatedTo.IsTrue();
             vmA.DoneNavigatedFrom.IsFalse();
-            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnActive.IsTrue();
             vmA.DoneOnNonActive.IsFalse();
             vmA.IsActive.IsTrue();
 
@@ -336,6 +337,132 @@ namespace MyFormsLibrary.Tests.Navigations
             nextVM.IsActive.IsTrue();
             nextVM.DoneOnActive.IsFalse();
             nextVM.DoneOnNonActive.IsFalse();
+        }
+
+        [Test]
+        public async Task TabbedHasNavigationActiveTest() {
+            var nav = App.MyPageNavigationService;
+
+            var naviA = nav.CreateNavigationPage(nameof(NavigationAlpha), nameof(PageAlpha));
+            var naviB = nav.CreateNavigationPage(nameof(NavigationBeta), nameof(PageBeta));
+
+            var tabbed = nav.CreateMainPageTabbedHasNavigation(nameof(MainTabbedPage), new List<NavigationPage>{
+                naviA,naviB});
+
+            App.MainPage = tabbed;
+
+            (tabbed as IPageController).SendAppearing();
+
+            var vmA = naviA.CurrentPage.BindingContext as PageAlphaViewModel;
+            var vmB = naviB.CurrentPage.BindingContext as PageBetaViewModel;
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            var curNavi = vmA.NavigationService;
+            await curNavi.NavigateAsync(nameof(NextPage));
+
+            vmA.DoneNavigatingTo.IsFalse();
+            vmA.DoneNavigatedTo.IsFalse();
+            vmA.DoneNavigatedFrom.IsTrue();
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsFalse();
+
+
+            vmB.DoneNavigatingTo.IsFalse();
+            vmB.DoneNavigatedTo.IsFalse();
+            vmB.DoneNavigatedFrom.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsFalse();
+            vmB.IsActive.IsFalse();
+
+            var nextVM = naviA.CurrentPage.BindingContext as NextPageViewModel;
+
+            nextVM.DoneNavigatingTo.IsTrue();
+            nextVM.DoneNavigatedTo.IsTrue();
+            nextVM.DoneNavigatedFrom.IsFalse();
+            nextVM.IsActive.IsTrue();
+            nextVM.DoneOnActive.IsTrue();
+            nextVM.DoneOnNonActive.IsFalse();
+
+            vmA.AllClear();
+            vmB.AllClear();
+            nextVM.AllClear();
+
+            //タブBに移動
+            nextVM.NavigationService.ChangeTab<PageBeta>();
+
+            //スタック奥のページは変化なし
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsFalse();
+            //スタック手前のページは非アクティブが発火
+            nextVM.IsActive.IsFalse();
+            nextVM.DoneOnActive.IsFalse();
+            nextVM.DoneOnNonActive.IsTrue();
+            nextVM.OnNonActiveCount.Is(1);
+            //スタック手前のページはアクティブが発火
+            vmB.IsActive.IsTrue();
+            vmB.DoneOnActive.IsTrue();
+            vmB.DoneOnNonActive.IsFalse();
+            vmB.OnActiveCount.Is(1);
+
+            vmA.AllClear();
+            vmB.AllClear();
+            nextVM.AllClear();
+
+            //タブAに戻る
+            vmB.NavigationService.ChangeTab<NextPage>();
+
+            //スタック奥のページは変化なし
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsFalse();
+            vmA.DoneOnNonActive.IsFalse();
+            //スタック手前のページはアクティブが発火
+            nextVM.IsActive.IsTrue();
+            nextVM.DoneOnActive.IsTrue();
+            nextVM.DoneOnNonActive.IsFalse();
+            nextVM.OnActiveCount.Is(1);
+            //スタック手前のページは非アクティブが発火
+            vmB.IsActive.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsTrue();
+            vmB.OnNonActiveCount.Is(1);
+
+            vmA.AllClear();
+            vmB.AllClear();
+            nextVM.AllClear();
+
+            //戻る
+            var ret = await nextVM.NavigationService.GoBackAsync();
+            ret.IsTrue();
+
+            vmA.IsActive.IsTrue();
+            vmA.DoneOnActive.IsTrue();
+            vmA.DoneOnNonActive.IsFalse();
+            vmA.OnActiveCount.Is(1);
+
+            //Bは無関係なので変化なし
+            vmB.IsActive.IsFalse();
+            vmB.DoneOnActive.IsFalse();
+            vmB.DoneOnNonActive.IsFalse();
+
+            vmA.AllClear();
+            vmB.AllClear();
+
+            //await vmA.NavigationService.NavigateModal<NextPage>();
+
+            //nextVM = naviA.Navigation.ModalStack.Last().BindingContext as NextPageViewModel;
+
+            //vmA.IsActive.IsTrue();
+            //vmA.DoneOnActive.IsFalse();
+            //vmA.DoneOnNonActive.IsFalse();
+
+            //await nextVM.NavigationService.GoBackModalAsync();
+
+            //vmA.IsActive.IsTrue();
+            //vmA.DoneOnActive.IsTrue();
         }
 
         [Test]
@@ -571,11 +698,12 @@ namespace MyFormsLibrary.Tests.Navigations
             ret = nextVM.NavigationService.ChangeTab<PageBeta>();
             ret.IsTrue();
 
-            //
-            vmA.IsActive.IsFalse();
+            //スタックの奥のページは何も影響がない
+            vmA.IsActive.IsTrue();
             vmA.DoneOnActive.IsFalse();
-            vmA.DoneOnNonActive.IsTrue();
-            vmA.OnNonActiveCount.Is(1);
+            vmA.DoneOnNonActive.IsFalse();
+            vmA.OnNonActiveCount.Is(0);
+            //スタック最後のページなのでアクティブが発火する
             vmB.IsActive.IsTrue();
             vmB.DoneOnActive.IsTrue();
             vmB.DoneOnNonActive.IsFalse();
