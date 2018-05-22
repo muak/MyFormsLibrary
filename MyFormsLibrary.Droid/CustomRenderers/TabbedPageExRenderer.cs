@@ -19,7 +19,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 		private TabLayout _tabs;
 		private Window _window;
 
-		protected override void OnElementChanged(ElementChangedEventArgs<TabbedPage> e)
+        public TabbedPageExRenderer(Android.Content.Context context) : base(context) { }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<TabbedPage> e)
 		{
 			base.OnElementChanged(e);
 
@@ -38,8 +40,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 				_tabbedEx = Element as TabbedPageEx;
 				if (!_tabbedEx.IsDefaultColor) {
-					//OnTabSelectedListenerを上書きする
-					_tabs.SetOnTabSelectedListener(this);
+                    //OnTabSelectedListenerを上書きする
+                    _tabs.AddOnTabSelectedListener(this);
+					//_tabs.SetOnTabSelectedListener(this);
 				}
 
 				// https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Platform.Android/AppCompat/TabbedPageRenderer.cs#L297

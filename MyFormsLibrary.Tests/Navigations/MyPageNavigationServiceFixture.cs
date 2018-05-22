@@ -289,10 +289,10 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.DoneNavigatingTo.IsFalse();
             vmA.DoneNavigatedTo.IsFalse();
             vmA.DoneNavigatedFrom.IsTrue();
-            vmA.IsActive.IsTrue();
+            vmA.IsActive.IsFalse();
             vmA.DoneOnActive.IsFalse();
-            vmA.DoneOnNonActive.IsFalse();
-
+            vmA.DoneOnNonActive.IsTrue();
+            vmA.OnNonActiveCount.Is(1);
 
             vmB.DoneNavigatingTo.IsFalse();
             vmB.DoneNavigatedTo.IsFalse();
@@ -334,9 +334,10 @@ namespace MyFormsLibrary.Tests.Navigations
             nextVM.DoneNavigatingTo.IsFalse();
             nextVM.DoneNavigatedTo.IsFalse();
             nextVM.DoneNavigatedFrom.IsTrue();
-            nextVM.IsActive.IsTrue();
+            nextVM.IsActive.IsFalse();
             nextVM.DoneOnActive.IsFalse();
-            nextVM.DoneOnNonActive.IsFalse();
+            nextVM.DoneOnNonActive.IsTrue();
+            nextVM.OnNonActiveCount.Is(1);
         }
 
         [Test]
@@ -365,9 +366,10 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.DoneNavigatingTo.IsFalse();
             vmA.DoneNavigatedTo.IsFalse();
             vmA.DoneNavigatedFrom.IsTrue();
-            vmA.IsActive.IsTrue();
+            vmA.IsActive.IsFalse();
             vmA.DoneOnActive.IsFalse();
-            vmA.DoneOnNonActive.IsFalse();
+            vmA.DoneOnNonActive.IsTrue();
+            vmA.OnNonActiveCount.Is(1);
 
 
             vmB.DoneNavigatingTo.IsFalse();
@@ -394,7 +396,7 @@ namespace MyFormsLibrary.Tests.Navigations
             nextVM.NavigationService.ChangeTab<PageBeta>();
 
             //スタック奥のページは変化なし
-            vmA.IsActive.IsTrue();
+            vmA.IsActive.IsFalse();
             vmA.DoneOnActive.IsFalse();
             vmA.DoneOnNonActive.IsFalse();
             //スタック手前のページは非アクティブが発火
@@ -416,7 +418,7 @@ namespace MyFormsLibrary.Tests.Navigations
             vmB.NavigationService.ChangeTab<NextPage>();
 
             //スタック奥のページは変化なし
-            vmA.IsActive.IsTrue();
+            vmA.IsActive.IsFalse();
             vmA.DoneOnActive.IsFalse();
             vmA.DoneOnNonActive.IsFalse();
             //スタック手前のページはアクティブが発火
@@ -679,9 +681,10 @@ namespace MyFormsLibrary.Tests.Navigations
 
             var nextVM = naviA.CurrentPage.BindingContext as NextPageViewModel;
 
-            vmA.IsActive.IsTrue();
+            vmA.IsActive.IsFalse();
             vmA.DoneOnActive.IsFalse();
-            vmA.DoneOnNonActive.IsFalse();
+            vmA.DoneOnNonActive.IsTrue();
+            vmA.OnNonActiveCount.Is(1);
             vmB.IsActive.IsFalse();
             vmB.DoneOnActive.IsFalse();
             vmB.DoneOnNonActive.IsFalse();
@@ -699,7 +702,7 @@ namespace MyFormsLibrary.Tests.Navigations
             ret.IsTrue();
 
             //スタックの奥のページは何も影響がない
-            vmA.IsActive.IsTrue();
+            vmA.IsActive.IsFalse();
             vmA.DoneOnActive.IsFalse();
             vmA.DoneOnNonActive.IsFalse();
             vmA.OnNonActiveCount.Is(0);

@@ -94,7 +94,7 @@ namespace MyFormsLibrary.Navigation
 
             PageUtilities.OnNavigatedTo(tabbedPage, new NavigationParameters{{NavigationModeKey,NavigationMode.New}});
 
-            naviPage.Behaviors.Add(new NavigationPageOverTabbedPageCurrentBehavior());
+            //naviPage.Behaviors.Add(new NavigationPageOverTabbedPageCurrentBehavior()); //7.0以降これ使わなくても問題なくなった
             return naviPage;
         }
 
