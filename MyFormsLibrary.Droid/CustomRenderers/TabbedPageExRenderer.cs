@@ -65,7 +65,11 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 						if (attr.StatusBarBackColor != Xamarin.Forms.Color.Default) {
 							navi.StatusBarBackColor = attr.StatusBarBackColor;
 						}
-						_tabbedEx.Title = (_tabbedEx.CurrentPage as Page).Title;
+                        var curPage = (_tabbedEx.CurrentPage as Page);
+                        var titleView = NavigationPage.GetTitleView(curPage);
+                        _tabbedEx.Title = curPage.Title;
+                        NavigationPage.SetTitleView(_tabbedEx,titleView);
+
 						_tabbedEx.CurrentPage.PropertyChanged += CurrentPage_PropertyChanged;
 
 						var renderer = Platform.GetRenderer(navi) as NavigationPageExRenderer;
@@ -153,8 +157,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 					navi.StatusBarBackColor = attr.StatusBarBackColor;
 				}
 			}
-
-			_tabbedEx.Title = _tabbedEx.Children[selectedIndex].Title;
+            var selectedPage = _tabbedEx.Children[selectedIndex];
+            _tabbedEx.Title = selectedPage.Title;
+            NavigationPage.SetTitleView(_tabbedEx, NavigationPage.GetTitleView(selectedPage));
 			_tabbedEx.Children[selectedIndex].PropertyChanged += CurrentPage_PropertyChanged;
 
 			if (Element.Children.Count > selectedIndex && selectedIndex >= 0) {
@@ -187,6 +192,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 			if (e.PropertyName == Page.TitleProperty.PropertyName) {
 				_tabbedEx.Title = (sender as Page).Title;
 			}
+            else if(e.PropertyName == NavigationPage.TitleViewProperty.PropertyName) {
+                NavigationPage.SetTitleView(_tabbedEx, NavigationPage.GetTitleView(sender as Page));
+            }
 		}
 	}
 }

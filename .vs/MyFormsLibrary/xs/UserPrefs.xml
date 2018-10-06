@@ -1,24 +1,15 @@
 ﻿<Properties StartupConfiguration="{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="MyFormsLibrary.Droid/CustomRenderers/TabbedPageExRenderer.cs">
     <Files>
-      <File FileName="MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" Line="476" Column="13" />
-      <File FileName="MyFormsLibrary.Droid/CustomRenderers/TabbedPageExRenderer.cs" Line="45" Column="45" />
-      <File FileName="MyFormsLibrary.Droid/DependencyServices/LoadingMessage.cs" Line="28" Column="7" />
-      <File FileName="MyFormsLibrary/Navigation/MyPageNavigationService.cs" Line="51" Column="78" NotebookId="1" />
-      <File FileName="MyFormsLibrary/Navigation/TabbedPageOverNavigationPageActiveAwareBehavior.cs" Line="43" Column="1" NotebookId="1" />
-      <File FileName="MyFormsLibrary/Navigation/TabbedPageHasNavigationPageActionBehavior.cs" Line="42" Column="15" NotebookId="1" />
-      <File FileName="MyFormsLibrary.Tests/Mocks/ViewModels/PageAlphaViewModel.cs" Line="31" Column="1" NotebookId="1" />
+      <File FileName="MyFormsLibrary.Droid/CustomRenderers/TabbedPageExRenderer.cs" Line="195" Column="83" />
+      <File FileName="nuget/MyFormsLibrary_mac.nuspec" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Volumes/SD/Dropbox/work/projects/myformslibrary/MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" relfile="MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" line="627" column="1" />
-      <Breakpoint file="/Volumes/SD/Dropbox/work/projects/myformslibrary/MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" relfile="MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" line="625" column="1" />
-      <Breakpoint file="/Volumes/SD/Dropbox/work/projects/myformslibrary/MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" relfile="MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" line="624" column="1" />
       <Breakpoint file="/Volumes/SD/Dropbox/work/projects/myformslibrary/MyFormsLibrary.Tests/Mocks/ViewModels/PageAlphaViewModel.cs" relfile="MyFormsLibrary.Tests/Mocks/ViewModels/PageAlphaViewModel.cs" line="31" column="1" />
       <Breakpoint file="/Volumes/SD/Dropbox/work/projects/myformslibrary/MyFormsLibrary/Navigation/TabbedPageOverNavigationPageActiveAwareBehavior.cs" relfile="MyFormsLibrary/Navigation/TabbedPageOverNavigationPageActiveAwareBehavior.cs" line="43" column="1" />
-      <Breakpoint file="/Volumes/SD/Dropbox/work/projects/myformslibrary/MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" relfile="MyFormsLibrary.Tests/Navigations/MyPageNavigationServiceFixture.cs" line="640" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
