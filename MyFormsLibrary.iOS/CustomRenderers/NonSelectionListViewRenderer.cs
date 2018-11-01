@@ -8,11 +8,12 @@ using Xamarin.Forms.Platform.iOS;
 [assembly: ExportRenderer(typeof(NonSelectionListView), typeof(NonSelectionListViewRenderer))]
 namespace MyFormsLibrary.iOS.CustomRenderers
 {
-	public class NonSelectionListViewRenderer:ListViewRenderer,IUITableViewDelegate
+    public class NonSelectionListViewRenderer:ListViewRenderer,IUITableViewDelegate
 	{
 		public List<NonSelectionViewCellRenderer> ItemCleanUp { get; set; }
-
+       
 		protected override void OnElementChanged(ElementChangedEventArgs<Xamarin.Forms.ListView> e) {
+
 			base.OnElementChanged(e);
 
 			if (e.NewElement != null) {
@@ -24,6 +25,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 		}
 
 		protected override void Dispose(bool disposing) {
+
 			foreach (var d in ItemCleanUp) {
 				d.CleanUp();
 			}
@@ -32,10 +34,6 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
 			base.Dispose(disposing);
 		}
-
-
-
-
-	}
+    }
 }
 

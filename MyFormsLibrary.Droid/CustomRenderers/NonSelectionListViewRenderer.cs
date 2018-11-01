@@ -10,6 +10,9 @@ using Xamarin.Forms.Platform.Android;
 using AListView = Android.Widget.ListView;
 using AView = Android.Views.View;
 using ListView = Xamarin.Forms.ListView;
+using MyFormsLibrary.CustomRenderers.Cells;
+using System.Reflection;
+using Android.Content;
 
 [assembly: ExportRenderer(typeof(NonSelectionListView), typeof(NonSelectionListViewRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
@@ -24,7 +27,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 		private IList<MenuItem> contextActions;
 		private List<IDisposable> menuDisposable;
 
-
+        public NonSelectionListViewRenderer(Context context):base(context){}
 
 		protected override void OnElementChanged(ElementChangedEventArgs<ListView> e) {
 			base.OnElementChanged(e);
@@ -34,6 +37,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 				nativeListView = Control;
 
+                              
+
 				//ロングタップ、通常タップを上書き
 				nativeListView.OnItemClickListener = this;
 				nativeListView.OnItemLongClickListener = this;
@@ -42,7 +47,6 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 				ItemCleanUp = new List<NonSelectionViewCellRenderer>();
 				var main = (FormsAppCompatActivity)Context;
 				main.RegisterForContextMenu(nativeListView);
-
 			}
 
 		}
@@ -84,7 +88,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 			for (var i = contextActions.Count-1; i >= 0; i--) {
 				var action = contextActions[i];
-				var menuItem = menu.Add(Menu.None, i, Menu.None, action.Text);
+				var menuItem = menu.Add(Android.Views.Menu.None, i, Android.Views.Menu.None, action.Text);
 
 				var clicked = new MenuItemClickListener(action,menuItem);
 				menuItem.SetOnMenuItemClickListener(clicked);
@@ -95,12 +99,11 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 		public bool OnItemLongClick(AdapterView parent, Android.Views.View view, int position, long id) {
 
-
-			var viewCell =  (view as INativeElementView)?.Element as NonSelectionViewCell;
+			var viewCell =  (view as INativeElementView)?.Element as ViewCell;
 
 			if (viewCell == null) return true;
 
-			contextMenuTitle = viewCell.ContextMenuTitle;
+            contextMenuTitle = (viewCell as IContextMenuCell)?.ContextMenuTitle;
 			contextActions = viewCell.ContextActions;
 
 			ShowContextMenu();

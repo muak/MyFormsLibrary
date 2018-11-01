@@ -9,7 +9,7 @@ using MyFormsLibrary.NControls;
 [assembly: ExportRenderer(typeof(SvgView), typeof(SvgViewFixRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
 {
-	public class SvgViewFixRenderer:NControlViewRenderer,Android.Views.View.IOnClickListener
+	public class SvgViewFixRenderer:NControlViewRenderer
 	{
 		private NControlView _currentElement;
 

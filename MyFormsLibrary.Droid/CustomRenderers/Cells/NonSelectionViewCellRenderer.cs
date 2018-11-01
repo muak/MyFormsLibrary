@@ -48,10 +48,12 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 		}
 
 		public void CleanUp() {
-			view.LongClick -= View_LongClick;
-			view.Click -= View_Click;
-			view.Touch -= View_Touch;
-			view = null;
+            if (view != null) {
+                view.LongClick -= View_LongClick;
+                view.Click -= View_Click;
+                view.Touch -= View_Touch;
+                view = null;
+            }
             if (layer != null) {
                 layer.Dispose();
                 layer = null;

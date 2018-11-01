@@ -1,0 +1,23 @@
+﻿<Properties StartupConfiguration="{4F72DBDE-0259-4476-AC2D-DA4D167E2A7A}|Default">
+  <MonoDevelop.Ide.ItemProperties.Sample.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.3C958C89-B23F-4D42-B0B5-71B20DBDBFB0" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../MyFormsLibrary.iOS/CustomRenderers/NavigationPageExRenderer.cs">
+    <Files>
+      <File FileName="Sample/Views/MainPage.xaml" Line="18" Column="1" />
+      <File FileName="Sample/App.xaml.cs" Line="15" Column="71" />
+      <File FileName="Sample/Views/MyNavigationPage.cs" Line="8" Column="34" />
+      <File FileName="Sample.iOS/AppDelegate.cs" Line="25" Column="45" />
+      <File FileName="Sample/ViewModels/MainPageViewModel.cs" Line="29" Column="9" />
+      <File FileName="Sample.iOS/Main.cs" Line="17" Column="1" />
+      <File FileName="../MyFormsLibrary.iOS/CustomRenderers/SvgToUIimage.cs" Line="21" Column="42" />
+      <File FileName="Sample/Views/MenuPage.xaml" Line="16" Column="1" />
+      <File FileName="Sample/ViewModels/MenuPageViewModel.cs" Line="14" Column="67" />
+      <File FileName="../MyFormsLibrary.iOS/CustomRenderers/NavigationPageExRenderer.cs" Line="29" Column="20" NotebookId="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>
