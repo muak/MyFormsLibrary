@@ -5,10 +5,9 @@ using Xamarin.Forms;
 
 namespace Sample.Views
 {
-    public partial class MenuPage : ContentPage
+    public partial class SubPage : ContentPage
     {
-        public MenuPage()
-        {
+        public SubPage() {
             InitializeComponent();
         }
     }

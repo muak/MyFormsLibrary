@@ -1,30 +1,37 @@
-﻿using Prism.Commands;
+﻿using MyFormsLibrary.Navigation;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Prism.Services;
+using System.Reactive.Linq;
+using System.Collections.ObjectModel;
 
 namespace Sample.ViewModels
 {
 	public class MainPageViewModel : BindableBase, INavigationAware
 	{
-        public ReactiveProperty<bool> ToolVisible { get; } = new ReactiveProperty<bool>(true);
-        public ReactiveCommand TestCommand { get; } = new ReactiveCommand();
-        public ReactiveCommand Test2Command { get; } = new ReactiveCommand();
+        public ReactivePropertySlim<bool> TitleVisible { get; } = new ReactivePropertySlim<bool>(true);
+        public ReadOnlyReactivePropertySlim<bool> SearchVisible { get; set; }
+        public ReactiveCommand GoCommand { get; } = new ReactiveCommand();
+        public ObservableCollection<string> ItemsSource { get; } = new ObservableCollection<string>();
 
-        public MainPageViewModel(IPageDialogService pageDialog)
+        public MainPageViewModel(INavigationServiceEx navigationService)
 		{
-            TestCommand.Subscribe(x =>
+            SearchVisible = TitleVisible.Select(x => !x).ToReadOnlyReactivePropertySlim();
+
+            RaisePropertyChanged(nameof(SearchVisible));
+            GoCommand.Subscribe(async _ => 
             {
-                ToolVisible.Value = !ToolVisible.Value;
+                await navigationService.NavigateAsync("SubPage");
             });
-            Test2Command.Subscribe(async x =>
+
+            for (var i = 0; i < 100;i++)
             {
-                await pageDialog.DisplayAlertAsync("", "Fire", "OK");
-            });
+                ItemsSource.Add($"Name{i}");
+            }
 		}
 
 		public void OnNavigatedFrom(NavigationParameters parameters)
@@ -34,11 +41,12 @@ namespace Sample.ViewModels
 
 		public void OnNavigatedTo(NavigationParameters parameters)
 		{
-			
+		
 		}
 
 		public void OnNavigatingTo(NavigationParameters parameters)
 		{
+
 		}
 	}
 }

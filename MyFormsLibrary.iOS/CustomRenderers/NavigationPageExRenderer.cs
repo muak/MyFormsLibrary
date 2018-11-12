@@ -7,6 +7,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using CoreGraphics;
 
 [assembly: ExportRenderer(typeof(NavigationPageEx), typeof(NavigationPageExRenderer))]
 namespace MyFormsLibrary.iOS.CustomRenderers
@@ -14,6 +15,11 @@ namespace MyFormsLibrary.iOS.CustomRenderers
     public class NavigationPageExRenderer : NavigationRenderer
     {
         ConcurrentDictionary<Page, List<UIBarButtonItem>> _itemsCache = new ConcurrentDictionary<Page, List<UIBarButtonItem>>();
+
+        public NavigationPageExRenderer()
+        {
+
+        }
 
         public override void PushViewController(UIViewController viewController, bool animated)
         {

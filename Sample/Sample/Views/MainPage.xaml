@@ -3,15 +3,42 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
     xmlns:cr="clr-namespace:MyFormsLibrary.CustomRenderers;assembly=MyFormsLibrary"
 	xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms" 
-	prism:ViewModelLocator.AutowireViewModel="True" 
-	x:Class="Sample.Views.MainPage" Title="MainPage">
+	prism:ViewModelLocator.AutowireViewModel="True"
+	x:Class="Sample.Views.MainPage" Title="MainPage" BackgroundColor="#EFEFEF"
+    cr:CoordinatorPage.IsBarScroll="true"             
+>
+    
+   <!-- <NavigationPage.TitleView>
+        <AbsoluteLayout BackgroundColor="Green" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <SearchBar Placeholder="Search" IsVisible="{Binding SearchVisible.Value}"
+                       BackgroundColor="White" Margin="0,0,16,0"
+                        AbsoluteLayout.LayoutFlags="WidthProportional" AbsoluteLayout.LayoutBounds="0,0,1,36"
+                       />
+            <Button Text="Next" IsVisible="{Binding TitleVisible.Value}" Command="{Binding GoCommand}"
+                   AbsoluteLayout.LayoutFlags="WidthProportional" AbsoluteLayout.LayoutBounds="0,0,1,36"/>
+        </AbsoluteLayout>
+    </NavigationPage.TitleView>-->
 
     <ContentPage.ToolbarItems>
-        <cr:ToolbarItemEx  Priority="1" Resource="ios-star.svg" Command="{Binding TestCommand}"/>
-        <cr:ToolbarItemEx  Priority="2" Resource="ios-star-outline.svg" Command="{Binding Test2Command}" IsVisible="{Binding ToolVisible.Value}" />
+        <ToolbarItem Text="Go" Command="{Binding GoCommand}" />
     </ContentPage.ToolbarItems>
     
-	<StackLayout HorizontalOptions="Center" VerticalOptions="Center">
-		<Label Text="{Binding Title}" />
+    <AbsoluteLayout>
+        <cr:NestedListView ItemsSource="{Binding ItemsSource}" AbsoluteLayout.LayoutFlags="SizeProportional" AbsoluteLayout.LayoutBounds="0,0,1,1">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+        </cr:NestedListView>
+        <ContentView BackgroundColor="Blue" AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional" 
+                     AbsoluteLayout.LayoutBounds="0,1,1,50" />
+    </AbsoluteLayout>
+   <!-- <ScrollView>
+	<StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
+		<Button Text="Next" Command="{Binding GoCommand}" />
+
 	</StackLayout>
+    </ScrollView>-->
 </ContentPage>

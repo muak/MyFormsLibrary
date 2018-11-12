@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    x:Class="Sample.Views.SubPage" Title="SubPage">
+    
+    <NavigationPage.TitleView>
+        <ContentView HorizontalOptions="FillAndExpand">
+            <Label Text="SubPage" HorizontalTextAlignment="Center" VerticalOptions="Center" />
+        </ContentView>
+    </NavigationPage.TitleView>
+    
+    <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+       <Label Text="SubPageContent" />
+    </StackLayout>
+</ContentPage>

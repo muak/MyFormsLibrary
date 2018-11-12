@@ -16,6 +16,7 @@ using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms.Platform.Android.AppCompat;
 using Android.Text.Style;
 using Android.Content;
+using System.Threading.Tasks;
 
 [assembly: ExportRenderer(typeof(NavigationPageEx), typeof(NavigationPageExRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
@@ -26,8 +27,9 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 		private Toolbar _toolbar;
 		private NavigationIconBack _navigationBackListener;
 		private NavigationIconClickListener _navigationCustomListener;
+        IPageController PageController => Element;
 
-		public Android.Graphics.Color ForeColor {
+        public Android.Graphics.Color ForeColor {
 			get {
 				return (Element as NavigationPage).BarTextColor.ToAndroid();
 			}
@@ -55,10 +57,24 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 				var fieldInfo = typeof(NavigationPageRenderer).GetField("_toolbarTracker", BindingFlags.Instance | BindingFlags.NonPublic);
 				_toolbarTracker = (ToolbarTracker)fieldInfo.GetValue(this);
 
-				fieldInfo = typeof(NavigationPageRenderer).GetField("_toolbar", BindingFlags.Instance | BindingFlags.NonPublic);
-				_toolbar = (Toolbar)fieldInfo.GetValue(this);
+				_toolbar = (Toolbar)GetChildAt(0);
 
-				_toolbarTracker.CollectionChanged += toolbarCollectionChanged;
+                // CoodinatorLayout使用する場合
+                //var getNavBarHeight = typeof(NavigationPageRenderer).GetMethod("ActionBarHeight", BindingFlags.Instance | BindingFlags.NonPublic);
+
+                //var  barHeight = (int)getNavBarHeight.Invoke(this, new object[] { });
+
+                //var appBarLayout = (Context as FormsAppCompatActivity).FindViewById<Android.Support.Design.Widget.AppBarLayout>(Resource.Id.coordinatorAppBar);
+
+                //_toolbar.RemoveFromParent();
+
+                //using (var toolbarParams = new Android.Support.Design.Widget.AppBarLayout.LayoutParams(LayoutParams.MatchParent, barHeight))
+                //{
+                //    toolbarParams.ScrollFlags = Android.Support.Design.Widget.AppBarLayout.LayoutParams.ScrollFlagScroll | Android.Support.Design.Widget.AppBarLayout.LayoutParams.ScrollFlagEnterAlways;
+                //    appBarLayout.AddView(_toolbar, toolbarParams);
+                //}
+
+                _toolbarTracker.CollectionChanged += toolbarCollectionChanged;
 
 				_toolbar.SetTitleTextColor(ForeColor);
 				_toolbar.SetSubtitleTextColor(ForeColor);
@@ -75,10 +91,35 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 						(Context as FormsAppCompatActivity).Window.SetStatusBarColor(statusBarColor.ToAndroid());
 					}
 				}
+
+
+                // ツールバー全体に貼り付ける場合はこれ
+                //_toolbar.SetPadding(0, 0, 0, 0);
+                //_toolbar.SetContentInsetsAbsolute((int)Context.ToPixels(8), (int)Context.ToPixels(8));
 			}
+
 		}
 
-		protected override void Dispose(bool disposing)
+        protected override void OnLayout(bool changed, int l, int t, int r, int b)
+        {
+            base.OnLayout(changed, l, t, r, b);
+
+            // CoodinatorLayout使用する場合
+            //PageController.ContainerArea = new Rectangle(0, 0, Context.FromPixels(r - l), Context.FromPixels(b - t));
+
+            //for (var i = 0; i < ChildCount; i++)
+            //{
+            //    if (GetChildAt(i) is ViewGroup viewGroup)
+            //    {
+            //        if (viewGroup.ChildCount == 1 && viewGroup.GetChildAt(0) is PageRenderer page)
+            //        {
+            //            viewGroup.Layout(0, 0, r, b);
+            //        }
+            //    }
+            //}
+        }
+
+        protected override void Dispose(bool disposing)
 		{
 			_toolbarTracker.CollectionChanged -= toolbarCollectionChanged;
 
@@ -96,14 +137,19 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
 		}
 
-		void pagePusshed(object sender, EventArgs e)
+
+        void pagePusshed(object sender, EventArgs e)
 		{
-			ArrowUpdate();
+            var p = this.ViewGroup?.Parent;
+            var pp = p?.Parent;
+            var ppp = pp?.Parent;
+            ArrowUpdate();
 		}
 
 		void ArrowUpdate(){
-			Device.StartTimer(TimeSpan.FromMilliseconds(50), () => {
-				if (_toolbar.NavigationIcon != null) {
+			Device.StartTimer(TimeSpan.FromMilliseconds(50), () => 
+            {
+				if (_toolbar != null && _toolbar.NavigationIcon != null) {
 					_toolbar.NavigationIcon.SetColorFilter(ForeColor, PorterDuff.Mode.SrcIn);
 					return false;
 				}
