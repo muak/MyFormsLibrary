@@ -20,9 +20,6 @@ namespace Sample.ViewModels
 
         public MainPageViewModel(INavigationServiceEx navigationService)
 		{
-            SearchVisible = TitleVisible.Select(x => !x).ToReadOnlyReactivePropertySlim();
-
-            RaisePropertyChanged(nameof(SearchVisible));
             GoCommand.Subscribe(async _ => 
             {
                 await navigationService.NavigateAsync("SubPage");
@@ -46,8 +43,10 @@ namespace Sample.ViewModels
 
 		public void OnNavigatingTo(NavigationParameters parameters)
 		{
+            SearchVisible = TitleVisible.Select(x => !x).ToReadOnlyReactivePropertySlim();
 
-		}
+            RaisePropertyChanged(nameof(SearchVisible));
+        }
 	}
 }
 

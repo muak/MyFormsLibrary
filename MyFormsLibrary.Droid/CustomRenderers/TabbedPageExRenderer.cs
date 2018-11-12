@@ -221,7 +221,15 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 			}
             var selectedPage = _tabbedEx.Children[selectedIndex];
             _tabbedEx.Title = selectedPage.Title;
-            XF.NavigationPage.SetTitleView(_tabbedEx, XF.NavigationPage.GetTitleView(selectedPage));
+
+            var titleView = XF.NavigationPage.GetTitleView(selectedPage);
+
+            if (titleView != null)
+            {
+                XF.NavigationPage.SetTitleView(_tabbedEx, titleView);
+                titleView.BindingContext = selectedPage.BindingContext;
+            }
+
 			_tabbedEx.Children[selectedIndex].PropertyChanged += CurrentPage_PropertyChanged;
 
 			if (Element.Children.Count > selectedIndex && selectedIndex >= 0) {

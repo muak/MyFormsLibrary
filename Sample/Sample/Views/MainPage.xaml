@@ -8,20 +8,20 @@
     cr:CoordinatorPage.IsBarScroll="true"             
 >
     
-   <!-- <NavigationPage.TitleView>
+    <NavigationPage.TitleView>
         <AbsoluteLayout BackgroundColor="Green" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Button Text="Next" IsVisible="{Binding TitleVisible.Value}" Command="{Binding GoCommand}"
+                   AbsoluteLayout.LayoutFlags="WidthProportional" AbsoluteLayout.LayoutBounds="0,0,1,36"/>
             <SearchBar Placeholder="Search" IsVisible="{Binding SearchVisible.Value}"
                        BackgroundColor="White" Margin="0,0,16,0"
                         AbsoluteLayout.LayoutFlags="WidthProportional" AbsoluteLayout.LayoutBounds="0,0,1,36"
                        />
-            <Button Text="Next" IsVisible="{Binding TitleVisible.Value}" Command="{Binding GoCommand}"
-                   AbsoluteLayout.LayoutFlags="WidthProportional" AbsoluteLayout.LayoutBounds="0,0,1,36"/>
         </AbsoluteLayout>
-    </NavigationPage.TitleView>-->
+    </NavigationPage.TitleView>
 
-    <ContentPage.ToolbarItems>
+   <!-- <ContentPage.ToolbarItems>
         <ToolbarItem Text="Go" Command="{Binding GoCommand}" />
-    </ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>-->
     
     <AbsoluteLayout>
         <cr:NestedListView ItemsSource="{Binding ItemsSource}" AbsoluteLayout.LayoutFlags="SizeProportional" AbsoluteLayout.LayoutBounds="0,0,1,1">

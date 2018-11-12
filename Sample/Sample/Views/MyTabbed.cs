@@ -20,12 +20,12 @@ namespace Sample.Views
 
             TabAttributes = new List<TabAttribute> {
                 new TabAttribute{
-                    Title = "Main",
-                    Resource = "calendar.svg",
-                },
-                new TabAttribute{
                     Title = "Sub",
                     Resource = "colours.svg",
+                },
+                new TabAttribute{
+                    Title = "Main",
+                    Resource = "calendar.svg",
                 },
                 new TabAttribute{
                     Title = "Next",
