@@ -19,6 +19,7 @@ using XF = Xamarin.Forms;
 [assembly: XF.ExportRenderer(typeof(TabbedPageEx), typeof(TabbedPageExRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
 {
+    [Android.Runtime.Preserve(AllMembers = true)]
     public class TabbedPageExRenderer : TabbedPageRenderer, TabLayout.IOnTabSelectedListener, BottomNavigationView.IOnNavigationItemSelectedListener
     {
 		TabbedPageEx _tabbedEx;
@@ -109,6 +110,10 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                         var menuItem = _bottomNavigationView.Menu.GetItem(i);
                         menuItem.SetIcon(icon);
                         menuItem.SetTitle(attr.Title);
+                        if (i == 0 && _tabbedEx.StatusBarBackColor != Xamarin.Forms.Color.Default)
+                        {
+                            _window.SetStatusBarColor(_tabbedEx.StatusBarBackColor.ToAndroid());
+                        }
                         continue;
                     }
 

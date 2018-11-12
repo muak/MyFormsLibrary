@@ -9,7 +9,7 @@ using Xamarin.Forms.Platform.Android;
 namespace Sample.Droid
 {
     [Activity(Label = "Sample.Droid", Icon = "@drawable/icon",Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : FormsCoordinatorActivity
+	public class MainActivity : FormsAppCompatActivity
 	{
 		protected override void OnCreate(Bundle bundle)
 		{
