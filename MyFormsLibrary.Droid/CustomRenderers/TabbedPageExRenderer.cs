@@ -85,13 +85,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                         var curPage = (_tabbedEx.CurrentPage as XF.Page);
                         _tabbedEx.Title = curPage.Title;
 
-                        var titleView = XF.NavigationPage.GetTitleView(curPage);
-
-                        if(titleView != null)
-                        {
-                            XF.NavigationPage.SetTitleView(_tabbedEx, titleView);
-                            titleView.BindingContext = curPage.BindingContext;
-                        }
+                        ReplaceTitleView(curPage);
 
 						_tabbedEx.CurrentPage.PropertyChanged += CurrentPage_PropertyChanged;
 
@@ -161,6 +155,21 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             }
 		}
 
+        void ReplaceTitleView(XF.Page page)
+        {
+            var titleView = XF.NavigationPage.GetTitleView(page);
+
+            if (titleView != null)
+            {
+                XF.NavigationPage.SetTitleView(_tabbedEx, titleView);
+                titleView.BindingContext = page.BindingContext;
+            }
+            else
+            {
+                XF.NavigationPage.SetTitleView(_tabbedEx, null);
+            }
+        }
+
         bool BottomNavigationView.IOnNavigationItemSelectedListener.OnNavigationItemSelected(IMenuItem item)
         {
             _tabbedEx.CurrentPage.PropertyChanged -= CurrentPage_PropertyChanged;
@@ -173,11 +182,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             var selectedPage = _tabbedEx.Children[item.Order];
             _tabbedEx.Title = selectedPage.Title;
 
-            var titleView = XF.NavigationPage.GetTitleView(selectedPage);
-            if (titleView != null) {
-                XF.NavigationPage.SetTitleView(_tabbedEx, titleView);
-                titleView.BindingContext = selectedPage.BindingContext;
-            }
+            ReplaceTitleView(selectedPage);
 
             return true;
         }
@@ -227,13 +232,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             var selectedPage = _tabbedEx.Children[selectedIndex];
             _tabbedEx.Title = selectedPage.Title;
 
-            var titleView = XF.NavigationPage.GetTitleView(selectedPage);
-
-            if (titleView != null)
-            {
-                XF.NavigationPage.SetTitleView(_tabbedEx, titleView);
-                titleView.BindingContext = selectedPage.BindingContext;
-            }
+            ReplaceTitleView(selectedPage);
 
 			_tabbedEx.Children[selectedIndex].PropertyChanged += CurrentPage_PropertyChanged;
 
@@ -270,11 +269,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 			}
             else if(e.PropertyName == XF.NavigationPage.TitleViewProperty.PropertyName) 
             {
-                var titleView = XF.NavigationPage.GetTitleView(sender as XF.Page);
-                if (titleView != null) {
-                    XF.NavigationPage.SetTitleView(_tabbedEx, titleView);
-                    titleView.BindingContext = (sender as XF.Page).BindingContext;
-                }
+                ReplaceTitleView(sender as XF.Page);
             }
 		}
 
