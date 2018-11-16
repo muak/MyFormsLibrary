@@ -66,7 +66,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                     border.SetBackgroundColor(Android.Graphics.Color.LightGray);
                     border.Alpha = 0.6f;
                     using(var param = new RelativeLayout.LayoutParams(LayoutParams.MatchParent,LayoutParams.WrapContent){
-                        Height = (int)Context.ToPixels(1)
+                        Height = (int)Context.ToPixels(0.5)
                     }){
                         param.AddRule(LayoutRules.Above, _bottomNavigationView.Id);
                         layout.AddView(border, param);
