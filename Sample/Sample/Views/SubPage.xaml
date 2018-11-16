@@ -11,7 +11,7 @@
         </ContentView>
     </NavigationPage.TitleView>
     
-    <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+    <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand" BackgroundColor="Black">
        <Label Text="SubPageContent" />
     </StackLayout>
 </ContentPage>

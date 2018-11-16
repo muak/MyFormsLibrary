@@ -60,6 +60,18 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
                 if(IsBottomTabPlacement){
                     _bottomNavigationView.SetOnNavigationItemSelectedListener(this);
+
+                    var layout = _bottomNavigationView.Parent as RelativeLayout;
+                    var border = new View(Context);
+                    border.SetBackgroundColor(Android.Graphics.Color.LightGray);
+                    border.Alpha = 0.6f;
+                    using(var param = new RelativeLayout.LayoutParams(LayoutParams.MatchParent,LayoutParams.WrapContent){
+                        Height = (int)Context.ToPixels(1)
+                    }){
+                        param.AddRule(LayoutRules.Above, _bottomNavigationView.Id);
+                        layout.AddView(border, param);
+                    }
+
                 }
 
 				// https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Platform.Android/AppCompat/TabbedPageRenderer.cs#L297
@@ -150,7 +162,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                     Element.OnThisPlatform().SetBarSelectedItemColor(_tabbedEx.SelectedColor);
                     Element.OnThisPlatform().SetIsSmoothScrollEnabled(false);
                     Element.OnThisPlatform().SetIsSwipePagingEnabled(false);
-                    _bottomNavigationView.SetShiftMode(false, false,_tabbedEx.SelectedTextColor.ToAndroid(),_tabbedEx.UnSelectedTextColor.ToAndroid());
+                    _bottomNavigationView.SetShiftMode(false, false,_tabbedEx);
                 }
             }
 		}
@@ -278,7 +290,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
     public static class BottomNavigationHelpers
     {
-        public static void SetShiftMode(this BottomNavigationView bottomNavigationView, bool enableShiftMode, bool enableItemShiftMode,Android.Graphics.Color? selectedTextColor = null,Android.Graphics.Color? unselectedTextColor = null) {
+        public static void SetShiftMode(this BottomNavigationView bottomNavigationView, bool enableShiftMode, bool enableItemShiftMode,TabbedPageEx tabbedPageEx) {
             try {
                 var menuView = bottomNavigationView.GetChildAt(0) as BottomNavigationMenuView;
                 if (menuView == null) {
@@ -302,14 +314,18 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                     var mLargeLabel = GetField<TextView>(item.Class, item, "mLargeLabel");
                     var mSmallLabel = GetField<TextView>(item.Class, item, "mSmallLabel");
 
-                    mLargeLabel.SetTextSize(Android.Util.ComplexUnitType.Px, mSmallLabel.TextSize);
-                    if(selectedTextColor != null)
-                    {
-                        mLargeLabel.SetTextColor(selectedTextColor.Value);
+                    if(tabbedPageEx.BottomTabFontSize > -1) {
+                        mSmallLabel.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)tabbedPageEx.BottomTabFontSize);
                     }
-                    if(unselectedTextColor != null)
+                    mLargeLabel.SetTextSize(Android.Util.ComplexUnitType.Px, mSmallLabel.TextSize);
+
+                    if(!tabbedPageEx.SelectedTextColor.IsDefault)
                     {
-                        mSmallLabel.SetTextColor(unselectedTextColor.Value);
+                        mLargeLabel.SetTextColor(tabbedPageEx.SelectedTextColor.ToAndroid());
+                    }
+                    if(!tabbedPageEx.UnSelectedTextColor.IsDefault)
+                    {
+                        mSmallLabel.SetTextColor(tabbedPageEx.UnSelectedTextColor.ToAndroid());
                     }
                 }
 

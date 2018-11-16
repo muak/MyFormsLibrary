@@ -17,14 +17,15 @@ namespace Sample.Views
             SelectedColor = XF.Color.Orange;
             UnSelectedTextColor = XF.Color.LightGray;
             SelectedTextColor = XF.Color.Gray;
+            //BottomTabFontSize = 11;
 
             TabAttributes = new List<TabAttribute> {
                 new TabAttribute{
-                    Title = "Sub",
+                    Title = "サブ",
                     Resource = "colours.svg",
                 },
                 new TabAttribute{
-                    Title = "Main",
+                    Title = "メイン",
                     Resource = "calendar.svg",
                 },
                 new TabAttribute{

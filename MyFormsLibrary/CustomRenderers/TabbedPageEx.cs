@@ -70,6 +70,20 @@ namespace MyFormsLibrary.CustomRenderers
 			set { SetValue(StatusBarBackColorProperty, value); }
 		}
 
+        public static BindableProperty BottomTabFontSizeProperty =
+            BindableProperty.Create(
+                nameof(BottomTabFontSize),
+                typeof(double),
+                typeof(TabbedPageEx),
+                -1d,
+                defaultBindingMode: BindingMode.OneWay
+            );
+
+        public double BottomTabFontSize {
+            get { return (double)GetValue(BottomTabFontSizeProperty); }
+            set { SetValue(BottomTabFontSizeProperty, value); }
+        }
+
 		public bool IsDefaultColor {
 			get {
 				return (SelectedColor == Color.Default && UnSelectedColor == Color.Default);
