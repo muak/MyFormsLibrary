@@ -35,7 +35,7 @@
             </ListView.ItemTemplate>
             
         </cr:NestedListView>
-        <ContentView BackgroundColor="Blue" AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional" 
+        <Button Command="{Binding GoCommand}" BackgroundColor="Blue" AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional" 
                      AbsoluteLayout.LayoutBounds="0,1,1,50" />
     </AbsoluteLayout>
    <!-- <ScrollView>

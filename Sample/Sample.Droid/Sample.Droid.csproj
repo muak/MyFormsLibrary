@@ -16,7 +16,6 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
     <ReleaseVersion>1.1.0-pre6</ReleaseVersion>
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
 	<AndroidExplicitCrunch>true</AndroidExplicitCrunch>

@@ -50,13 +50,13 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             // この問題の対策
             // というか2.5.1.444934で解消されていた件… とりあえずコメントアウトして同様の現象が発生したら解除することにする。
 
-            var formsCount = page.Navigation.NavigationStack.Count;
-            var nativeCount = ViewControllers.Count();
+            //var formsCount = page.Navigation.NavigationStack.Count;
+            //var nativeCount = ViewControllers.Count();
 
-            if(formsCount == nativeCount){
-                await Task.Delay(100);
-                PopToViewController(ViewControllers[ViewControllers.Count() - 2], false);
-            }
+            //if(formsCount == nativeCount){
+            //    await Task.Delay(100);
+            //    PopToViewController(ViewControllers[ViewControllers.Count() - 2], false);
+            //}
 
             return baseRet; 
         }

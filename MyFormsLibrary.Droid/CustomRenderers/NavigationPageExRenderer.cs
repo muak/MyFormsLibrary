@@ -140,9 +140,6 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
         void pagePusshed(object sender, EventArgs e)
 		{
-            var p = this.ViewGroup?.Parent;
-            var pp = p?.Parent;
-            var ppp = pp?.Parent;
             ArrowUpdate();
 		}
 

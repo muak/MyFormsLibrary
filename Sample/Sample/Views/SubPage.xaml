@@ -3,13 +3,19 @@
     xmlns="http://xamarin.com/schemas/2014/forms" 
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
     NavigationPage.BackButtonTitle=""
+    xmlns:cr="clr-namespace:MyFormsLibrary.CustomRenderers;assembly=MyFormsLibrary"
     x:Class="Sample.Views.SubPage" Title="SubPage">
     
-    <NavigationPage.TitleView>
+    <!--<NavigationPage.TitleView>
         <ContentView HorizontalOptions="FillAndExpand">
             <Label Text="SubPage" HorizontalTextAlignment="Center" VerticalOptions="Center" />
         </ContentView>
-    </NavigationPage.TitleView>
+    </NavigationPage.TitleView>-->
+    <ContentPage.ToolbarItems>
+        <cr:ToolbarItemEx Text="abc" />
+        <cr:ToolbarItemEx Text="def" />
+    </ContentPage.ToolbarItems>
+        
     
     <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand" BackgroundColor="Black">
        <Label Text="SubPageContent" />
