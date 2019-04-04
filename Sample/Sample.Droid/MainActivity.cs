@@ -5,6 +5,7 @@ using Prism;
 using Prism.Ioc;
 using MyFormsLibrary.Droid.CustomRenderers;
 using Xamarin.Forms.Platform.Android;
+using Xamarin.Forms.Svg.Droid;
 
 namespace Sample.Droid
 {
@@ -19,6 +20,7 @@ namespace Sample.Droid
 			base.OnCreate(bundle);
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
+            SvgImage.Init(this);
 
 			LoadApplication(new App(new AndroidInitializer()));
 		}

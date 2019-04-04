@@ -25,27 +25,27 @@ namespace Sample
             InitializeComponent();
             MyFormsLibrary.MyFormsLibrary.Init(this.GetType());
 
-            NavigationService.NavigateAsync("TopNavi/MainPage");
+            //NavigationService.NavigateAsync("TopNavi/MainPage");
 
 
-            //var nav = (MyPageNavigationService)Container.Resolve<INavigationServiceEx>(MyPageNavigationService.MyNavigationServiceName);
+            var nav = (MyPageNavigationService)Container.Resolve<INavigationServiceEx>(MyPageNavigationService.MyNavigationServiceName);
 
 
-            //if (Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.iOS) {
-            //    MainPage = nav.CreateMainPageTabbedHasNavigation(nameof(MyTabbed), new List<NavigationPage> {
-            //        nav.CreateNavigationPage(nameof(NaviA),nameof(MainPage)),
-            //        nav.CreateNavigationPage(nameof(NaviB),nameof(SubPage)),
-            //    });
-            //}
-            //else if (Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.Android) {
-            //    MainPage = nav.CreateMainPageNavigationHasTabbed(nameof(TopNavi), nameof(MyTabbed),
-            //        new List<ContentPage>{
-            //            nav.CreateContentPage(nameof(SubPage)),
-            //            nav.CreateContentPage(nameof(MainPage)),
-            //            nav.CreateContentPage(nameof(SubPage)),
-            //            nav.CreateContentPage(nameof(SubPage)),
-            //    }, new List<NavigationParameters>());
-            //}
+            if (Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.iOS) {
+                MainPage = nav.CreateMainPageTabbedHasNavigation(nameof(MyTabbed), new List<NavigationPage> {
+                    nav.CreateNavigationPage(nameof(NaviA),nameof(MainPage)),
+                    nav.CreateNavigationPage(nameof(NaviB),nameof(SubPage)),
+                });
+            }
+            else if (Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.Android) {
+                MainPage = nav.CreateMainPageNavigationHasTabbed(nameof(TopNavi), nameof(MyTabbed),
+                    new List<ContentPage>{
+                        nav.CreateContentPage(nameof(SubPage)),
+                        nav.CreateContentPage(nameof(MainPage)),
+                        nav.CreateContentPage(nameof(SubPage)),
+                        nav.CreateContentPage(nameof(SubPage)),
+                }, new List<NavigationParameters>());
+            }
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)

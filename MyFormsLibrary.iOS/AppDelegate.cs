@@ -1,16 +1,14 @@
 ﻿using System;
+using Foundation;
+using Xamarin.Forms.Svg.iOS;
 
 namespace MyFormsLibrary.iOS
 {
-	public class MyAppDelegate:global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
-	{
-	    
-	}
-
+    [Foundation.Preserve(AllMembers = true)]
     public static class Forms
     {
         public static void Init() {
-            //new MyAppDelegate();
+            SvgImage.Init();
         }
     }
 }

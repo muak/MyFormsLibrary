@@ -288,6 +288,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
     }
 
+    // https://gist.github.com/LynoDesu/64904b6d143892cf14a60a32798a36bb
     public static class BottomNavigationHelpers
     {
         public static void SetShiftMode(this BottomNavigationView bottomNavigationView, bool enableShiftMode, bool enableItemShiftMode,TabbedPageEx tabbedPageEx) {
@@ -297,22 +298,22 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                     System.Diagnostics.Debug.WriteLine("Unable to find BottomNavigationMenuView");
                     return;
                 }
-
-                SetField(menuView.Class, menuView, "mShiftingMode", false);
+                
+                SetFieldVisibilityMode(menuView.Class, menuView, "labelVisibilityMode", 1);
 
                 for (int i = 0; i < menuView.ChildCount; i++) {
                     var item = menuView.GetChildAt(i) as BottomNavigationItemView;
                     if (item == null)
                         continue;
 
-                    item.SetShiftingMode(enableItemShiftMode);
+                    item.SetShifting(enableItemShiftMode);
                     item.SetChecked(item.ItemData.IsChecked);
-                    SetField(item.Class, item, "mShiftAmount", 0);
-                    SetField(item.Class, item, "mScaleUpFactor", 1);
-                    SetField(item.Class, item, "mScaleDownFactor", 1);
+                    SetField(item.Class, item, "shiftAmount", 0);
+                    SetField(item.Class, item, "scaleUpFactor", 1);
+                    SetField(item.Class, item, "scaleDownFactor", 1);
 
-                    var mLargeLabel = GetField<TextView>(item.Class, item, "mLargeLabel");
-                    var mSmallLabel = GetField<TextView>(item.Class, item, "mSmallLabel");
+                    var mLargeLabel = GetField<TextView>(item.Class, item, "largeLabel");
+                    var mSmallLabel = GetField<TextView>(item.Class, item, "smallLabel");
 
                     if(tabbedPageEx.BottomTabFontSize > -1) {
                         mSmallLabel.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)tabbedPageEx.BottomTabFontSize);
@@ -339,6 +340,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
         static T GetField<T>(Java.Lang.Class targetClass, Java.Lang.Object instance, string fieldName) where T : Java.Lang.Object
         {
             try {
+                var asdfdasf = targetClass.GetDeclaredFields();
                 var field = targetClass.GetDeclaredField(fieldName);
                 field.Accessible = true;
                 var value = field.Get(instance);
@@ -355,6 +357,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
         static void SetField(Java.Lang.Class targetClass, Java.Lang.Object instance, string fieldName, Java.Lang.Object value) {
             try {
+                var asdfdasf = targetClass.GetDeclaredFields();
                 var field = targetClass.GetDeclaredField(fieldName);
                 field.Accessible = true;
                 field.Set(instance, value);
@@ -362,6 +365,22 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                 field.Dispose();
             }
             catch {
+                return;
+            }
+        }
+
+        static void SetFieldVisibilityMode(Java.Lang.Class targetClass, Java.Lang.Object instance, string fieldName, int value)
+        {
+            try
+            {
+                var field = targetClass.GetDeclaredField(fieldName);
+                field.Accessible = true;
+                field.SetInt(instance, value);
+                field.Accessible = false;
+                field.Dispose();
+            }
+            catch
+            {
                 return;
             }
         }

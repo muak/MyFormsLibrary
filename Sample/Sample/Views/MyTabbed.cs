@@ -17,7 +17,7 @@ namespace Sample.Views
             SelectedColor = XF.Color.Orange;
             UnSelectedTextColor = XF.Color.LightGray;
             SelectedTextColor = XF.Color.Gray;
-            //BottomTabFontSize = 11;
+            BottomTabFontSize = 11;
 
             TabAttributes = new List<TabAttribute> {
                 new TabAttribute{

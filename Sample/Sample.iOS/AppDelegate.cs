@@ -2,6 +2,7 @@
 using Prism;
 using Prism.Ioc;
 using UIKit;
+using Xamarin.Forms.Svg.iOS;
 
 namespace Sample.iOS
 {
@@ -22,6 +23,7 @@ namespace Sample.iOS
 		{
 			global::Xamarin.Forms.Forms.Init();
             MyFormsLibrary.iOS.Forms.Init();
+            SvgImage.Init();
 
 			LoadApplication(new App(new iOSInitializer()));
 
