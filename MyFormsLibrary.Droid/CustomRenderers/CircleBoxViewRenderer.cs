@@ -4,6 +4,7 @@ using MyFormsLibrary.CustomRenderers;
 using Xamarin.Forms.Platform.Android;
 using MyFormsLibrary.Droid.CustomRenderers;
 using Xamarin.Forms;
+using Android.Content;
 
 [assembly: ExportRenderer(typeof(CircleBoxView), typeof(CircleBoxViewRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers
@@ -11,6 +12,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 	public class CircleBoxViewRenderer:BoxRenderer
 	{
 		private int radius = 0;
+
+        public CircleBoxViewRenderer(Context context) : base(context) { }
 
 		protected override void OnElementChanged(ElementChangedEventArgs<BoxView> e) {
 			base.OnElementChanged(e);
