@@ -168,6 +168,24 @@ namespace MyFormsLibrary.Navigation
             await GoBackAsync(null, true, animated);
         }
 
+        public async Task AnywhereNavigate<T>(NavigationParameters parameters = null, bool animated = true) where T : ContentPage
+        {
+            var navi = GetNavigationCurrentPage(_app.MainPage);
+
+            var page = CreatePage(typeof(T).Name);
+            if (parameters == null)
+            {
+                parameters = new NavigationParameters();
+            }
+            parameters?.AddInternalParameter(NavigationModeKey, NavigationMode.New);
+
+            PageUtilities.OnNavigatingTo(page, parameters);
+
+            await navi.Navigation.PushAsync(page, animated);
+
+            PageUtilities.OnNavigatedTo(page, parameters);
+        }
+
         public bool ChangeTab<T>() where T : Page
         {
             var mainPage = this.MainPage;
@@ -211,8 +229,23 @@ namespace MyFormsLibrary.Navigation
 
             return false;
         }
+
+        Page GetNavigationCurrentPage(Page page)
+        {
+            if (page is NavigationPage)
+            {
+                return (page as NavigationPage).CurrentPage;
+            }
+            else if (page is MasterDetailPage)
+            {
+                return GetNavigationCurrentPage((page as MasterDetailPage).Detail);
+            }
+            else if (page is TabbedPage)
+            {
+                return GetNavigationCurrentPage((page as TabbedPage).CurrentPage);
+            }
+
+            return null;
+        }
     }
-
-
-
 }

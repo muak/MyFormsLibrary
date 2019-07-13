@@ -167,6 +167,11 @@ namespace MyFormsLibrary.Droid.CustomRenderers
             }
 		}
 
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
+
         void ReplaceTitleView(XF.Page page)
         {
             var titleView = XF.NavigationPage.GetTitleView(page);

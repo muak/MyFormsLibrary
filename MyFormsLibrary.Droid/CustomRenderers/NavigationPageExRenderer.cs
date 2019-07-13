@@ -121,21 +121,23 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
         protected override void Dispose(bool disposing)
 		{
-			_toolbarTracker.CollectionChanged -= toolbarCollectionChanged;
+            if (disposing)
+            {
+                _toolbarTracker.CollectionChanged -= toolbarCollectionChanged;
 
-			Element.Pushed -= pagePusshed;
-			//Element.Popped -= pagePopped;
+                Element.Pushed -= pagePusshed;
+                //Element.Popped -= pagePopped;
 
-			_toolbar.SetNavigationOnClickListener(null);
-			_navigationBackListener?.Dispose();
-			_navigationCustomListener?.Dispose();
+                _toolbar.SetNavigationOnClickListener(null);
+                _navigationBackListener?.Dispose();
+                _navigationCustomListener?.Dispose();
 
-			_toolbar = null;
-			_toolbarTracker = null;
+                _toolbar = null;
+                _toolbarTracker = null;
+            }
 
-			base.Dispose(disposing);
-
-		}
+            base.Dispose(disposing);
+        }
 
 
         void pagePusshed(object sender, EventArgs e)
