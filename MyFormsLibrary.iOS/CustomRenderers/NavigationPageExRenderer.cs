@@ -124,6 +124,10 @@ namespace MyFormsLibrary.iOS.CustomRenderers
                     continue;
                 }
 
+                if(!nativeItems.Any())
+                {
+                    continue;
+                }
 
                 UpdateIcon(itemEx, nativeItems[ncnt]);
 

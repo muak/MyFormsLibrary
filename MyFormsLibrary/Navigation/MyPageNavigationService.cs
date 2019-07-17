@@ -194,7 +194,9 @@ namespace MyFormsLibrary.Navigation
         {
             var navigation = _app.MainPage.Navigation;
 
-            var naviPage = CreatePage(typeof(Tnavi).Name);
+            var naviPage = CreatePage(typeof(Tnavi).Name) as NavigationPage;
+            naviPage.Behaviors.Remove(naviPage.Behaviors.FirstOrDefault(x => x.GetType() == typeof(NavigationPageActiveAwareBehavior)));
+
             var page = CreatePage(typeof(Tpage).Name);
 
             var prismParam = parameters?.ToNavigationParameters();
@@ -202,15 +204,17 @@ namespace MyFormsLibrary.Navigation
             {
                 prismParam = new NavigationParameters();
             }
-            prismParam?.AddInternalParameter(NavigationModeKey, NavigationMode.New);
+            prismParam?.AddInternalParameter(NavigationModeKey, NavigationMode.New);           
 
             PageUtilities.OnNavigatingTo(page, prismParam);
             await naviPage.Navigation.PushAsync(page,false);
-            PageUtilities.OnNavigatingTo(page, prismParam);
+            PageUtilities.OnNavigatedTo(page, prismParam);
+
+            naviPage.Navigation.RemovePage(naviPage.RootPage);
 
             PageUtilities.OnNavigatingTo(naviPage, prismParam);
             await navigation.PushModalAsync(naviPage,animated);
-            PageUtilities.OnNavigatingTo(naviPage, prismParam);
+            PageUtilities.OnNavigatedTo(naviPage, prismParam);
         }
 
         public bool ChangeTab<T>() where T : Page

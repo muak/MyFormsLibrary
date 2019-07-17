@@ -113,7 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj">
-      <Project>{1B0BE68B-FCF7-46F0-BEAC-66249D650094}</Project>
+      <Project>{8A148808-C569-4B67-9D8A-B03B407B1F13}</Project>
       <Name>MyFormsLibrary</Name>
     </ProjectReference>
   </ItemGroup>
