@@ -168,22 +168,49 @@ namespace MyFormsLibrary.Navigation
             await GoBackAsync(null, true, animated);
         }
 
-        public async Task AnywhereNavigate<T>(NavigationParameters parameters = null, bool animated = true) where T : ContentPage
+        public async Task AnywhereNavigate<T>(ParametersBase parameters = null, bool animated = true) where T : ContentPage
         {
             var navi = GetNavigationCurrentPage(_app.MainPage);
 
             var page = CreatePage(typeof(T).Name);
-            if (parameters == null)
-            {
-                parameters = new NavigationParameters();
-            }
-            parameters?.AddInternalParameter(NavigationModeKey, NavigationMode.New);
 
-            PageUtilities.OnNavigatingTo(page, parameters);
+            var prismParam = parameters?.ToNavigationParameters();
+            if (prismParam == null)
+            {
+                prismParam = new NavigationParameters();
+            }
+            prismParam?.AddInternalParameter(NavigationModeKey, NavigationMode.New);
+
+            PageUtilities.OnNavigatingTo(page, prismParam);
 
             await navi.Navigation.PushAsync(page, animated);
 
-            PageUtilities.OnNavigatedTo(page, parameters);
+            PageUtilities.OnNavigatedTo(page, prismParam);
+        }
+
+        public async Task AnywhereNavigateModal<Tnavi,Tpage>(ParametersBase parameters = null, bool animated = true)
+            where Tnavi : NavigationPage
+            where Tpage : ContentPage
+        {
+            var navigation = _app.MainPage.Navigation;
+
+            var naviPage = CreatePage(typeof(Tnavi).Name);
+            var page = CreatePage(typeof(Tpage).Name);
+
+            var prismParam = parameters?.ToNavigationParameters();
+            if (prismParam == null)
+            {
+                prismParam = new NavigationParameters();
+            }
+            prismParam?.AddInternalParameter(NavigationModeKey, NavigationMode.New);
+
+            PageUtilities.OnNavigatingTo(page, prismParam);
+            await naviPage.Navigation.PushAsync(page,false);
+            PageUtilities.OnNavigatingTo(page, prismParam);
+
+            PageUtilities.OnNavigatingTo(naviPage, prismParam);
+            await navigation.PushModalAsync(naviPage,animated);
+            PageUtilities.OnNavigatingTo(naviPage, prismParam);
         }
 
         public bool ChangeTab<T>() where T : Page
