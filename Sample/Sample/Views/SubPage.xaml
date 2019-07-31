@@ -17,7 +17,18 @@
     </ContentPage.ToolbarItems>
         
     
-    <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-       <Label Text="SubPageContent" />
-    </StackLayout>
+    <cr:NonSelectionListView ItemsSource="{Binding ItemsSource}" SeparatorColor="Red" LoadMoreCommand="{Binding LoadMoreCommand}">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <Label Text="{Binding}" />
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.Footer>
+            
+                <ActivityIndicator HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="16" WidthRequest="16" Color="Red" IsRunning="True" IsVisible="{Binding IsLoading.Value}" Margin="6" />
+            
+        </ListView.Footer>
+    </cr:NonSelectionListView>
 </ContentPage>

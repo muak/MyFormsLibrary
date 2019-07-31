@@ -26,18 +26,36 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 		private string contextMenuTitle;
 		private IList<MenuItem> contextActions;
 		private List<IDisposable> menuDisposable;
+        private bool _isReachedBottom;
+        NonSelectionListView MyListView => Element as NonSelectionListView;
 
         public NonSelectionListViewRenderer(Context context):base(context){}
 
 		protected override void OnElementChanged(ElementChangedEventArgs<ListView> e) {
 			base.OnElementChanged(e);
 
+            if(e.OldElement != null)
+            {
+                Control.Scroll -= Control_Scroll;
+                var myListVIew = e.NewElement as NonSelectionListView;
+                myListVIew.SetLoadMoreCompletionAction = null;
+                nativeListView.OnItemClickListener = null;
+                nativeListView.OnItemLongClickListener = null;
+                var main = (FormsAppCompatActivity)Context;
+                foreach (var d in menuDisposable)
+                {
+                    d.Dispose();
+                }
+                menuDisposable.Clear();
+                menuDisposable = null;
+                main.UnregisterForContextMenu(nativeListView);
+            }
 
-			if (e.NewElement != null) {
+
+			if (e.NewElement != null) 
+            {
 
 				nativeListView = Control;
-
-                              
 
 				//ロングタップ、通常タップを上書き
 				nativeListView.OnItemClickListener = this;
@@ -47,13 +65,35 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 				ItemCleanUp = new List<NonSelectionViewCellRenderer>();
 				var main = (FormsAppCompatActivity)Context;
 				main.RegisterForContextMenu(nativeListView);
-			}
 
-		}
+                Control.Scroll += Control_Scroll;
+                var myListVIew = e.NewElement as NonSelectionListView;
+                myListVIew.SetLoadMoreCompletionAction = (isEnd) => {
+                    _isReachedBottom = isEnd;
+                };
+            }
 
-		protected override void Dispose(bool disposing) {
-			
-			nativeListView.OnItemClickListener = null;
+        }
+
+        void Control_Scroll(object sender, AbsListView.ScrollEventArgs e)
+        {
+            if (_isReachedBottom || MyListView.LoadMoreCommand == null)
+            {
+                return;
+            }
+
+            if(e.TotalItemCount - e.VisibleItemCount <= e.FirstVisibleItem)
+            {
+                _isReachedBottom = true;
+                MyListView.LoadMoreCommand?.Execute(null);
+            }
+        }
+
+
+        protected override void Dispose(bool disposing)
+        {
+            Control.Scroll -= Control_Scroll;
+            nativeListView.OnItemClickListener = null;
 			nativeListView.OnItemLongClickListener = null;
 
 			var main = (FormsAppCompatActivity)Context;
