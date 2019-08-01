@@ -44,7 +44,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
 
         private void OffsetChanged(Foundation.NSObservedChange obj)
         {
-            if (_isReachedBottom || MyListView.LoadMoreCommand == null || Control.ContentSize.Height == 0)
+            if (_isReachedBottom || MyListView.LoadMoreCommand == null || Control.ContentSize.Height < Control.Bounds.Height)
             {
                 return;
             }

@@ -77,7 +77,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
         void Control_Scroll(object sender, AbsListView.ScrollEventArgs e)
         {
-            if (_isReachedBottom || MyListView.LoadMoreCommand == null)
+            if (_isReachedBottom || MyListView.LoadMoreCommand == null || e.FirstVisibleItem == 0)
             {
                 return;
             }
