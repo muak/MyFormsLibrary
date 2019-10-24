@@ -1,4 +1,6 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using System.Runtime.CompilerServices;
+using Xamarin.Forms;
 
 namespace MyFormsLibrary.CustomRenderers
 {
@@ -58,6 +60,30 @@ namespace MyFormsLibrary.CustomRenderers
 			set { SetValue(IsLeftIconProperty, value); }
 		}
 
-	}
+        protected override void OnPropertyChanging([CallerMemberName] string propertyName = null) {
+            base.OnPropertyChanging(propertyName);
+            if(propertyName == CommandProperty.PropertyName) {
+                if(Command != null) {
+                    Command.CanExecuteChanged -= Command_CanExecuteChanged;
+                }
+            }
+        }
+
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            base.OnPropertyChanged(propertyName);
+            if (propertyName == CommandProperty.PropertyName) {
+                if (Command != null) {
+                    Command.CanExecuteChanged += Command_CanExecuteChanged;
+                }
+            }
+        }
+
+        void Command_CanExecuteChanged(object sender, EventArgs e) {
+            if(Command != null) {
+                IsEnabled = Command.CanExecute(CommandParameter);
+            }
+        }
+
+    }
 }
 

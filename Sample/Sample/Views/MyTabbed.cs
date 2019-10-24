@@ -12,6 +12,8 @@ namespace Sample.Views
         public MyTabbed() 
         {
             this.On<Android>().SetToolbarPlacement(ToolbarPlacement.Bottom);
+            this.On<Android>().SetIsSmoothScrollEnabled(false);
+            this.On<Android>().SetIsSwipePagingEnabled(false);
 
             UnSelectedColor = XF.Color.Orange.MultiplyAlpha(0.5);
             SelectedColor = XF.Color.Orange;
