@@ -74,6 +74,7 @@ namespace MyFormsLibrary.CustomRenderers
             if (propertyName == CommandProperty.PropertyName) {
                 if (Command != null) {
                     Command.CanExecuteChanged += Command_CanExecuteChanged;
+                    Command_CanExecuteChanged(Command, EventArgs.Empty);
                 }
             }
         }
@@ -83,7 +84,6 @@ namespace MyFormsLibrary.CustomRenderers
                 IsEnabled = Command.CanExecute(CommandParameter);
             }
         }
-
     }
 }
 
