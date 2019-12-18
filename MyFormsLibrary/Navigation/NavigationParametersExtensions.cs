@@ -14,5 +14,10 @@ namespace MyFormsLibrary.Navigation
         public static T To<T>(this NavigationParameters param) where T : ParametersBase, new() {
             return param[ParametersBase.ParameterKey] as T;
         }
+
+        public static T To<T>(this INavigationParameters param) where T : ParametersBase, new()
+        {
+            return param[ParametersBase.ParameterKey] as T;
+        }
     }
 }

@@ -17,16 +17,13 @@ namespace Prism.Ioc
         }
 
         public static object ResolveViewModelForView(this IContainerProvider container,object view, Type viewModelType) {
-            ParameterOverrides overrides = null;
+            ParameterOverride paramOverride = null;
 
             if (view is Xamarin.Forms.Page page) {
-                overrides = new ParameterOverrides
-                    {
-                        { PrismApplicationBase.NavigationServiceParameterName, container.CreateNavigationService(page) }
-                    };
+                paramOverride = new ParameterOverride(PrismApplicationBase.NavigationServiceParameterName, container.CreateNavigationService(page));
             }
 
-            return container.GetContainer().Resolve(viewModelType, overrides);
+            return container.GetContainer().Resolve(viewModelType,paramOverride);
         }
     }
 }

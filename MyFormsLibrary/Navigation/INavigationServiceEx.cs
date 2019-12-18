@@ -14,7 +14,7 @@ namespace MyFormsLibrary.Navigation
         Task AnywhereNavigate<T>(ParametersBase parameters = null, bool animated = true) where T : ContentPage;
         Task AnywhereNavigateModal<Tnavi, Tpage>(ParametersBase parameters = null, bool animated = true) where Tnavi : NavigationPage where Tpage : ContentPage;
 
-        Task<bool> GoBackAsync(NavigationParameters parameters, bool? useModalNavigation, bool animated = true);
+        Task<INavigationResult> GoBackAsync(NavigationParameters parameters, bool? useModalNavigation, bool animated = true);
         Task NavigateAsync(string name, NavigationParameters parameters, bool? useModalNavigation, bool animated = true);
 
         Task GoBackModalAsync(bool animated = true);

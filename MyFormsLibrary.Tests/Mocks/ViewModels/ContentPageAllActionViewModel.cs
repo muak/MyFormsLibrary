@@ -8,13 +8,14 @@ namespace MyFormsLibrary.Tests.Mocks.ViewModels
 {
     public class ContentPageAllActionViewModel:BindableBase
     {
-        public NavigationParameters Param { get; set; }
-        public bool DoneNavigatingTo { get; set; } = false;
+        public INavigationParameters Param { get; set; }
+        public bool DoneInitialize { get; set; } = false;
         public bool DoneNavigatedTo { get; set; } = false;
         public bool DoneNavigatedFrom { get; set; } = false;
         public bool DoneOnActive { get; set; } = false;
         public bool DoneOnNonActive { get; set; } = false;
         public bool DoneDestroy { get; set; } = false;
+
         public int NavigatingCount { get; set; } = 0;
         public int NavigatedToCount { get; set; } = 0;
         public int NavigatedFromCount { get; set; } = 0;
@@ -32,7 +33,7 @@ namespace MyFormsLibrary.Tests.Mocks.ViewModels
             DoneOnActive = false;
             DoneOnNonActive = false;
             DoneNavigatedTo = false;
-            DoneNavigatingTo = false;
+            DoneInitialize = false;
             DoneNavigatedFrom = false;
             Param = null;
             OnActiveCount = 0;

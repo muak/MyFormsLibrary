@@ -66,18 +66,18 @@ namespace MyFormsLibrary.Navigation
             }
 
             foreach(var p in parameters){
-                p.AddInternalParameter(NavigationModeKey, NavigationMode.New);
+                ((INavigationParametersInternal)p).Add(NavigationModeKey, NavigationMode.New);
             }
 
             for (var i = parameters.Count - 1; i < children.Count;i++){
                 var p = new NavigationParameters();
-                p.AddInternalParameter(NavigationModeKey, NavigationMode.New);
+                ((INavigationParametersInternal)p).Add(NavigationModeKey, NavigationMode.New);
                 parameters.Add(p);
             }
 
             for (var i = 0; i < children.Count;i++) {
                 var c = children[i];
-				PageUtilities.OnNavigatingTo(c, parameters[i]);
+				PageUtilities.OnInitializedAsync(c, parameters[i]);
                 tabbedPage.Children.Add(c);
 				PageUtilities.OnNavigatedTo(c, parameters[i]);
             }
@@ -88,7 +88,7 @@ namespace MyFormsLibrary.Navigation
             var naviPage = CreatePageFromSegment(naviName) as NavigationPage;
             //naviPage.Behaviors.Remove(naviPage.Behaviors.FirstOrDefault(x => x.GetType() == typeof(NavigationPageActiveAwareBehavior)));
 
-            PageUtilities.OnNavigatingTo(tabbedPage, new NavigationParameters{{NavigationModeKey,NavigationMode.New}});
+            PageUtilities.OnInitializedAsync(tabbedPage, new NavigationParameters{{NavigationModeKey,NavigationMode.New}});
 
             naviPage.PushAsync(tabbedPage,false).Wait();
 
@@ -108,9 +108,9 @@ namespace MyFormsLibrary.Navigation
             if (parameters == null) {
                 parameters = new NavigationParameters();
             }
-            parameters.AddInternalParameter(NavigationModeKey,NavigationMode.New);
+            ((INavigationParametersInternal)parameters).Add(NavigationModeKey,NavigationMode.New);
 
-            PageUtilities.OnNavigatingTo(contentPage,parameters);
+            PageUtilities.OnInitializedAsync(contentPage,parameters);
 
             naviPage.PushAsync(contentPage, false).Wait();
 
@@ -125,7 +125,7 @@ namespace MyFormsLibrary.Navigation
             return contentPage as ContentPage;
         }
 
-        public Task<bool> GoBackAsync(NavigationParameters parameters, bool? useModalNavigation, bool animated = true) {
+        public Task<INavigationResult> GoBackAsync(NavigationParameters parameters, bool? useModalNavigation, bool animated = true) {
             //GoBackAsyncの時にTabbedPageのCurrentPageにParameterProxyを通して渡す。実行はBehaviorで行う
             MyPageNavigationService.ParameterProxy = parameters;
             return GoBackInternal(parameters, useModalNavigation, animated);
@@ -179,9 +179,9 @@ namespace MyFormsLibrary.Navigation
             {
                 prismParam = new NavigationParameters();
             }
-            prismParam?.AddInternalParameter(NavigationModeKey, NavigationMode.New);
+            ((INavigationParametersInternal)prismParam)?.Add(NavigationModeKey, NavigationMode.New);
 
-            PageUtilities.OnNavigatingTo(page, prismParam);
+            await PageUtilities.OnInitializedAsync(page, prismParam);
 
             await navi.Navigation.PushAsync(page, animated);
 
@@ -204,15 +204,15 @@ namespace MyFormsLibrary.Navigation
             {
                 prismParam = new NavigationParameters();
             }
-            prismParam?.AddInternalParameter(NavigationModeKey, NavigationMode.New);           
+            ((INavigationParametersInternal)prismParam)?.Add(NavigationModeKey, NavigationMode.New);           
 
-            PageUtilities.OnNavigatingTo(page, prismParam);
+            await PageUtilities.OnInitializedAsync(page, prismParam);
             await naviPage.Navigation.PushAsync(page,false);
             PageUtilities.OnNavigatedTo(page, prismParam);
 
             naviPage.Navigation.RemovePage(naviPage.RootPage);
 
-            PageUtilities.OnNavigatingTo(naviPage, prismParam);
+            await PageUtilities.OnInitializedAsync(naviPage, prismParam);
             await navigation.PushModalAsync(naviPage,animated);
             PageUtilities.OnNavigatedTo(naviPage, prismParam);
         }
