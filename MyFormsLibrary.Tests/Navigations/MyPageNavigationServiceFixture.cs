@@ -52,7 +52,7 @@ namespace MyFormsLibrary.Tests.Navigations
 
             var vm = realPage.CurrentPage.BindingContext as PageAlphaViewModel;
 
-            vm.DoneNavigatingTo.IsTrue();
+            vm.DoneInitialize.IsTrue();
             vm.DoneNavigatedTo.IsTrue();
             vm.DoneNavigatedFrom.IsFalse();
             // Currentにセットされた場合も発火するようになった(7.0〜)、が無理やり剥がして無効にしている
@@ -109,7 +109,7 @@ namespace MyFormsLibrary.Tests.Navigations
             var vmB = pageB.BindingContext as PageBetaViewModel;
 
             //どちらもNavigatingTo NavigatedToが発火する
-            vmA.DoneNavigatingTo.IsTrue();
+            vmA.DoneInitialize.IsTrue();
             vmA.DoneNavigatedTo.IsTrue();
             vmA.DoneNavigatedFrom.IsFalse();
             vmA.DoneOnActive.IsTrue();
@@ -119,7 +119,7 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.Param["Key"].Is("Value");
             vmA.Param.Count.Is(1);
 
-            vmB.DoneNavigatingTo.IsTrue();
+            vmB.DoneInitialize.IsTrue();
             vmB.DoneNavigatedTo.IsTrue();
             vmB.DoneNavigatedFrom.IsFalse();
             vmB.DoneOnActive.IsFalse();
@@ -164,14 +164,14 @@ namespace MyFormsLibrary.Tests.Navigations
 
             tabbed.SendDisappearing();
 
-            vmA.DoneNavigatingTo.IsFalse();
+            vmA.DoneInitialize.IsFalse();
             vmA.DoneNavigatedTo.IsFalse();
             vmA.DoneNavigatedFrom.IsTrue(); //カレントページのみ発火
             vmA.IsActive.IsFalse();
             vmA.DoneOnActive.IsFalse();
             vmA.DoneOnNonActive.IsTrue(); //ページ遷移で隠れても非アクティブにする
 
-            vmB.DoneNavigatingTo.IsFalse();
+            vmB.DoneInitialize.IsFalse();
             vmB.DoneNavigatedTo.IsFalse();
             vmB.DoneNavigatedFrom.IsFalse(); //カレントページでないので発火しない
             vmB.DoneOnActive.IsFalse();
@@ -180,7 +180,7 @@ namespace MyFormsLibrary.Tests.Navigations
 
             var nextVM = page.CurrentPage.BindingContext as NextPageViewModel;
 
-            nextVM.DoneNavigatingTo.IsTrue();
+            nextVM.DoneInitialize.IsTrue();
             nextVM.DoneNavigatedTo.IsTrue();
             nextVM.DoneNavigatedFrom.IsFalse();
             nextVM.DoneOnActive.IsTrue();
@@ -191,24 +191,24 @@ namespace MyFormsLibrary.Tests.Navigations
             nextVM.AllClear();
 
             var ret = await nextVM.NavigationService.GoBackAsync();
-            ret.IsTrue();
+            ret.Success.IsTrue();
             tabbed.SendAppearing();
 
-            vmA.DoneNavigatingTo.IsTrue(); //戻った時も呼ばれるのは仕様
+            vmA.DoneInitialize.IsFalse(); //戻った時は呼ばれなくなった
             vmA.DoneNavigatedTo.IsTrue();
             vmA.DoneNavigatedFrom.IsFalse();
             vmA.DoneOnActive.IsTrue();  //戻ったタイミングでカレントタブはアクティブが発火
             vmA.DoneOnNonActive.IsFalse();
             vmA.IsActive.IsTrue();
 
-            vmB.DoneNavigatingTo.IsFalse(); //非表示タブは発火しない
+            vmB.DoneInitialize.IsFalse(); //非表示タブは発火しない
             vmB.DoneNavigatedTo.IsFalse();
             vmB.DoneNavigatedFrom.IsFalse();
             vmB.DoneOnActive.IsFalse();
             vmB.DoneOnNonActive.IsFalse();
             vmB.IsActive.IsFalse();
 
-            nextVM.DoneNavigatingTo.IsFalse();
+            nextVM.DoneInitialize.IsFalse();
             nextVM.DoneNavigatedTo.IsFalse();
             nextVM.DoneNavigatedFrom.IsTrue();
             nextVM.DoneOnActive.IsFalse();
@@ -239,14 +239,14 @@ namespace MyFormsLibrary.Tests.Navigations
             var vmA = naviA.CurrentPage.BindingContext as PageAlphaViewModel;
             var vmB = naviB.CurrentPage.BindingContext as PageBetaViewModel;
 
-            vmA.DoneNavigatingTo.IsTrue();
+            vmA.DoneInitialize.IsTrue();
             vmA.DoneNavigatedTo.IsTrue();
             vmA.DoneNavigatedFrom.IsFalse();
             vmA.DoneOnActive.IsTrue();
             vmA.DoneOnNonActive.IsFalse();
             vmA.IsActive.IsTrue();
 
-            vmB.DoneNavigatingTo.IsTrue();
+            vmB.DoneInitialize.IsTrue();
             vmB.DoneNavigatedTo.IsTrue();
             vmB.DoneNavigatedFrom.IsFalse();
             vmB.DoneOnActive.IsFalse();
@@ -286,7 +286,7 @@ namespace MyFormsLibrary.Tests.Navigations
             var curNavi = vmA.NavigationService;
             await curNavi.NavigateAsync(nameof(NextPage));
 
-            vmA.DoneNavigatingTo.IsFalse();
+            vmA.DoneInitialize.IsFalse();
             vmA.DoneNavigatedTo.IsFalse();
             vmA.DoneNavigatedFrom.IsTrue();
             vmA.IsActive.IsFalse();
@@ -294,7 +294,7 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.DoneOnNonActive.IsTrue();
             vmA.OnNonActiveCount.Is(1);
 
-            vmB.DoneNavigatingTo.IsFalse();
+            vmB.DoneInitialize.IsFalse();
             vmB.DoneNavigatedTo.IsFalse();
             vmB.DoneNavigatedFrom.IsFalse();
             vmB.DoneOnActive.IsFalse();
@@ -303,7 +303,7 @@ namespace MyFormsLibrary.Tests.Navigations
 
             var nextVM = naviA.CurrentPage.BindingContext as NextPageViewModel;
 
-            nextVM.DoneNavigatingTo.IsTrue();
+            nextVM.DoneInitialize.IsTrue();
             nextVM.DoneNavigatedTo.IsTrue();
             nextVM.DoneNavigatedFrom.IsFalse();
             nextVM.IsActive.IsTrue();
@@ -315,23 +315,23 @@ namespace MyFormsLibrary.Tests.Navigations
             nextVM.AllClear();
 
             var ret = await nextVM.NavigationService.GoBackAsync();
-            ret.IsTrue();
+            ret.Success.IsTrue();
 
-            vmA.DoneNavigatingTo.IsTrue();
+            vmA.DoneInitialize.IsFalse(); // 戻った時は呼ばれない
             vmA.DoneNavigatedTo.IsTrue();
             vmA.DoneNavigatedFrom.IsFalse();
             vmA.DoneOnActive.IsTrue();
             vmA.DoneOnNonActive.IsFalse();
             vmA.IsActive.IsTrue();
 
-            vmB.DoneNavigatingTo.IsFalse();
+            vmB.DoneInitialize.IsFalse();
             vmB.DoneNavigatedTo.IsFalse();
             vmB.DoneNavigatedFrom.IsFalse();
             vmB.DoneOnActive.IsFalse();
             vmB.DoneOnNonActive.IsFalse();
             vmB.IsActive.IsFalse();
 
-            nextVM.DoneNavigatingTo.IsFalse();
+            nextVM.DoneInitialize.IsFalse();
             nextVM.DoneNavigatedTo.IsFalse();
             nextVM.DoneNavigatedFrom.IsTrue();
             nextVM.IsActive.IsFalse();
@@ -363,7 +363,7 @@ namespace MyFormsLibrary.Tests.Navigations
             var curNavi = vmA.NavigationService;
             await curNavi.NavigateAsync(nameof(NextPage));
 
-            vmA.DoneNavigatingTo.IsFalse();
+            vmA.DoneInitialize.IsFalse();
             vmA.DoneNavigatedTo.IsFalse();
             vmA.DoneNavigatedFrom.IsTrue();
             vmA.IsActive.IsFalse();
@@ -372,7 +372,7 @@ namespace MyFormsLibrary.Tests.Navigations
             vmA.OnNonActiveCount.Is(1);
 
 
-            vmB.DoneNavigatingTo.IsFalse();
+            vmB.DoneInitialize.IsFalse();
             vmB.DoneNavigatedTo.IsFalse();
             vmB.DoneNavigatedFrom.IsFalse();
             vmB.DoneOnActive.IsFalse();
@@ -381,7 +381,7 @@ namespace MyFormsLibrary.Tests.Navigations
 
             var nextVM = naviA.CurrentPage.BindingContext as NextPageViewModel;
 
-            nextVM.DoneNavigatingTo.IsTrue();
+            nextVM.DoneInitialize.IsTrue();
             nextVM.DoneNavigatedTo.IsTrue();
             nextVM.DoneNavigatedFrom.IsFalse();
             nextVM.IsActive.IsTrue();
@@ -438,7 +438,7 @@ namespace MyFormsLibrary.Tests.Navigations
 
             //戻る
             var ret = await nextVM.NavigationService.GoBackAsync();
-            ret.IsTrue();
+            ret.Success.IsTrue();
 
             vmA.IsActive.IsTrue();
             vmA.DoneOnActive.IsTrue();
@@ -481,7 +481,7 @@ namespace MyFormsLibrary.Tests.Navigations
             naviPage.CurrentPage.GetType().Is(typeof(PageAlpha));
             naviPage.Navigation.NavigationStack.Count.Is(1);
 
-            vm1.DoneNavigatingTo.IsTrue();
+            vm1.DoneInitialize.IsTrue();
             vm1.DoneNavigatedTo.IsTrue();
             vm1.DoneNavigatedFrom.IsFalse();
             vm1.NavigatingCount.Is(1);
@@ -500,7 +500,7 @@ namespace MyFormsLibrary.Tests.Navigations
 
             vm1.DoneNavigatedFrom.IsTrue();
             vm1.NavigatedFromCount.Is(1);
-            vm2.DoneNavigatingTo.IsTrue();
+            vm2.DoneInitialize.IsTrue();
             vm2.DoneNavigatedTo.IsTrue();
             vm2.DoneNavigatedFrom.IsFalse();
             vm2.NavigatingCount.Is(1);
@@ -522,7 +522,7 @@ namespace MyFormsLibrary.Tests.Navigations
             naviPage.CurrentPage.GetType().Is(typeof(PageAlpha));
             naviPage.Navigation.NavigationStack.Count.Is(1);
 
-            vm1.DoneNavigatingTo.IsTrue();
+            vm1.DoneInitialize.IsTrue();
             vm1.DoneNavigatedTo.IsTrue();
             vm1.DoneNavigatedFrom.IsFalse();
             vm1.NavigatingCount.Is(1);
@@ -539,7 +539,7 @@ namespace MyFormsLibrary.Tests.Navigations
 
             vm1.DoneNavigatedFrom.IsTrue();
             vm1.NavigatedFromCount.Is(1);
-            vm2.DoneNavigatingTo.IsTrue();
+            vm2.DoneInitialize.IsTrue();
             vm2.DoneNavigatedTo.IsTrue();
             vm2.DoneNavigatedFrom.IsFalse();
             vm2.NavigatingCount.Is(1);

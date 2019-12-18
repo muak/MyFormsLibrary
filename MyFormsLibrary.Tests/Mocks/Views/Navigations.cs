@@ -18,7 +18,7 @@ namespace MyFormsLibrary.Tests.Mocks.Views
         public MyMasterDetail()
         {
             Master = new NextPage(){Title = "Hoge"};
-            Detail = new NavigationTop();
+            //Detail = new NavigationTop();
         }
         public void Destroy() {
             DoneDestroy = true;

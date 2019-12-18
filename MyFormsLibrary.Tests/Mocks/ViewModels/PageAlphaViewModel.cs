@@ -2,9 +2,12 @@
 using Prism.Navigation;
 using Prism;
 using MyFormsLibrary.Navigation;
+using Prism.AppModel;
+using System.Threading.Tasks;
+
 namespace MyFormsLibrary.Tests.Mocks.ViewModels
 {
-    public class PageAlphaViewModel:ContentPageAllActionViewModel,INavigationAware,IActiveAware,IDestructible
+    public class PageAlphaViewModel:ContentPageAllActionViewModel,INavigationAware,IInitializeAsync,IActiveAware,IDestructible
     {
         public PageAlphaViewModel(INavigationServiceEx navigationService) {
             NavigationService = navigationService;
@@ -38,25 +41,26 @@ namespace MyFormsLibrary.Tests.Mocks.ViewModels
 
         public event EventHandler IsActiveChanged;
 
-        public void OnNavigatedFrom(NavigationParameters parameters) {
+        public void OnNavigatedFrom(INavigationParameters parameters) {
             DoneNavigatedFrom = true;
             NavigatedFromCount++;
         }
 
-        public void OnNavigatedTo(NavigationParameters parameters) {
+        public void OnNavigatedTo(INavigationParameters parameters) {
             DoneNavigatedTo = true;
             NavigatedToCount++;
-        }
-
-        public void OnNavigatingTo(NavigationParameters parameters) {
-            Param = parameters;
-            DoneNavigatingTo = true;
-            NavigatingCount++;
         }
 
         public void Destroy() {
             DoneDestroy = true;
             DestroyCount++;
+        }
+
+        public async Task InitializeAsync(INavigationParameters parameters)
+        {
+            Param = parameters;
+            DoneInitialize = true;
+            NavigatingCount++;
         }
     }
 }

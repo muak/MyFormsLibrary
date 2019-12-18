@@ -7,13 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFormsLibrary.Droid", "MyF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFormsLibrary", "MyFormsLibrary\MyFormsLibrary.csproj", "{1B0BE68B-FCF7-46F0-BEAC-66249D650094}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFormsLibrary.Tests", "MyFormsLibrary.Tests\MyFormsLibrary.Tests.csproj", "{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample\Sample.csproj", "{9F0D3615-ABE8-4D79-8D43-4F6CE16611C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Droid", "Sample\Sample.Droid\Sample.Droid.csproj", "{346B7F68-2775-472A-A693-EF333F750619}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.iOS", "Sample\Sample.iOS\Sample.iOS.csproj", "{4F72DBDE-0259-4476-AC2D-DA4D167E2A7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFormsLibrary.Tests", "MyFormsLibrary.Tests\MyFormsLibrary.Tests.csproj", "{C53E426D-3B46-4D06-9169-F284B8C13C74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,18 +61,6 @@ Global
 		{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{AA9D6F7C-43CA-47FE-B1D2-20AF75FC154D}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Release|iPhone.Build.0 = Release|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{DBA3936A-D3E8-4907-B802-76E8A5F25E4F}.Debug|iPhone.Build.0 = Debug|Any CPU
 		{9F0D3615-ABE8-4D79-8D43-4F6CE16611C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9F0D3615-ABE8-4D79-8D43-4F6CE16611C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F0D3615-ABE8-4D79-8D43-4F6CE16611C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -109,6 +97,18 @@ Global
 		{4F72DBDE-0259-4476-AC2D-DA4D167E2A7A}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 		{4F72DBDE-0259-4476-AC2D-DA4D167E2A7A}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{4F72DBDE-0259-4476-AC2D-DA4D167E2A7A}.Debug|iPhone.Build.0 = Debug|iPhone
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Release|iPhone.Build.0 = Release|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{C53E426D-3B46-4D06-9169-F284B8C13C74}.Debug|iPhone.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
