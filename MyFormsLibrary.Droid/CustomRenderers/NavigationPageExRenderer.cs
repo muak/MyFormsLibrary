@@ -88,7 +88,10 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 				if (Element.Parent is Xamarin.Forms.Application) {
 					var statusBarColor = (Element as NavigationPageEx).StatusBarBackColor;
 					if (statusBarColor != Xamarin.Forms.Color.Default) {
-						(Context as FormsAppCompatActivity).Window.SetStatusBarColor(statusBarColor.ToAndroid());
+						var window = (Context as FormsAppCompatActivity).Window;						
+						window.AddFlags(Android.Views.WindowManagerFlags.DrawsSystemBarBackgrounds);
+						window.ClearFlags(Android.Views.WindowManagerFlags.TranslucentStatus);
+						window.SetStatusBarColor(statusBarColor.ToAndroid());
 					}
 				}
 

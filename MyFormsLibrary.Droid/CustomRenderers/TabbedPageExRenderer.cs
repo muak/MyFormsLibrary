@@ -63,7 +63,7 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 
                     var layout = _bottomNavigationView.Parent as RelativeLayout;
                     var border = new View(Context);
-                    border.SetBackgroundColor(Android.Graphics.Color.LightGray);
+                    border.SetBackgroundColor(_tabbedEx.TabBorderColor.ToAndroid());
                     border.Alpha = 0.6f;
                     using(var param = new RelativeLayout.LayoutParams(LayoutParams.MatchParent,LayoutParams.WrapContent){
                         Height = (int)Context.ToPixels(0.5)
@@ -118,6 +118,8 @@ namespace MyFormsLibrary.Droid.CustomRenderers
                         menuItem.SetTitle(attr.Title);
                         if (i == 0 && _tabbedEx.StatusBarBackColor != Xamarin.Forms.Color.Default)
                         {
+                            _window.AddFlags(Android.Views.WindowManagerFlags.DrawsSystemBarBackgrounds);
+                            _window.ClearFlags(Android.Views.WindowManagerFlags.TranslucentStatus);
                             _window.SetStatusBarColor(_tabbedEx.StatusBarBackColor.ToAndroid());
                         }
                         continue;
@@ -135,10 +137,14 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 							}
 							_tabs.SetSelectedTabIndicatorColor(color);
 							if (_tabbedEx.StatusBarBackColor != Xamarin.Forms.Color.Default) {
-								_window.SetStatusBarColor(_tabbedEx.StatusBarBackColor.ToAndroid());
+                                _window.AddFlags(Android.Views.WindowManagerFlags.DrawsSystemBarBackgrounds);
+                                _window.ClearFlags(Android.Views.WindowManagerFlags.TranslucentStatus);
+                                _window.SetStatusBarColor(_tabbedEx.StatusBarBackColor.ToAndroid());
 							}
 							else if (attr.StatusBarBackColor != Xamarin.Forms.Color.Default) {
-								_window.SetStatusBarColor(attr.StatusBarBackColor.ToAndroid());
+                                _window.AddFlags(Android.Views.WindowManagerFlags.DrawsSystemBarBackgrounds);
+                                _window.ClearFlags(Android.Views.WindowManagerFlags.TranslucentStatus);
+                                _window.SetStatusBarColor(attr.StatusBarBackColor.ToAndroid());
 							}
 						}
 						else {
@@ -229,10 +235,14 @@ namespace MyFormsLibrary.Droid.CustomRenderers
 			_tabs.SetSelectedTabIndicatorColor(color);
 
 			if (_tabbedEx.StatusBarBackColor != Xamarin.Forms.Color.Default) {
-				_window.SetStatusBarColor(_tabbedEx.StatusBarBackColor.ToAndroid());
+                _window.AddFlags(Android.Views.WindowManagerFlags.DrawsSystemBarBackgrounds);
+                _window.ClearFlags(Android.Views.WindowManagerFlags.TranslucentStatus);
+                _window.SetStatusBarColor(_tabbedEx.StatusBarBackColor.ToAndroid());
 			}
 			else if (attr.StatusBarBackColor != Xamarin.Forms.Color.Default) {
-				_window.SetStatusBarColor(attr.StatusBarBackColor.ToAndroid());
+                _window.AddFlags(Android.Views.WindowManagerFlags.DrawsSystemBarBackgrounds);
+                _window.ClearFlags(Android.Views.WindowManagerFlags.TranslucentStatus);
+                _window.SetStatusBarColor(attr.StatusBarBackColor.ToAndroid());
 			}
 
 			if (_tabbedEx.Parent is NavigationPageEx) {

@@ -100,7 +100,21 @@ namespace MyFormsLibrary.CustomRenderers
 			set { SetValue(IsTextHiddenProperty, value); }
 		}
 
-		public static BindableProperty TabAttributesProperty =
+        public static BindableProperty TabBorderColorProperty = BindableProperty.Create(
+            nameof(TabBorderColor),
+            typeof(Color),
+            typeof(TabbedPageEx),
+            default(Color),
+            defaultBindingMode: BindingMode.OneWay
+        );
+
+        public Color TabBorderColor
+        {
+            get { return (Color)GetValue(TabBorderColorProperty); }
+            set { SetValue(TabBorderColorProperty, value); }
+        }
+
+        public static BindableProperty TabAttributesProperty =
 			BindableProperty.Create(
 				nameof(TabAttributes),
 				typeof(IList<TabAttribute>),

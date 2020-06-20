@@ -10,7 +10,7 @@
     <RootNamespace>MyFormsLibrary.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>MyFormsLibrary.iOS</AssemblyName>
-    <ReleaseVersion>1.1.0-pre6</ReleaseVersion>
+    <ReleaseVersion>1.1.2</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -113,7 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj">
-      <Project>{1B0BE68B-FCF7-46F0-BEAC-66249D650094}</Project>
+      <Project>{ACBF1AB6-4080-4978-9E69-DD51C60FBC17}</Project>
       <Name>MyFormsLibrary</Name>
     </ProjectReference>
   </ItemGroup>
