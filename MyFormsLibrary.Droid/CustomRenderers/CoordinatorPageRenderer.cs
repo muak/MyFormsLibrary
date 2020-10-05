@@ -1,19 +1,14 @@
-﻿using System;
-using Xamarin.Forms.Platform.Android.AppCompat;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using Android.Content;
+using Android.Views;
+using AndroidX.AppCompat.Widget;
+using Google.Android.Material.AppBar;
+using MyFormsLibrary.CustomRenderers;
+using MyFormsLibrary.Droid.CustomRenderers;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
-using System.Reflection;
-using Android.Support.V7.Widget;
-using Android.Support.Design.Widget;
-using MyFormsLibrary.Droid.CustomRenderers;
-using MyFormsLibrary.CustomRenderers;
-using System.Collections.Generic;
-using Android.Views;
-using Android.Support.V4.Widget;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Linq;
+using Xamarin.Forms.Platform.Android.AppCompat;
 
 [assembly: ExportRenderer(typeof(CoordinatorPage), typeof(CoordinatorPageRenderer))]
 namespace MyFormsLibrary.Droid.CustomRenderers

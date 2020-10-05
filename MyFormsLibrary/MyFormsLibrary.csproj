@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <ReleaseVersion>1.1.2</ReleaseVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -13,8 +12,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.847" />
-    <PackageReference Include="Prism.Unity.Forms" Version="7.2.0.1422" />
-    <PackageReference Include="Xamarin.Forms.Svg" Version="1.0.0-pre4" />
+    <PackageReference Include="Xamarin.Forms.Svg" Version="1.0.3" />
+    <PackageReference Include="Prism.Forms" Version="7.2.0.1422" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Effects\AddCommand.cs" />

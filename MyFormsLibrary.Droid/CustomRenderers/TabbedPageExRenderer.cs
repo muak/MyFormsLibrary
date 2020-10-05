@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Contexts;
 using Android.Content;
 using Android.Graphics.Drawables;
-using Android.Support.Design.Internal;
-using Android.Support.Design.Widget;
 using Android.Views;
 using Android.Widget;
+using Google.Android.Material.BottomNavigation;
+using Google.Android.Material.Tabs;
 using MyFormsLibrary.CustomRenderers;
 using MyFormsLibrary.Droid.CustomRenderers;
 using Xamarin.Forms.Platform.Android;
