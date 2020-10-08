@@ -9,7 +9,7 @@ namespace MyFormsLibrary.CustomRenderers
             nameof(IsVisible),
             typeof(bool),
             typeof(MyToolbarItem),
-            default(bool),
+            true,
             defaultBindingMode: BindingMode.OneWay
         );
 

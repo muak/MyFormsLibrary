@@ -14,5 +14,9 @@ namespace Sample.Views
         {
             InitializeComponent();
         }
+
+        void Switch_Toggled(System.Object sender, Xamarin.Forms.ToggledEventArgs e)
+        {
+        }
     }
 }
