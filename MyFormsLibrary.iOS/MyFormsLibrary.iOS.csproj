@@ -51,14 +51,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj">
-      <Project>{80E4203E-48C0-4E8F-9163-250FD6EAC48C}</Project>
-      <Name>MyFormsLibrary</Name>
-    </ProjectReference>
+    <PackageReference Include="Prism.Forms" Version="7.2.0.1422" />
+    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1534" />
+    <PackageReference Include="Xamarin.Forms.Svg" Version="1.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Prism.Forms" Version="7.2.0.1422" />
-    <PackageReference Include="Xamarin.Forms" Version="4.6.0.847" />
-    <PackageReference Include="Xamarin.Forms.Svg" Version="1.0.3" />
+    <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj">
+      <Project>{BDC89D37-EF82-4C85-A80F-6074B60C421D}</Project>
+      <Name>MyFormsLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

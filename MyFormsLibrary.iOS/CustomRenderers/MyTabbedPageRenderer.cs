@@ -23,7 +23,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
                 e.OldElement.PropertyChanged -= OnPropertyChanged;
             }
             if (e.NewElement != null)
-            {
+            {                
                 e.NewElement.PropertyChanged += OnPropertyChanged;
             }
         }

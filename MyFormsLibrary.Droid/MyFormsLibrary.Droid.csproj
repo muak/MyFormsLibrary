@@ -14,6 +14,7 @@
     <AssemblyName>MyFormsLibrary.Droid</AssemblyName>
     <TargetFrameworkVersion>v10.0</TargetFrameworkVersion>
     <AndroidTlsProvider></AndroidTlsProvider>
+    <ReleaseVersion>1.1.0-pre6</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,14 +69,14 @@
     <Folder Include="Resources\layout\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj">
-      <Project>{80E4203E-48C0-4E8F-9163-250FD6EAC48C}</Project>
-      <Name>MyFormsLibrary</Name>
-    </ProjectReference>
+    <PackageReference Include="Prism.Forms" Version="7.2.0.1422" />
+    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1534" />
+    <PackageReference Include="Xamarin.Forms.Svg" Version="1.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Prism.Forms" Version="7.2.0.1422" />
-    <PackageReference Include="Xamarin.Forms" Version="4.6.0.847" />
-    <PackageReference Include="Xamarin.Forms.Svg" Version="1.0.3" />
+    <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj">
+      <Project>{1B0BE68B-FCF7-46F0-BEAC-66249D650094}</Project>
+      <Name>MyFormsLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
