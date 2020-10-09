@@ -12,17 +12,21 @@
         <language>en-US</language>
         <tags>Test</tags>
         <dependencies>
+            <group targetFramework="netstandard2.1">
+				<dependency id="Prism.Forms" version="7.2.0.1422" />
+                <dependency id="Xamarin.Forms.Svg" version="1.0.3" />
+            </group>
 			<group targetFramework="netstandard2.0">
-				<dependency id="Prism.Unity.Forms" version="7.2.0.1422" />
-                <dependency id="Xamarin.Forms.Svg" version="1.0.0-pre4" />
+				<dependency id="Prism.Forms" version="7.2.0.1422" />
+                <dependency id="Xamarin.Forms.Svg" version="1.0.3" />
             </group>
             <group targetFramework="MonoAndroid">
-                <dependency id="Prism.Unity.Forms" version="7.2.0.1422" />
-                <dependency id="Xamarin.Forms.Svg" version="1.0.0-pre4" />
+                <dependency id="Prism.Forms" version="7.2.0.1422" />
+                <dependency id="Xamarin.Forms.Svg" version="1.0.3" />
             </group>
             <group targetFramework="MonoTouch">
-                <dependency id="Prism.Unity.Forms" version="7.2.0.1422" />
-                <dependency id="Xamarin.Forms.Svg" version="1.0.0-pre4" />
+                <dependency id="Prism.Forms" version="7.2.0.1422" />
+                <dependency id="Xamarin.Forms.Svg" version="1.0.3" />
             </group>
         </dependencies>
     </metadata>

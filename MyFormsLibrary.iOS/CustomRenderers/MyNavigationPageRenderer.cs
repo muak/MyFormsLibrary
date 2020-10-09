@@ -53,6 +53,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
                 item.PropertyChanged += OnToolbarItemPropertyChanged;
             }
             SetToolbarItemVisibility();
+            //SetLeftToolbarItem();
         }
 
         public override UIViewController PopViewController(bool animated)
@@ -62,7 +63,7 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             {
                 item.PropertyChanged -= OnToolbarItemPropertyChanged;
             }
-            
+
             return base.PopViewController(animated);
         }
         
@@ -111,6 +112,27 @@ namespace MyFormsLibrary.iOS.CustomRenderers
             ToolbarItems = secondaries == null ? new UIBarButtonItem[0] : secondaries.ToArray();
 
             UpdateToolBarVisible();
+        }
+
+        // Androidでの実装がめんどくさいので見送り。できないことはないが不安定要素になりかねないし
+        // そこまでLeftが欲しいという場面は少ない。少ない場面ならTitleViewを使えば良い。
+        void SetLeftToolbarItem()
+        {
+            var curPage = (Element as NavigationPage).CurrentPage;
+            var leftItem = LeftToolItem.GetToolbarItem(curPage);
+            if(leftItem == null)
+            {
+                return;
+            }
+
+            var ctrl = ViewControllers.Last();
+
+            if (ctrl.NavigationItem.LeftBarButtonItem != null)
+            {
+                ctrl.NavigationItem.LeftBarButtonItem.Dispose();
+            }
+
+            ctrl.NavigationItem.SetLeftBarButtonItem(leftItem.ToUIBarButtonItem(), false);                
         }
 
         void UpdateToolBarVisible()

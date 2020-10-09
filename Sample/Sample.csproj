@@ -18,10 +18,10 @@
     <PackageReference Include="ReactiveProperty" Version="7.4.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="ViewModels\" />
     <Folder Include="Views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyFormsLibrary\MyFormsLibrary.csproj" />
   </ItemGroup>
 </Project>

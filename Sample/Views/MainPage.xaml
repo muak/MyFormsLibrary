@@ -5,12 +5,17 @@
     xmlns:cr="clr-namespace:MyFormsLibrary.CustomRenderers;assembly=MyFormsLibrary"
     xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
     prism:ViewModelLocator.AutowireViewModel="True"
-    x:Class="Sample.Views.MainPage">
+    x:Class="Sample.Views.MainPage"
+    x:Name="page">
 
     <ContentPage.ToolbarItems>
         <cr:MyToolbarItem Text="Hoge" IsVisible="{Binding Visible1.Value}" Command="{Binding MenuCommand}" />
-        <cr:MyToolbarItem Text="Fuga" IsVisible="{Binding Visible2.Value}" />
+        <cr:MyToolbarItem Text="Fuga" Command="{Binding MenuCommand2}" IsVisible="{Binding Visible2.Value}" />
     </ContentPage.ToolbarItems>
+
+    <cr:LeftToolItem.ToolbarItem>
+        <ToolbarItem Text="Hoge" Command="{Binding LeftCommand}" />
+    </cr:LeftToolItem.ToolbarItem>
 
     <StackLayout>
         <Button Text="Next" Command="{Binding GoNextCommand}" />
